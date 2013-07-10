@@ -113,24 +113,24 @@ class MiniGame1 extends Game
 		if (_isPaused) return;
 		
 		Global.totalPoints += Std.int(dt / 10);
-		Global.totalTime -= dt;
+		//Global.totalTime -= dt;
 		
-		if (Global.totalTime <= 0)
-		{
-			Global.totalTime = 0;
-			
-			trace("on send score");
-			#if js
-			try {
-				Lib.eval("onSendScore(" + Global.totalPoints + ")");
-			}
-			catch (e:Error)
-			{
-				
-			}
-			#end
-			ScreenManager.instance.gotoScreen(ShowPointsScreen);
-		}
+		//if (Global.totalTime <= 0)
+		//{
+			//Global.totalTime = 0;
+			//
+			//trace("on send score");
+			//#if js
+			//try {
+				//Lib.eval("onSendScore(" + Global.totalPoints + ")");
+			//}
+			//catch (e:Error)
+			//{
+				//
+			//}
+			//#end
+			//ScreenManager.instance.gotoScreen(ShowPointsScreen);
+		//}
 		
 		_hud.setTime(Std.string(Std.int(Global.totalTime / 1000)));
 		_hud.setPoints(Std.string(Std.int(Global.totalPoints / 1)));

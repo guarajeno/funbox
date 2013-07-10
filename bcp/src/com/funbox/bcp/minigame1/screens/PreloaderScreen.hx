@@ -88,6 +88,8 @@ class PreloaderScreen extends Screen
 		AssetsLoader.addAsset("images/minigame1_hand_tutorial.png", "hand_tutorial");
 		AssetsLoader.addAsset("images/btn_volver.png", "volver");
 		AssetsLoader.addAsset("images/btn_regresar.png", "regresar");
+		AssetsLoader.addAsset("images/gui_scorecard_twitter_over.png", "twitter");
+		AssetsLoader.addAsset("images/gui_scorecard_face_over.png", "facebook");
 		
 		AssetsLoader.addAsset("images/mockup_tab.jpg", "facebookbar");
 		AssetsLoader.addAsset("images/minigame1_scorecard.png", "scorecard");

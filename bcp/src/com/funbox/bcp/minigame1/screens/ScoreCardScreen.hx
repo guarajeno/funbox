@@ -30,6 +30,8 @@ class ScoreCardScreen extends Screen
 	
 	private var _volver:Bitmap;
 	private var _regresar:Bitmap;
+	private var _fb:Bitmap;
+	private var _tw:Bitmap;
 	
 	public function new(canvas:Sprite) 
 	{
@@ -87,36 +89,38 @@ class ScoreCardScreen extends Screen
 		_regresar.y = 342;
 		_regresar.visible = false;
 		
+		_fb = AssetsLoader.getAsset("facebook");
+		_fb.x = 280;
+		_fb.y = 290;
+		_fb.visible = false;
+		
+		_tw = AssetsLoader.getAsset("twitter");
+		_tw.x = 320;
+		_tw.y = 290;
+		//_tw.visible = false;
+		
 		_canvas.addChild(_volver);
 		_canvas.addChild(_regresar);
+		_canvas.addChild(_fb);
+		_canvas.addChild(_tw);
 		
 		_canvas.addEventListener(MouseEvent.CLICK, onClick);
 		_canvas.addEventListener(MouseEvent.MOUSE_MOVE, onMove);
 	}
 	
 	private function onMove(e:MouseEvent):Void 
-	{
-		_canvas.useHandCursor = false;
-		_canvas.buttonMode = false;
-		
-		//_volver.visible = false;
-		//_regresar.visible = false;
-		
+	{		
 		#if js
 		if (e.stageX - Lib.document.getElementById("banner").offsetLeft > 165 && e.stageX - Lib.document.getElementById("banner").offsetLeft < 165 + 140)
 		{
 			if (e.stageY - Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - Lib.document.getElementById("banner").offsetTop < 345 + 40)
 			{
 				_regresar.visible = true;
-				_canvas.useHandCursor = true;
-				_canvas.buttonMode = true;
 			}
 		}
 		else
 		{
 			_regresar.visible = false;
-			_canvas.useHandCursor = false;
-			_canvas.buttonMode = false;
 		}
 		
 		if (e.stageX - Lib.document.getElementById("banner").offsetLeft > 325 && e.stageX - Lib.document.getElementById("banner").offsetLeft < 325 + 140)
@@ -124,16 +128,41 @@ class ScoreCardScreen extends Screen
 			if (e.stageY - Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - Lib.document.getElementById("banner").offsetTop < 345 + 40)
 			{
 				_volver.visible = true;
-				Mouse.hide();
-				_canvas.useHandCursor = true;
-				_canvas.buttonMode = true;
 			}
 		}
 		else
 		{
 			_volver.visible = false;
-			_canvas.useHandCursor = false;
-			_canvas.buttonMode = false;
+		}
+		
+		
+		
+		if (e.stageX - Lib.document.getElementById("banner").offsetLeft > 280 && e.stageX - Lib.document.getElementById("banner").offsetLeft < 280 + 33)
+		{
+			if (e.stageY - Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - Lib.document.getElementById("banner").offsetTop < 290 + 33)
+			{
+				trace("post facebook");
+				Lib.eval("postFacebook(" + Global.totalPoints + ")");
+				_fb.visible = true;
+			}
+		}
+		else
+		{
+			_fb.visible = false;
+		}
+		
+		if (e.stageX - Lib.document.getElementById("banner").offsetLeft > 320 && e.stageX - Lib.document.getElementById("banner").offsetLeft < 320 + 33)
+		{
+			if (e.stageY - Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - Lib.document.getElementById("banner").offsetTop < 290 + 33)
+			{
+				trace("post twitter");
+				Lib.eval("postTwitter(" + Global.totalPoints + ")");
+				_tw.visible = true;
+			}
+		}
+		else
+		{
+			_tw.visible = false;
 		}
 		#end
 	}

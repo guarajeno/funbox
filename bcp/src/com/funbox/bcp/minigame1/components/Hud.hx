@@ -48,7 +48,7 @@ class Hud extends VisualObject
 		time.text = "0";
 		time.setTextFormat(_tf);
 		time.defaultTextFormat = _tf;
-		_skin.addChild(time);
+		//_skin.addChild(time);
 		
 		_life_1 = new SpriteEntity(_canvas);
 		_life_1.addState("on", "life_on", null);

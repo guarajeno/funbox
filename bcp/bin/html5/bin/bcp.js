@@ -3494,6 +3494,29 @@ browser.display.Tilesheet.__name__ = ["browser","display","Tilesheet"];
 browser.display.Tilesheet.prototype = {
 	__class__: browser.display.Tilesheet
 }
+browser.events.TextEvent = function(type,bubbles,cancelable,text) {
+	if(text == null) text = "";
+	if(cancelable == null) cancelable = false;
+	if(bubbles == null) bubbles = false;
+	browser.events.Event.call(this,type,bubbles,cancelable);
+	this.text = text;
+};
+$hxClasses["browser.events.TextEvent"] = browser.events.TextEvent;
+browser.events.TextEvent.__name__ = ["browser","events","TextEvent"];
+browser.events.TextEvent.__super__ = browser.events.Event;
+browser.events.TextEvent.prototype = $extend(browser.events.Event.prototype,{
+	__class__: browser.events.TextEvent
+});
+browser.events.ErrorEvent = function(type,bubbles,cancelable,text) {
+	browser.events.TextEvent.call(this,type,bubbles,cancelable);
+	this.text = text;
+};
+$hxClasses["browser.events.ErrorEvent"] = browser.events.ErrorEvent;
+browser.events.ErrorEvent.__name__ = ["browser","events","ErrorEvent"];
+browser.events.ErrorEvent.__super__ = browser.events.TextEvent;
+browser.events.ErrorEvent.prototype = $extend(browser.events.TextEvent.prototype,{
+	__class__: browser.events.ErrorEvent
+});
 browser.events.Listener = function(inListener,inUseCapture,inPriority) {
 	this.mListner = inListener;
 	this.mUseCapture = inUseCapture;
@@ -5105,15 +5128,6 @@ browser.ui.Keyboard.nmeConvertMozillaCode = function(code) {
 		return code;
 	}
 }
-browser.ui.Mouse = function() {
-};
-$hxClasses["browser.ui.Mouse"] = browser.ui.Mouse;
-browser.ui.Mouse.__name__ = ["browser","ui","Mouse"];
-browser.ui.Mouse.hide = function() {
-}
-browser.ui.Mouse.prototype = {
-	__class__: browser.ui.Mouse
-}
 browser.utils = {}
 browser.utils.ByteArray = function() {
 	this.littleEndian = false;
@@ -5267,18 +5281,6 @@ com.funbox.bcp.minigame1.MiniGame1.prototype = $extend(com.minigloop.Game.protot
 		this._mouseX = com.minigloop.input.Mouse.position.x - js.Lib.document.getElementById("banner").offsetLeft;
 		if(this._isPaused) return;
 		com.funbox.bcp.minigame1.Global.totalPoints += dt / 10 | 0;
-		com.funbox.bcp.minigame1.Global.totalTime -= dt;
-		if(com.funbox.bcp.minigame1.Global.totalTime <= 0) {
-			com.funbox.bcp.minigame1.Global.totalTime = 0;
-			console.log("on send score");
-			try {
-				eval("onSendScore(" + com.funbox.bcp.minigame1.Global.totalPoints + ")");
-			} catch( e ) {
-				if( js.Boot.__instanceof(e,Dynamic) ) {
-				} else throw(e);
-			}
-			com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame1.screens.ShowPointsScreen);
-		}
 		this._hud.setTime(Std.string(com.funbox.bcp.minigame1.Global.totalTime / 1000 | 0));
 		this._hud.setPoints(Std.string(com.funbox.bcp.minigame1.Global.totalPoints / 1 | 0));
 		this._timelapse += dt;
@@ -5402,7 +5404,6 @@ com.funbox.bcp.minigame1.components.Hud = function(canvas) {
 	this.time.set_text("0");
 	this.time.setTextFormat(this._tf);
 	this.time.set_defaultTextFormat(this._tf);
-	this._skin.addChild(this.time);
 	this._life_1 = new com.minigloop.display.SpriteEntity(this._canvas);
 	this._life_1.addState("on","life_on",null);
 	this._life_1.addState("off","life_off",null);
@@ -5726,6 +5727,8 @@ com.funbox.bcp.minigame1.screens.PreloaderScreen.prototype = $extend(com.miniglo
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_hand_tutorial.png","hand_tutorial");
 		com.minigloop.util.AssetsLoader.addAsset("images/btn_volver.png","volver");
 		com.minigloop.util.AssetsLoader.addAsset("images/btn_regresar.png","regresar");
+		com.minigloop.util.AssetsLoader.addAsset("images/gui_scorecard_twitter_over.png","twitter");
+		com.minigloop.util.AssetsLoader.addAsset("images/gui_scorecard_face_over.png","facebook");
 		com.minigloop.util.AssetsLoader.addAsset("images/mockup_tab.jpg","facebookbar");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_scorecard.png","scorecard");
 		com.minigloop.util.AssetsLoader.addAsset("images/facebookbar/tab_support.png","tab_support");
@@ -5791,10 +5794,19 @@ com.funbox.bcp.minigame1.screens.ScoreCardScreen = function(canvas) {
 	this._volver.set_visible(false);
 	this._regresar = com.minigloop.util.AssetsLoader.getAsset("regresar");
 	this._regresar.set_x(165);
-	this._regresar.set_y(341);
+	this._regresar.set_y(342);
 	this._regresar.set_visible(false);
+	this._fb = com.minigloop.util.AssetsLoader.getAsset("facebook");
+	this._fb.set_x(280);
+	this._fb.set_y(290);
+	this._fb.set_visible(false);
+	this._tw = com.minigloop.util.AssetsLoader.getAsset("twitter");
+	this._tw.set_x(320);
+	this._tw.set_y(290);
 	this._canvas.addChild(this._volver);
 	this._canvas.addChild(this._regresar);
+	this._canvas.addChild(this._fb);
+	this._canvas.addChild(this._tw);
 	this._canvas.addEventListener(browser.events.MouseEvent.CLICK,$bind(this,this.onClick));
 	this._canvas.addEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMove));
 };
@@ -5831,67 +5843,36 @@ com.funbox.bcp.minigame1.screens.ScoreCardScreen.prototype = $extend(com.miniglo
 		}
 	}
 	,onMove: function(e) {
-		this._canvas.set_useHandCursor(false);
-		this._canvas.buttonMode = false;
 		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 165 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 305) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) {
-				this._regresar.set_visible(true);
-				this._canvas.set_useHandCursor(true);
-				this._canvas.buttonMode = true;
-			}
-		} else {
-			this._regresar.set_visible(false);
-			this._canvas.set_useHandCursor(false);
-			this._canvas.buttonMode = false;
-		}
+			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) this._regresar.set_visible(true);
+		} else this._regresar.set_visible(false);
 		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 325 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 465) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) {
-				this._volver.set_visible(true);
-				browser.ui.Mouse.hide();
-				this._canvas.set_useHandCursor(true);
-				this._canvas.buttonMode = true;
+			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) this._volver.set_visible(true);
+		} else this._volver.set_visible(false);
+		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 280 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 313) {
+			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 323) {
+				console.log("post facebook");
+				eval("postFacebook(" + com.funbox.bcp.minigame1.Global.totalPoints + ")");
+				this._fb.set_visible(true);
 			}
-		} else {
-			this._volver.set_visible(false);
-			this._canvas.set_useHandCursor(false);
-			this._canvas.buttonMode = false;
-		}
+		} else this._fb.set_visible(false);
+		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 320 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 353) {
+			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 323) {
+				console.log("post twitter");
+				eval("postTwitter(" + com.funbox.bcp.minigame1.Global.totalPoints + ")");
+				this._tw.set_visible(true);
+			}
+		} else this._tw.set_visible(false);
 	}
 	,__class__: com.funbox.bcp.minigame1.screens.ScoreCardScreen
 });
-com.funbox.bcp.minigame1.screens.ShowPointsScreen = function(canvas) {
-	com.minigloop.ui.Screen.call(this,canvas);
-	this._lives = com.funbox.bcp.minigame1.Global.totalLives;
-	this._score_500 = com.minigloop.util.AssetsLoader.getAsset("score_500");
-	this._score_1000 = com.minigloop.util.AssetsLoader.getAsset("score_1000");
-	this._score_500.set_x(300);
-	this._score_500.set_y(220);
-	this._score_1000.set_x(300);
-	this._score_1000.set_y(220);
-	this._score_500.set_scaleX(0);
-	this._score_1000.set_scaleX(0);
-	this._canvas.addChild(this._score_1000);
-	this._canvas.addChild(this._score_500);
-	this.show_1000();
-};
+com.funbox.bcp.minigame1.screens.ShowPointsScreen = function() { }
 $hxClasses["com.funbox.bcp.minigame1.screens.ShowPointsScreen"] = com.funbox.bcp.minigame1.screens.ShowPointsScreen;
 com.funbox.bcp.minigame1.screens.ShowPointsScreen.__name__ = ["com","funbox","bcp","minigame1","screens","ShowPointsScreen"];
 com.funbox.bcp.minigame1.screens.ShowPointsScreen.__super__ = com.minigloop.ui.Screen;
 com.funbox.bcp.minigame1.screens.ShowPointsScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	update: function(dt) {
 		if(this._scaleTweener != null) this._scaleTweener.update(dt);
-	}
-	,show_500: function() {
-		com.minigloop.util.SoundManager.play("points");
-		this._lives--;
-		this._scaleTweener = new com.funbox.bcp.minigame1.utils.ScaleTweener(this._score_500,$bind(this,this.onShow_End));
-	}
-	,onShow_End: function() {
-		if(this._lives > 0) this.show_500(); else com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame1.screens.ScoreCardScreen);
-	}
-	,show_1000: function() {
-		com.minigloop.util.SoundManager.play("points");
-		this._scaleTweener = new com.funbox.bcp.minigame1.utils.ScaleTweener(this._score_1000,$bind(this,this.onShow_End));
 	}
 	,__class__: com.funbox.bcp.minigame1.screens.ShowPointsScreen
 });
@@ -5921,12 +5902,8 @@ com.funbox.bcp.minigame1.screens.TutorialScreen.prototype = $extend(com.minigloo
 		this._t += 0.06;
 		this._player.set_x(300 + 50 * Math.sin(this._t));
 	}
-	,show3: function() {
-		com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame1.screens.GameScreen);
-	}
 	,show2: function() {
-		this._player.alpha = 0;
-		this._alphaTweener = new com.funbox.bcp.minigame1.utils.AlphaTweener(this._background_2,0.005,$bind(this,this.show3));
+		com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame1.screens.GameScreen);
 	}
 	,show1: function() {
 		this._alphaTweener = new com.funbox.bcp.minigame1.utils.AlphaTweener(this._background_1,0.01,$bind(this,this.show2));
@@ -6141,6 +6118,7 @@ com.minigloop.util.AssetsLoader.loadAsset = function(e) {
 		com.minigloop.util.AssetsLoader._loader.load(request);
 		com.minigloop.util.AssetsLoader._loader.contentLoaderInfo.addEventListener(browser.events.Event.COMPLETE,com.minigloop.util.AssetsLoader.loadAsset);
 		com.minigloop.util.AssetsLoader._loaders.push(com.minigloop.util.AssetsLoader._loader);
+		console.log("asset loaded: [" + com.minigloop.util.AssetsLoader._ids[com.minigloop.util.AssetsLoader._index] + "]");
 		com.minigloop.util.AssetsLoader._index++;
 	} else com.minigloop.util.AssetsLoader._callback();
 }
@@ -6185,9 +6163,14 @@ com.minigloop.util.DataLoader.loadData = function(e) {
 		com.minigloop.util.DataLoader._loader = new browser.net.URLLoader();
 		com.minigloop.util.DataLoader._loader.load(request);
 		com.minigloop.util.DataLoader._loader.addEventListener(browser.events.Event.COMPLETE,com.minigloop.util.DataLoader.loadData);
+		com.minigloop.util.DataLoader._loader.addEventListener(browser.events.ErrorEvent.ERROR,com.minigloop.util.DataLoader.onError);
 		com.minigloop.util.DataLoader._loaders.push(com.minigloop.util.DataLoader._loader);
+		console.log("data loaded: [" + com.minigloop.util.DataLoader._ids[com.minigloop.util.DataLoader._index] + "]");
 		com.minigloop.util.DataLoader._index++;
 	} else com.minigloop.util.DataLoader._callback();
+}
+com.minigloop.util.DataLoader.onError = function(e) {
+	console.log("Error loading file: " + com.minigloop.util.DataLoader._urls[com.minigloop.util.DataLoader._index]);
 }
 com.minigloop.util.DataLoader.getData = function(id) {
 	var i;
@@ -6226,10 +6209,14 @@ com.minigloop.util.SoundManager.loadSound = function(e) {
 		com.minigloop.util.SoundManager._sound = new browser.media.Sound();
 		com.minigloop.util.SoundManager._sound.load(request);
 		com.minigloop.util.SoundManager._sound.addEventListener(browser.events.Event.COMPLETE,com.minigloop.util.SoundManager.loadSound);
+		com.minigloop.util.SoundManager._sound.addEventListener(browser.events.ErrorEvent.ERROR,com.minigloop.util.SoundManager.onError);
 		com.minigloop.util.SoundManager._sounds.push(com.minigloop.util.SoundManager._sound);
 		console.log("sound loaded: [" + com.minigloop.util.SoundManager._ids[com.minigloop.util.SoundManager._index] + "]");
 		com.minigloop.util.SoundManager._index++;
 	} else com.minigloop.util.SoundManager._callback();
+}
+com.minigloop.util.SoundManager.onError = function(e) {
+	console.log("Error loading sound: " + com.minigloop.util.SoundManager._urls[com.minigloop.util.SoundManager._index]);
 }
 com.minigloop.util.SoundManager.getSound = function(id) {
 	var i;
@@ -7308,6 +7295,7 @@ browser.display.Stage.nmeAcceleration = { x : 0.0, y : 1.0, z : 0.0};
 browser.display.Stage.nmeMouseChanges = [browser.events.MouseEvent.MOUSE_OUT,browser.events.MouseEvent.MOUSE_OVER,browser.events.MouseEvent.ROLL_OUT,browser.events.MouseEvent.ROLL_OVER];
 browser.display.Stage.nmeTouchChanges = ["touchOut","touchOver","touchRollOut","touchRollOver"];
 browser.display.StageQuality.BEST = "best";
+browser.events.ErrorEvent.ERROR = "error";
 browser.events.Listener.sIDs = 1;
 browser.events.EventPhase.CAPTURING_PHASE = 0;
 browser.events.EventPhase.AT_TARGET = 1;

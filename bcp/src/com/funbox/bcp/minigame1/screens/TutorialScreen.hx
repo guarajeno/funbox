@@ -58,8 +58,9 @@ class TutorialScreen extends Screen
 	
 	function show2() 
 	{
-		_player.alpha = 0;
-		_alphaTweener = new AlphaTweener(_background_2, 0.005, show3);
+		//_player.alpha = 0;
+		//_alphaTweener = new AlphaTweener(_background_2, 0.005, show3);
+		ScreenManager.instance.gotoScreen(GameScreen);
 	}
 	
 	function show3() 
