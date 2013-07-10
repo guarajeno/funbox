@@ -47,7 +47,8 @@ class FallingObjectManager {
 		var typeToChoose:Int = mTouchObjectsToChoose[NUtils.getValueFromProbabilityChart(mTouchObjectsToChoose.length, 10)];
 		
 		var tObj:TouchObject = mEntitiesController.createEntitie(0, 0, speed, typeToChoose);
-		tObj.setX(NMath.random(tObj.getWidth(), Global.stage.stageWidth - tObj.getWidth()));
+		tObj.setX(NMath.random(tObj.getWidth() + Global.ScreenOffsetWidth, 
+			Global.stage.stageWidth - tObj.getWidth() - Global.ScreenOffsetWidth));
 		tObj.setY(-tObj.getHeight());
 	}
 	

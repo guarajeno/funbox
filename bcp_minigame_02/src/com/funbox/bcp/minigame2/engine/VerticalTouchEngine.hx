@@ -56,21 +56,6 @@ class VerticalTouchEngine {
 		mGameCanvas.addChild(mBotCanvas);
 		mGameCanvas.addChild(mPlayerCanvas);
 		mGameCanvas.addChild(mEffectCanvas);
-		
-		/*mTextFormat = new TextFormat();
-		mTextFormat.color=0xFF0000;
-		mTextFormat.size=20;
-		mTextFormat.font = "Verdana";
-		
-		mTextField = new TextField();
-		mTextField.setTextFormat(mTextFormat);
-		mTextField.text = "Esto es una prueba de lora";
-		mTextField.x = 50;
-		mTextField.y = 50;
-		mTextField.scaleX = mTextField.scaleY = 2;
-		mTextField.width = 180;
-		
-		mGameCanvas.addChild(mTextField);*/
 
 		mEffectManager = new EffectManager(mEffectCanvas);
 		

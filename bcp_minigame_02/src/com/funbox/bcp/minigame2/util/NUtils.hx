@@ -42,4 +42,18 @@ class NUtils
 		
 		return choosenOption;
 	}
+	
+	public static function getDigitsByValue(value:Int, num_digits:Int):String {
+		var s:String = Std.string(value);
+		var offset:Int = num_digits - s.length;
+		
+		var i:Int = 0;
+		
+		while (i < offset) {
+			s = "0" + s;
+			i++;
+		}
+		
+		return s;
+	}
 }

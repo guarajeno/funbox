@@ -86,6 +86,19 @@ class TouchObject extends BaseActor {
 			if (hitTestPoint(mouseX, mouseY)) {
 				isDead = true;
 				makePuffEffect();
+				
+				var score_earned:Int = 0;
+				
+				switch(mType) {
+				case EnumTouchObjectType.COIN:
+					score_earned = 500;
+				case EnumTouchObjectType.MONEY:
+					score_earned = 100;
+				}
+				
+				var newScore:Int = Global.minigame.getGameHud().GetScore();
+				newScore += score_earned;
+				Global.minigame.getGameHud().SetScore(newScore);
 			}
 		}
 		

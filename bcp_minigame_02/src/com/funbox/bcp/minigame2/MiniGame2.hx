@@ -2,6 +2,7 @@ package com.funbox.bcp.minigame2;
 
 import com.funbox.bcp.minigame2.engine.VerticalTouchEngine;
 import com.funbox.bcp.minigame2.entities.BaseActor;
+import com.funbox.bcp.minigame2.screens.GameHud;
 import com.minigloop.display.AtlasSprite;
 import com.minigloop.Game;
 import com.minigloop.input.Mouse;
@@ -22,6 +23,7 @@ class MiniGame2 extends Game {
 	private var mGhostGameMask:Sprite;
 	private var mGameCanvas:Sprite;
 
+	private var mGameHud:GameHud;
 	private var mVTEngine:VerticalTouchEngine;
 	
 	private var mMouseX:Float;
@@ -33,12 +35,14 @@ class MiniGame2 extends Game {
 	public function isMousePressed():Bool { return mMousePressed; }
 	
 	public function getVTEngine():VerticalTouchEngine { return mVTEngine; }
+	public function getGameHud():GameHud { return mGameHud; }
 	
-	public function new(canvas:Sprite) {
+	public function new(canvas:Sprite, gameHud:GameHud) {
 		super(canvas);
 		
 		Global.minigame = this;
-		Global.stage = _canvas.stage;
+		
+		mGameHud = gameHud;
 		
 		mMousePressed = false;
 		
@@ -61,7 +65,7 @@ class MiniGame2 extends Game {
 		mVTEngine = new VerticalTouchEngine(this, mGameCanvas);
 		
 		// add to render
-		_canvas.addChild(mGhostGameMask);
+		Global.stage.addChild(mGhostGameMask);
 	}
 	
 	private function onMouseHandler(e:MouseEvent):Void {
