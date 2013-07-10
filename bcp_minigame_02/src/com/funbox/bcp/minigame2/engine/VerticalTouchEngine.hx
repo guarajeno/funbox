@@ -27,6 +27,7 @@ class VerticalTouchEngine {
 	private var mTextField:TextField;
 	
 	private var mBGSprite:BaseActor;
+	private var mBGMaskSprite:BaseActor;
 	
 	private var mPlayer:GamePlayer;
 	private var mBotCollector:BotCollector;
@@ -56,7 +57,7 @@ class VerticalTouchEngine {
 		mGameCanvas.addChild(mPlayerCanvas);
 		mGameCanvas.addChild(mEffectCanvas);
 		
-		mTextFormat = new TextFormat();
+		/*mTextFormat = new TextFormat();
 		mTextFormat.color=0xFF0000;
 		mTextFormat.size=20;
 		mTextFormat.font = "Verdana";
@@ -69,7 +70,7 @@ class VerticalTouchEngine {
 		mTextField.scaleX = mTextField.scaleY = 2;
 		mTextField.width = 180;
 		
-		mGameCanvas.addChild(mTextField);
+		mGameCanvas.addChild(mTextField);*/
 
 		mEffectManager = new EffectManager(mEffectCanvas);
 		
@@ -83,6 +84,7 @@ class VerticalTouchEngine {
 			"spMinigame02_ani_bot_collector", mBotCanvas);
 		
 		mBGSprite = new BaseActor("spMinigame02_bg", null, mBGCanvas, 0, 0);
+		mBGMaskSprite = new BaseActor("spMinigame02_background_mask", null, mGameCanvas, 0, 0);
 			
 		mFallingObjectManager.start();
 	}
@@ -95,6 +97,7 @@ class VerticalTouchEngine {
 		mBotCollector.update(dt);
 		mEffectManager.update(dt);
 		mBGSprite.update(dt);
+		mBGMaskSprite.update(dt);
 	}
 	
 	public function free():Void {
@@ -103,12 +106,14 @@ class VerticalTouchEngine {
 		mBotCollector.free();
 		mEffectManager.free();
 		mBGSprite.free();
+		mBGMaskSprite.free();
 		
 		mBGSprite = null;
 		mBotCollector = null;
 		mEntitiesController = null;
 		mFallingObjectManager = null;
 		mEffectManager = null;
+		mBGMaskSprite = null;
 	}
 	
 }

@@ -22,7 +22,7 @@ class BotCollector extends TouchObject {
 		setObjectType(EnumTouchObjectType.BOT_COLLECTOR);
 		
 		mX = (Global.stage.stageWidth >> 1) - (getWidth() / 2);
-		mY = Global.stage.stageHeight - getHeight();
+		mY = Global.stage.stageHeight - getHeight() - Global.ScreenOffsetHeight;
 		
 		mEntities = new Array<TouchObject>();
 		

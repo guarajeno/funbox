@@ -1,5 +1,6 @@
 package com.funbox.bcp.minigame2.entities;
 
+import com.funbox.bcp.minigame2.engine.effectManager.SpriteAndTextEffect;
 import com.funbox.bcp.minigame2.entities.enemy.BotCollector;
 import com.funbox.bcp.minigame2.Global;
 import com.funbox.bcp.minigame2.type.EnumTouchObjectType;
@@ -57,6 +58,22 @@ class TouchObject extends BaseActor {
 	}
 	
 	public function makePuffEffect():Void {
+		if (mCanFall) {
+			var clipScoreName:String = "";
+			
+			switch(mType) {
+			case EnumTouchObjectType.COIN:
+				clipScoreName = "spMinigame02_score_500";
+			case EnumTouchObjectType.MONEY:
+				clipScoreName = "spMinigame02_score_100";
+			}
+			
+			var effect:SpriteAndTextEffect = Global.minigame.getVTEngine().getEffectManager().createSpriteAndTextEffect(
+				"spMinigame02_check_secure", "spMinigame02_check_secure", clipScoreName, null, 
+				new Vector2D(mX + getWidth() / 2, mY + getHeight() / 2), new Vector2D( -20, -43));
+			effect.DieWithAlpha(true);
+		}
+		
 		Global.minigame.getVTEngine().getEffectManager().createEffect(mX + getWidth() / 2, 
 			mY + getHeight() / 2, "spMinigame02_ani_effect_puff", "spMinigame02_ani_effect_puff");
 	}
@@ -77,9 +94,9 @@ class TouchObject extends BaseActor {
 				mX += mSpeed.x * dt;
 				mY += mSpeed.y * dt;
 				
-				if (mY > (mAppHeight - getHeight())) {
+				if (mY > (mAppHeight - getHeight() - Global.ScreenOffsetHeight)) {
 					mCanFall = false;
-					mY = mAppHeight - getHeight();
+					mY = mAppHeight - getHeight() - Global.ScreenOffsetHeight;
 					
 					var bot:BotCollector = Global.minigame.getVTEngine().getBotCollector();
 					bot.addObjectInGround(this);

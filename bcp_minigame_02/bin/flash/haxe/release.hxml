@@ -8,5 +8,5 @@
 -D web
 -swf-version 11
 -swf9 bin/flash/bin/bcp.swf
--swf-header 640:664:30:0
+-swf-header 640:480:30:0
 -cp bin/flash/haxe

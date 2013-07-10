@@ -1,4 +1,5 @@
 package com.funbox.bcp.minigame2.engine.effectManager;
+import com.minigloop.util.Vector2D;
 import nme.display.Sprite;
 
 /**
@@ -20,6 +21,21 @@ class EffectManager
 		var touchObj:BaseEffect = null;
 		
 		touchObj = new BaseEffect(clipName, aniData, mCanvas, x, y);
+		
+		if (touchObj != null) {
+			mEffectsRepo.push(touchObj);
+		}
+		
+		return touchObj;
+	}
+	
+	public function createSpriteAndTextEffect(clipName:String, aniData:String, clipNameOther:String,
+		aniDataOther:String, pos1:Vector2D, pos2:Vector2D):SpriteAndTextEffect {
+		
+		var touchObj:SpriteAndTextEffect = null;
+		
+		touchObj = new SpriteAndTextEffect(clipName, aniData, clipNameOther, 
+			aniDataOther, mCanvas, pos1, pos2);
 		
 		if (touchObj != null) {
 			mEffectsRepo.push(touchObj);

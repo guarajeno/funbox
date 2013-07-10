@@ -117,6 +117,10 @@ class AtlasSprite extends VisualObject
 		mCanPlay = false;
 	}
 	
+	public function stop():Void {
+		mCanPlay = false;
+	}
+	
 	override public function update(dt:Int):Void {
 		if (mCanPlay) {
 			if (_container.numChildren > 0) {

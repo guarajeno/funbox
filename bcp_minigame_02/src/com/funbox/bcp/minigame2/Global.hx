@@ -11,6 +11,8 @@ class Global
 	static public var maxPlayerSpeed = 15;
 	static public var enemyFrequency = 1000;
 	
+	static public var ScreenOffsetHeight = 50;
+	
 	static public var minigame:MiniGame2 = null;
 	static public var stage:Stage = null;
 

@@ -24,12 +24,19 @@ class PreloaderScreen extends Screen
 		
 		////////// minigame02 Assets ///////////
 		// bg of minigame02
-		AssetsLoader.addAsset("images/minigame02/spMinigame02_bg.jpg", "spMinigame02_bg");
+		AssetsLoader.addAsset("images/minigame02/interfaces/spMinigame02_bg.jpg", "spMinigame02_bg");
+		AssetsLoader.addAsset("images/minigame02/interfaces/spMinigame02_background_mask.png", "spMinigame02_background_mask");
 		
 		// score of minigame02
-		AssetsLoader.addAsset("images/score_effect/spMinigame02_score_100.png", "spMinigame02_score_100");
-		AssetsLoader.addAsset("images/score_effect/spMinigame02_score_500.png", "spMinigame02_score_500");
-		AssetsLoader.addAsset("images/score_effect/spMinigame02_score_1000.png", "spMinigame02_score_1000");
+		AssetsLoader.addAsset("images/minigame02/score_effect/spMinigame02_score_100.png", "spMinigame02_score_100");
+		AssetsLoader.addAsset("images/minigame02/score_effect/spMinigame02_score_500.png", "spMinigame02_score_500");
+		AssetsLoader.addAsset("images/minigame02/score_effect/spMinigame02_score_1000.png", "spMinigame02_score_1000");
+		
+		// check secure
+		AssetsLoader.addAsset("images/minigame02/check_secure/spMinigame02_check_secure.png",
+			"spMinigame02_check_secure");
+		DataLoader.addData("images/minigame02/check_secure/spMinigame02_check_secure.json",
+			"spMinigame02_check_secure");
 		
 		// bag of money
 		AssetsLoader.addAsset("images/minigame02/bag_money/spMinigame02_ani_bag_money.png",
