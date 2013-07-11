@@ -10,7 +10,7 @@ $app_id = '170131295263'; // App ID 460895720674183
 $app_secret = '6f549409ed43dd6017ce1a8147bff4d6';
 //$app_secret = 'bfc7b858eabb28e441911ad0a8500c85';
 
-$app_url = 'http://funbox.com.pe/bcp_ep/juego.php';
+$app_url = 'http://www.circusint.com/clientes/bcp/seguridad/pruebas/juego/juego.php';
 //$app_url = 'http://www.funbox.com.pe/bcp_ep/juego.php';
 $scope = 'email,publish_actions,read_friendlists';
 
