@@ -26,10 +26,18 @@ class AtlasSprite extends VisualObject
 	private var _offsetX:Float;
 	private var _offsetY:Float;
 	
+	private var mAlpha:Float;
+	
 	private var _scaleX:Float;
 	private var _scaleY:Float;
 	
 	private var mCanPlay:Bool;
+	
+	public function getAlpha():Float 			{ return mAlpha;  }
+	public function setAlpha(value:Float):Void 	{ 
+		mAlpha = value;
+		_container.alpha = mAlpha;
+	}
 	
 	public function currentFrame():Bitmap { return _frames[_currentIndex]; }
 	public function playing():Bool { return mCanPlay; }
@@ -94,6 +102,7 @@ class AtlasSprite extends VisualObject
 		
 		_container.addChild(_frames[frame]);
 		_frames[frame].scaleX = _scaleX;
+		_frames[frame].alpha = mAlpha;
 		
 		_container.x = position.x + _offsetX;
 		_container.y = position.y + _offsetY;
@@ -109,6 +118,7 @@ class AtlasSprite extends VisualObject
 		
 		_container.addChild(_frames[frame]);
 		_frames[frame].scaleX = _scaleX;
+		_frames[frame].alpha = mAlpha;
 		
 		_container.x = position.x + _offsetX;
 		_container.y = position.y + _offsetY;

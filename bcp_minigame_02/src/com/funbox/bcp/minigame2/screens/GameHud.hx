@@ -13,39 +13,34 @@ import nme.text.TextFormat;
 class GameHud {
 
 	private var mCanvas:Sprite;
-	
-	private var mLifeSprite_1:BaseActor;
-	private var mLifeSprite_2:BaseActor;
-	private var mLifeSprite_3:BaseActor;
-	
+
 	private var mPuntajeSprite:BaseActor;
 	
 	private var mScore:Int;
+	private var mTime:Int;
 	
 	private var mTextFormat:TextFormat;
-	private var mTextField:TextField;
+	private var mTF_Score:TextField;
+	private var mTF_Time:TextField;
 	
 	public function GetScore():Int { return mScore; }
 	public function SetScore(value:Int):Void { 
 		mScore = value; 
-		mTextField.text = NUtils.getDigitsByValue(mScore, 7);
+		mTF_Score.text = NUtils.getDigitsByValue(mScore, 7);
+	}
+	
+	public function GetTime():Int { return mTime; }
+	public function SetTime(value:Int):Void { 
+		mTime = value; 
+		mTF_Time.text = NUtils.parseMillisecondsInClockFormat(mTime);
 	}
 	
 	public function new(canvas:Sprite) {
 		mCanvas = canvas;
 		
-		mLifeSprite_1 = new BaseActor("spMinigame02_life_on", null, mCanvas,
-			Global.stage.stageWidth - 90, 3);
-		mLifeSprite_2 = new BaseActor("spMinigame02_life_on", null, mCanvas,
-			Global.stage.stageWidth - 65, 3);
-		mLifeSprite_3 = new BaseActor("spMinigame02_life_on", null, mCanvas,
-			Global.stage.stageWidth - 40, 3);
-			
 		mPuntajeSprite = new BaseActor("spMinigame02_background_score", null,
-			mCanvas, 40, 45);
+			mCanvas, 5, 5);
 			
-		mScore = 0;
-		
 		// texts
 		mTextFormat = new TextFormat();
 		mTextFormat.color = 0xFFFFFFFF;
@@ -53,37 +48,50 @@ class GameHud {
 		mTextFormat.bold = true;
 		mTextFormat.font = "calibri";
 		
-		mTextField = new TextField();
-		mTextField.setTextFormat(mTextFormat);
-		mTextField.defaultTextFormat = mTextFormat;
-		mTextField.text = "0000000";
-		mTextField.x = 111;
-		mTextField.y = 46;
-		mTextField.width = 180;
-		mTextField.mouseEnabled = false;
-		mTextField.alwaysShowSelection = false;
-		mTextField.selectable = false;
+		mTF_Score = new TextField();
+		mTF_Score.setTextFormat(mTextFormat);
+		mTF_Score.defaultTextFormat = mTextFormat;
+		mTF_Score.text = "0000000";
+		mTF_Score.x = 76;
+		mTF_Score.y = 6;
+		mTF_Score.width = 180;
+		mTF_Score.mouseEnabled = false;
+		mTF_Score.alwaysShowSelection = false;
+		mTF_Score.selectable = false;
 		
-		mCanvas.addChild(mTextField);
+		mTF_Time = new TextField();
+		mTF_Time.setTextFormat(mTextFormat);
+		mTF_Time.defaultTextFormat = mTextFormat;
+		mTF_Time.text = "00:00";
+		mTF_Time.x = 215;
+		mTF_Time.y = 6;
+		mTF_Time.width = 180;
+		mTF_Time.mouseEnabled = false;
+		mTF_Time.alwaysShowSelection = false;
+		mTF_Time.selectable = false;
+		
+		mCanvas.addChild(mTF_Score);
+		mCanvas.addChild(mTF_Time);
+		
+		////
+		SetScore(0);
+		SetTime(0);
 	}
 	
 	public function update(dt:Int):Void {
-		mLifeSprite_1.update(dt);
-		mLifeSprite_2.update(dt);
-		mLifeSprite_3.update(dt);
 		mPuntajeSprite.update(dt);
 	}
 	
 	public function free():Void {
-		mLifeSprite_1.free();
-		mLifeSprite_2.free();
-		mLifeSprite_3.free();
 		mPuntajeSprite.free();
-		
-		mLifeSprite_1 = null;
-		mLifeSprite_2 = null;
-		mLifeSprite_3 = null;
 		mPuntajeSprite = null;
+		
+		mCanvas.removeChild(mTF_Score);
+		mCanvas.removeChild(mTF_Time);
+		
+		mTF_Score = null;
+		mTF_Time = null;
+		mCanvas = null;
 	}
 	
 }

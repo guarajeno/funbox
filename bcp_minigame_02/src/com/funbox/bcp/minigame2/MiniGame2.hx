@@ -3,9 +3,11 @@ package com.funbox.bcp.minigame2;
 import com.funbox.bcp.minigame2.engine.VerticalTouchEngine;
 import com.funbox.bcp.minigame2.entities.BaseActor;
 import com.funbox.bcp.minigame2.screens.GameHud;
+import com.funbox.bcp.minigame2.screens.ScoreCardScreen;
 import com.minigloop.display.AtlasSprite;
 import com.minigloop.Game;
 import com.minigloop.input.Mouse;
+import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
 import com.minigloop.util.Vector2D;
 
@@ -30,6 +32,8 @@ class MiniGame2 extends Game {
 	private var mMouseY:Float;
 	private var mMousePressed:Bool;
 	
+	private var mLevelTime:Int;
+	
 	public function getMouseX():Float { return mMouseX; }
 	public function getMouseY():Float { return mMouseY; }
 	public function isMousePressed():Bool { return mMousePressed; }
@@ -44,6 +48,7 @@ class MiniGame2 extends Game {
 		
 		mGameHud = gameHud;
 		
+		mLevelTime = 30100;
 		mMousePressed = false;
 		
 		// mask created for listening the mouse events of the window
@@ -93,5 +98,32 @@ class MiniGame2 extends Game {
 	
 	override public function update(dt:Int):Dynamic {
 		mVTEngine.update(dt);
+		
+		mLevelTime -= dt;
+		
+		if (mLevelTime <= 0) { 
+			mLevelTime = 0;
+			mGameHud.SetTime(mLevelTime);
+			
+			Global.totalPoints = mGameHud.GetScore();
+			ScreenManager.instance.gotoScreen(ScoreCardScreen);
+		}
+		else {
+			mGameHud.SetTime(mLevelTime);
+		}
+	}
+	
+	override public function destroy():Dynamic {
+		mVTEngine.free();
+		mVTEngine = null;
+		
+		Global.stage.removeChild(mGhostGameMask);
+		mGhostGameMask = null;
+		
+		_canvas.removeChild(mGameCanvas);
+		mGameCanvas = null;
+		
+		
+		super.destroy();
 	}
 }

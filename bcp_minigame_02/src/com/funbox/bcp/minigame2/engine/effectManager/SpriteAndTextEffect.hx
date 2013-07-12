@@ -17,6 +17,8 @@ class SpriteAndTextEffect extends BaseEffect {
 	private var mOtherX:Float;
 	private var mOtherY:Float;
 	
+	private var mClipContainer:Sprite;
+	
 	public function new(clipName:String, aniData:String, clipNameOther:String, aniDataOther:String,
 		canvas:Sprite, pos1:Vector2D, pos2:Vector2D) {
 		super(clipName, aniData, canvas, pos1.x, pos1.y);
@@ -24,8 +26,11 @@ class SpriteAndTextEffect extends BaseEffect {
 		mOtherX = pos2.x;
 		mOtherY = pos2.y;
 		
+		mClipContainer = new Sprite();
+		mCanvas.addChild(mClipContainer);
+		
 		if (clipNameOther != null && aniDataOther != null) {
-			mAnimationBitmapOther = new AtlasSprite(mCanvas, clipNameOther, aniDataOther);
+			mAnimationBitmapOther = new AtlasSprite(mClipContainer, clipNameOther, aniDataOther);
 				mAnimationBitmapOther.position.x = mX + mOtherX;
 				mAnimationBitmapOther.position.y = mY + mOtherY;
 		}
@@ -34,7 +39,7 @@ class SpriteAndTextEffect extends BaseEffect {
 			mBitmapOther.x = mX + mOtherX;
 			mBitmapOther.y = mY + mOtherY;
 			
-			mCanvas.addChild(mBitmapOther);
+			mClipContainer.addChild(mBitmapOther);
 		}
 	}
 
@@ -53,15 +58,24 @@ class SpriteAndTextEffect extends BaseEffect {
 		}
 		
 		if (mAnimationBitmapOther != null) {
-			if (mAnimationBitmapOther.getCurrentIndex() == (mAnimationBitmapOther.getLength() - 1)) {
-				mAnimationBitmapOther.stop();
+			//if (mAnimationBitmapOther.getCurrentIndex() == (mAnimationBitmapOther.getLength() - 1)) {
+				//mAnimationBitmapOther.stop();
 				
-				mAnimationBitmapOther.currentFrame().alpha -= 0.1;
+				mClipContainer.alpha -= mAlphaFactor;
 				
-				if (mAnimationBitmapOther.currentFrame().alpha <= 0) {
-					mAnimationBitmapOther.currentFrame().alpha = 0;
+				if (mClipContainer.alpha <= 0) {
+					mClipContainer.alpha = 0;
 					isDead = true;
 				}
+			//}
+		}
+		
+		if (mBitmapOther != null) {
+			mClipContainer.alpha -= mAlphaFactor;
+			
+			if (mClipContainer.alpha <= 0) {
+				mClipContainer.alpha = 0;
+				isDead = true;
 			}
 		}
 		
@@ -70,7 +84,7 @@ class SpriteAndTextEffect extends BaseEffect {
 	
 	override public function free():Void {
 		if (mBitmapOther != null) {
-			mCanvas.removeChild(mBitmapOther);
+			mClipContainer.removeChild(mBitmapOther);
 			mBitmapOther.bitmapData.dispose();
 		}
 		

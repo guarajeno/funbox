@@ -22,6 +22,8 @@ class BaseActor {
 	private var mWidth:Float;
 	private var mHeight:Float;
 	
+	private var mAlpha:Float;
+	
 	private var mCanvas:Sprite;
 	private var mBitmap:Bitmap;
 	private var mAnimationBitmap:AtlasSprite;
@@ -38,6 +40,18 @@ class BaseActor {
 	
 	public function getY():Float 			{ return mY;  }
 	public function setY(value:Float):Void 	{ mY = value; }
+	
+	public function getAlpha():Float 			{ return mAlpha;  }
+	public function setAlpha(value:Float):Void 	{ 
+		mAlpha = value;
+		
+		if (mStaticImage) {
+			mBitmap.alpha = mAlpha;
+		}
+		else {
+			mAnimationBitmap.setAlpha(mAlpha);
+		}
+	}
 	
 	public function getOffsetX():Float 				{ return mOffsetX;  }
 	public function setOffsetX(value:Float):Void 	{ mOffsetX = value; }
@@ -95,6 +109,8 @@ class BaseActor {
 			mWidth = mAnimationBitmap.currentWidth();
 			mHeight = mAnimationBitmap.currentHeight();
 		}
+		
+		setAlpha(1.0);
 	}
 	
 	public function hitTest(actor:BaseActor):Bool {

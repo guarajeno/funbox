@@ -23,9 +23,6 @@ class VerticalTouchEngine {
 	private var mEffectCanvas:Sprite;
 	private var mBGCanvas:Sprite;
 	
-	private var mTextFormat:TextFormat;
-	private var mTextField:TextField;
-	
 	private var mBGSprite:BaseActor;
 	private var mBGMaskSprite:BaseActor;
 	
@@ -92,6 +89,7 @@ class VerticalTouchEngine {
 		mEffectManager.free();
 		mBGSprite.free();
 		mBGMaskSprite.free();
+		mPlayer.free();
 		
 		mBGSprite = null;
 		mBotCollector = null;
@@ -99,6 +97,19 @@ class VerticalTouchEngine {
 		mFallingObjectManager = null;
 		mEffectManager = null;
 		mBGMaskSprite = null;
+		mPlayer = null;
+		
+		mGameCanvas.removeChild(mBGCanvas);
+		mGameCanvas.removeChild(mEntitiesCanvas);
+		mGameCanvas.removeChild(mBotCanvas);
+		mGameCanvas.removeChild(mPlayerCanvas);
+		mGameCanvas.removeChild(mEffectCanvas);
+		
+		mBGCanvas = null;
+		mEntitiesCanvas = null;
+		mBotCanvas = null;
+		mPlayerCanvas = null;
+		mEffectCanvas = null;
 	}
 	
 }

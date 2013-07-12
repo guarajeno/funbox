@@ -14,11 +14,14 @@ class BaseEffect extends BaseActor {
 	private var mDelayToStart:Int;
 	private var mDieWithAlpha:Bool;
 	
+	private var mAlphaFactor:Float;
+	
 	public function new(clipName:String, aniData:String, canvas:Sprite, x:Float, y:Float) {
 		super(clipName, aniData, canvas, x, y);
 		
 		isDead = false;
 		mDelayToStart = 0;
+		mAlphaFactor = 0.06;
 		mDieWithAlpha = false;
 	}
 	
@@ -46,13 +49,23 @@ class BaseEffect extends BaseActor {
 		}
 		else {
 			if (!mStaticImage) {
-				if (mAnimationBitmap.getCurrentIndex() == (mAnimationBitmap.getLength() - 1)) {
-					mAnimationBitmap.stop();
+				//if (mAnimationBitmap.getCurrentIndex() == (mAnimationBitmap.getLength() - 1)) {
+				//	mAnimationBitmap.stop();
 					
-					mAnimationBitmap.currentFrame().alpha -= 0.1;
+					mAnimationBitmap.setAlpha(mAnimationBitmap.getAlpha() - mAlphaFactor);
 					
-					if (mAnimationBitmap.currentFrame().alpha <= 0) {
-						mAnimationBitmap.currentFrame().alpha = 0;
+					if (mAnimationBitmap.getAlpha() <= 0) {
+						mAnimationBitmap.setAlpha(0);
+						isDead = true;
+					}
+				//}
+			}
+			else {
+				if (mBitmap != null) {
+					mBitmap.alpha -= mAlphaFactor;
+					
+					if (mBitmap.alpha <= 0) {
+						mBitmap.alpha = 0;
 						isDead = true;
 					}
 				}

@@ -43,6 +43,16 @@ class NUtils
 		return choosenOption;
 	}
 	
+	public static function parseMillisecondsInClockFormat(milliseconds:Int):String {
+		var minutes:Float = (milliseconds / 1000.0) / 60.0;
+		var minutesFloor:Int = Math.floor(minutes);
+		var secondsRaw:Float = minutes - minutesFloor;
+		var seconds:Int = Std.int(secondsRaw * 60);
+		var clockFormat:String = NUtils.getDigitsByValue(minutesFloor, 2) + ":" + NUtils.getDigitsByValue(seconds, 2);
+		
+		return clockFormat;
+	}
+	
 	public static function getDigitsByValue(value:Int, num_digits:Int):String {
 		var s:String = Std.string(value);
 		var offset:Int = num_digits - s.length;

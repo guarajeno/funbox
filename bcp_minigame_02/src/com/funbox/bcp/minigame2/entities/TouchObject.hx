@@ -4,6 +4,7 @@ import com.funbox.bcp.minigame2.engine.effectManager.SpriteAndTextEffect;
 import com.funbox.bcp.minigame2.entities.enemy.BotCollector;
 import com.funbox.bcp.minigame2.Global;
 import com.funbox.bcp.minigame2.type.EnumTouchObjectType;
+import com.minigloop.util.SoundManager;
 import com.minigloop.util.Vector2D;
 import nme.display.Sprite;
 
@@ -33,8 +34,8 @@ class TouchObject extends BaseActor {
 		mCanFall = true;
 		mAreTouchableItems = false;
 		
-		mAppWidth = Std.int(Global.stage.stageWidth);
-		mAppHeight = Std.int(Global.stage.stageHeight);
+		mAppWidth = Std.int(Global.StageWidth);
+		mAppHeight = Std.int(Global.StageHeight);
 		
 		setSpeed(speed);
 	}
@@ -95,6 +96,8 @@ class TouchObject extends BaseActor {
 				case EnumTouchObjectType.MONEY:
 					score_earned = 100;
 				}
+				
+				SoundManager.play("fx_dinero");
 				
 				var newScore:Int = Global.minigame.getGameHud().GetScore();
 				newScore += score_earned;

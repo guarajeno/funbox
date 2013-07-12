@@ -34,4 +34,10 @@ class GamePlayer extends BaseActor {
 		super.update(dt);
 	}
 	
+	override public function free():Void {
+		Mouse.show();
+		
+		super.free();
+	}
+	
 }

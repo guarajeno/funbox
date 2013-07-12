@@ -28,7 +28,7 @@ class SpriteEntity extends VisualObject
 		_canvas.addChild(skin);
 		
 		collision = new MovieClip();
-		_canvas.addChild(collision);
+		_canvas.addChild(collision.);
 		
 		_animations = new Hash<AtlasSprite>();
 	}
