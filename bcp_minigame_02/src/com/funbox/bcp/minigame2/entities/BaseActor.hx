@@ -82,6 +82,9 @@ class BaseActor {
 		mOffsetX = 0;
 		mOffsetY = 0;
 		mFlipOffsetX = 0;
+		mWidth = 0;
+		mHeight = 0;
+		mAlpha = 1;
 		
 		mFlip = false;
 		mStaticImage = true;

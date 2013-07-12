@@ -5257,6 +5257,8 @@ com.funbox.bcp.minigame2.MiniGame2 = function(canvas,gameHud) {
 	com.minigloop.Game.call(this,canvas);
 	com.funbox.bcp.minigame2.Global.minigame = this;
 	this.mGameHud = gameHud;
+	this.mMouseX = 0;
+	this.mMouseY = 0;
 	this.mLevelTime = 30100;
 	this.mMousePressed = false;
 	this.mGhostGameMask = new browser.display.Sprite();
@@ -5502,6 +5504,9 @@ com.funbox.bcp.minigame2.entities.BaseActor = function(clipName,aniData,canvas,x
 	this.mOffsetX = 0;
 	this.mOffsetY = 0;
 	this.mFlipOffsetX = 0;
+	this.mWidth = 0;
+	this.mHeight = 0;
+	this.mAlpha = 1;
 	this.mFlip = false;
 	this.mStaticImage = true;
 	this.mPauseAnimation = false;
@@ -6161,6 +6166,14 @@ com.funbox.bcp.minigame2.screens.GameTransitionPopupScreen.prototype = {
 }
 com.funbox.bcp.minigame2.screens.PreloaderScreen = function(canvas) {
 	com.minigloop.ui.Screen.call(this,canvas);
+	this._isAssetsDownloaded = false;
+	this._isDataDownloaded = false;
+	this._isSoundsDownloaded = false;
+	this._isLoadingAssetsLoaded = false;
+	this._isLoadingDataLoaded = false;
+	this._isLoadingReady = false;
+	this.bg = null;
+	this.loadas = null;
 	com.funbox.bcp.minigame2.Global.stage = canvas.get_stage();
 	com.funbox.bcp.minigame2.Global.StageWidth = canvas.get_stage().get_stageWidth();
 	com.funbox.bcp.minigame2.Global.StageHeight = canvas.get_stage().get_stageHeight() - 160;
@@ -6182,13 +6195,18 @@ com.funbox.bcp.minigame2.screens.PreloaderScreen.__super__ = com.minigloop.ui.Sc
 com.funbox.bcp.minigame2.screens.PreloaderScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	update: function(dt) {
 		if(this._isLoadingAssetsLoaded && this._isLoadingDataLoaded) {
+			console.log("_isLoadingAssetsLoaded && _isLoadingDataLoaded");
 			this._isLoadingAssetsLoaded = false;
 			this._isLoadingDataLoaded = false;
 			this._isLoadingReady = true;
 			this.onLoadingLoaded();
 		}
-		if(this._isLoadingReady) this.loadas.update(dt);
+		if(this._isLoadingReady) {
+			console.log("_isLoadingReady");
+			this.loadas.update(dt);
+		}
 		if(this._isAssetsDownloaded && this._isDataDownloaded && this._isSoundsDownloaded) {
+			console.log("_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded");
 			this._isLoadingReady = false;
 			this.loadas.destroy();
 			com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame2.screens.TutorialScreen);
@@ -6366,6 +6384,9 @@ com.funbox.bcp.minigame2.screens.ScoreCardScreen.prototype = $extend(com.miniglo
 });
 com.funbox.bcp.minigame2.screens.TutorialScreen = function(canvas) {
 	com.minigloop.ui.Screen.call(this,canvas);
+	this.mCurrentState = 0;
+	this.mBagInitX = 0;
+	this.mMoneyInitX = 0;
 	this.mCanvasTutorial = new browser.display.Sprite();
 	this.mCanvasEffect = new browser.display.Sprite();
 	this.mCanvasMouse = new browser.display.Sprite();
@@ -6483,6 +6504,9 @@ $hxClasses["com.funbox.bcp.minigame2.type.EnumTouchObjectType"] = com.funbox.bcp
 com.funbox.bcp.minigame2.type.EnumTouchObjectType.__name__ = ["com","funbox","bcp","minigame2","type","EnumTouchObjectType"];
 com.funbox.bcp.minigame2.util = {}
 com.funbox.bcp.minigame2.util.NInterval = function(callbackFunc,timeLimit) {
+	this.mTimeLimit = 0;
+	this.mTimeCounter = 0;
+	this.mCallbackFunc = null;
 	this.mCallbackFunc = callbackFunc;
 	this.mTimeLimit = timeLimit;
 };

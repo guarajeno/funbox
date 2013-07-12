@@ -11,6 +11,10 @@ class NInterval{
 	private var mTimeCounter:Int;
 	
 	public function new(callbackFunc:Dynamic, timeLimit:Int) {
+		mTimeLimit = 0;
+		mTimeCounter = 0;
+		mCallbackFunc =  null;
+		
 		mCallbackFunc = callbackFunc;
 		mTimeLimit = timeLimit;
 	}

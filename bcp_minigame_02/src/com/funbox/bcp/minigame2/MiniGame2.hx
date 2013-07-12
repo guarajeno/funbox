@@ -48,6 +48,9 @@ class MiniGame2 extends Game {
 		
 		mGameHud = gameHud;
 		
+		mMouseX = 0;
+		mMouseY = 0;
+		
 		mLevelTime = 30100;
 		mMousePressed = false;
 		

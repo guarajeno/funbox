@@ -31,6 +31,17 @@ class PreloaderScreen extends Screen
 	{
 		super(canvas);
 		
+		_isAssetsDownloaded = false;
+		_isDataDownloaded = false;
+		_isSoundsDownloaded = false;
+	
+		_isLoadingAssetsLoaded = false;
+		_isLoadingDataLoaded = false;
+		_isLoadingReady = false;
+		
+		bg = null;
+		loadas = null;
+		
 		Global.stage = canvas.stage;
 		Global.StageWidth = canvas.stage.stageWidth;
 		Global.StageHeight = canvas.stage.stageHeight - 160;
@@ -202,6 +213,8 @@ class PreloaderScreen extends Screen
 	{
 		if (_isLoadingAssetsLoaded && _isLoadingDataLoaded)
 		{
+			trace("_isLoadingAssetsLoaded && _isLoadingDataLoaded");
+			
 			_isLoadingAssetsLoaded = false;
 			_isLoadingDataLoaded = false;
 			_isLoadingReady = true;
@@ -209,10 +222,12 @@ class PreloaderScreen extends Screen
 		}
 		if (_isLoadingReady)
 		{
+			trace("_isLoadingReady");
 			loadas.update(dt);
 		}
 		if (_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded)
 		{
+			trace("_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded");
 			_isLoadingReady = false;
 			loadas.destroy();
 			ScreenManager.instance.gotoScreen(TutorialScreen);
