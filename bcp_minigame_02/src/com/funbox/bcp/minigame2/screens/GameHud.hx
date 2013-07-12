@@ -56,7 +56,7 @@ class GameHud {
 		mTF_Score.y = 6;
 		mTF_Score.width = 180;
 		mTF_Score.mouseEnabled = false;
-		mTF_Score.alwaysShowSelection = false;
+		//mTF_Score.alwaysShowSelection = false;
 		mTF_Score.selectable = false;
 		
 		mTF_Time = new TextField();
@@ -67,7 +67,7 @@ class GameHud {
 		mTF_Time.y = 6;
 		mTF_Time.width = 180;
 		mTF_Time.mouseEnabled = false;
-		mTF_Time.alwaysShowSelection = false;
+		//mTF_Time.alwaysShowSelection = false;
 		mTF_Time.selectable = false;
 		
 		mCanvas.addChild(mTF_Score);

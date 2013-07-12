@@ -1,10 +1,12 @@
 package com.funbox.bcp.minigame2.screens;
 import com.funbox.bcp.minigame2.Global;
+import com.minigloop.display.AtlasSprite;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
 import com.minigloop.util.DataLoader;
 import com.minigloop.util.SoundManager;
+import com.minigloop.util.Vector2D;
 import nme.display.Bitmap;
 import nme.display.Sprite;
 
@@ -17,7 +19,14 @@ class PreloaderScreen extends Screen
 	private var _isAssetsDownloaded:Bool;
 	private var _isDataDownloaded:Bool;
 	private var _isSoundsDownloaded:Bool;
+	
+	private var _isLoadingAssetsLoaded:Bool;
+	private var _isLoadingDataLoaded:Bool;
+	private var _isLoadingReady:Bool;
 		
+	private var bg:Sprite;
+	private var loadas:AtlasSprite;
+	
 	public function new(canvas:Sprite) 
 	{
 		super(canvas);
@@ -25,6 +34,43 @@ class PreloaderScreen extends Screen
 		Global.stage = canvas.stage;
 		Global.StageWidth = canvas.stage.stageWidth;
 		Global.StageHeight = canvas.stage.stageHeight - 160;
+		
+		bg = new Sprite();
+		bg.graphics.beginFill(0, 1);
+		bg.graphics.drawRect(0, 0, 2000, 2000);
+		bg.graphics.endFill();
+		
+		DataLoader.init();
+		AssetsLoader.init();
+		
+		AssetsLoader.addAsset("images/minigame02/interfaces/loader/spMinigame02_guiloader.png", "guiloader");
+		AssetsLoader.addAsset("images/minigame02/interfaces/spMinigame02_bg.jpg", "spMinigame02_bg");
+		DataLoader.addData("images/minigame02/interfaces/loader/spMinigame02_guiloader.json", "guiloader");
+		
+		AssetsLoader.load(onLoadingAssetsLoaded);
+		DataLoader.load(onLoadingDataLoaded);
+	}
+	
+	function onLoadingAssetsLoaded() 
+	{
+		_isLoadingAssetsLoaded = true;
+		trace("LOADING ASSETS LOADED");
+	}
+	
+	function onLoadingDataLoaded() 
+	{
+		_isLoadingDataLoaded = true;
+		trace("LOADING DATA LOADED");
+	}
+	
+	function onLoadingLoaded() {
+		//Draw background
+		_canvas.addChild(AssetsLoader.getAsset("spMinigame02_bg"));
+		
+		//Draw loader
+		loadas = new AtlasSprite(_canvas, "guiloader", "guiloader");
+		loadas.position = new Vector2D(330, 180);
+		//--
 		
 		DataLoader.init();
 		AssetsLoader.init();
@@ -71,8 +117,7 @@ class PreloaderScreen extends Screen
 			"spMinigame02_tutorial_score_500");
 			
 		// bg and mask bg
-		AssetsLoader.addAsset("images/minigame02/interfaces/spMinigame02_bg.jpg", 
-			"spMinigame02_bg");
+		AssetsLoader.addAsset("images/minigame02/interfaces/spMinigame02_bg.jpg", "spMinigame02_bg");
 		AssetsLoader.addAsset("images/minigame02/interfaces/spMinigame02_background_mask.png", 
 			"spMinigame02_background_mask");
 		
@@ -155,10 +200,24 @@ class PreloaderScreen extends Screen
 	
 	override public function update(dt:Int):Dynamic 
 	{
-		if (_isAssetsDownloaded && _isDataDownloaded  && _isSoundsDownloaded)
+		if (_isLoadingAssetsLoaded && _isLoadingDataLoaded)
 		{
+			_isLoadingAssetsLoaded = false;
+			_isLoadingDataLoaded = false;
+			_isLoadingReady = true;
+			onLoadingLoaded();
+		}
+		if (_isLoadingReady)
+		{
+			loadas.update(dt);
+		}
+		if (_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded)
+		{
+			_isLoadingReady = false;
+			loadas.destroy();
 			ScreenManager.instance.gotoScreen(TutorialScreen);
 		}
+		
 		super.update(dt);
 	}
 }
