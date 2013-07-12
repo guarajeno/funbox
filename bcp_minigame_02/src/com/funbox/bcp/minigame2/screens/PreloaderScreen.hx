@@ -43,8 +43,8 @@ class PreloaderScreen extends Screen
 		loadas = null;
 		
 		Global.stage = canvas.stage;
-		Global.StageWidth = canvas.stage.stageWidth;
-		Global.StageHeight = canvas.stage.stageHeight - 160;
+		Global.StageWidth = 640;
+		Global.StageHeight = 480;
 		
 		bg = new Sprite();
 		bg.graphics.beginFill(0, 1);

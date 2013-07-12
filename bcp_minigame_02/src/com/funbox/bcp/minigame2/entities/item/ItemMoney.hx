@@ -30,7 +30,7 @@ class ItemMoney extends TouchObject {
 		
 		if (mCanFall) {
 			mX += Math.cos(mAcceleration) * 2;
-			mAcceleration += 0.1;
+			mAcceleration += 0.003 * dt;
 		}
 		
 		super.update(dt);

@@ -33,6 +33,9 @@ class AtlasSprite extends VisualObject
 	
 	private var mCanPlay:Bool;
 	
+	private var mTimeCounter:Int;
+	private var mTimeLimitByFrame:Float;
+	
 	public function getAlpha():Float 			{ return mAlpha;  }
 	public function setAlpha(value:Float):Void 	{ 
 		mAlpha = value;
@@ -60,6 +63,9 @@ class AtlasSprite extends VisualObject
 		
 		_scaleX = 1;
 		_scaleY = 1;
+		
+		mTimeCounter = 0;
+		mTimeLimitByFrame = Math.round(1000 / 30); // because needs to run in 30 fps
 		
 		mCanPlay = true;
 		
@@ -140,7 +146,11 @@ class AtlasSprite extends VisualObject
 			_container.addChild(_frames[_currentIndex]);
 			_frames[_currentIndex].scaleX = _scaleX;
 			
-			_currentIndex++;
+			if ((mTimeCounter + dt) >= mTimeLimitByFrame) {
+				mTimeCounter = 0;
+				_currentIndex++;
+			}
+			else { mTimeCounter += dt; }
 			
 			if (_currentIndex == _frames.length) {
 				_currentIndex = 0;

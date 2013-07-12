@@ -81,7 +81,7 @@ class MiniGame2 extends Game {
 		case MouseEvent.MOUSE_MOVE:
 			#if js
 			mMouseX = e.localX - Lib.document.getElementById("banner").offsetLeft;
-			mMouseY = e.localY - Lib.document.getElementById("banner").offsetLeft;
+			mMouseY = e.localY - Lib.document.getElementById("banner").offsetTop;
 			#end
 			
 			#if flash

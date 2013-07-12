@@ -18,6 +18,9 @@ class ScaleTweener
 	
 	private var _isPaused:Bool;
 	
+	private var mTimeCounter:Int;
+	private var mTimeLimitByFrame:Float;
+	
 	public function new(bitmap:Bitmap, __callback:Dynamic) 
 	{
 		_obj = bitmap;
@@ -26,6 +29,9 @@ class ScaleTweener
 		_t = 0;
 		_value = 0;
 		_isPaused = false;
+		
+		mTimeCounter = 0;
+		mTimeLimitByFrame = Math.round(1000 / 30); // because needs to run in 30 fps
 		
 		update(0);
 	}
@@ -38,8 +44,13 @@ class ScaleTweener
 		_obj.scaleY = _value;
 		
 		_value = Math.sin(_t);
-		_t += _factor;
 		
+		if ((mTimeCounter + dt) >= mTimeLimitByFrame) {
+			mTimeCounter = 0;
+			_t += _factor;
+		}
+		else { mTimeCounter += dt; }
+
 		if (_t == 1) _t = 0.99;
 		
 		if (_t >= 3)

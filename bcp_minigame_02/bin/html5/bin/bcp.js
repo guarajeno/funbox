@@ -570,7 +570,9 @@ browser.display.DisplayObject.prototype = $extend(browser.events.EventDispatcher
 	}
 	,nmeUnifyChildrenWithDOM: function(lastMoveGfx) {
 		var gfx = this.nmeGetGraphics();
-		if(gfx != null && lastMoveGfx != null) browser.Lib.nmeSetSurfaceZIndexAfter(gfx.nmeSurface,lastMoveGfx.nmeSurface);
+		if(gfx != null && lastMoveGfx != null && gfx != lastMoveGfx) browser.Lib.nmeSetSurfaceZIndexAfter(gfx.nmeSurface,lastMoveGfx.nmeSurface);
+		if(gfx == null) gfx = lastMoveGfx;
+		return gfx;
 	}
 	,nmeRender: function(inMask,clipRect) {
 		if(!this.nmeCombinedVisible) return;
@@ -631,14 +633,7 @@ browser.display.DisplayObject.prototype = $extend(browser.events.EventDispatcher
 			var extY = gfx.nmeExtent.y;
 			var local = this.globalToLocal(point);
 			if(local.x - extX < 0 || local.y - extY < 0 || (local.x - extX) * this.get_scaleX() > this.get_width() || (local.y - extY) * this.get_scaleY() > this.get_height()) return null;
-			switch( (this.get_stage().nmePointInPathMode)[1] ) {
-			case 0:
-				if(gfx.nmeHitTest(local.x,local.y)) return this;
-				break;
-			case 1:
-				if(gfx.nmeHitTest(local.x * this.get_scaleX(),local.y * this.get_scaleY())) return this;
-				break;
-			}
+			if(gfx.nmeHitTest(local.x,local.y)) return this;
 		}
 		return null;
 	}
@@ -932,21 +927,14 @@ browser.display.DisplayObjectContainer.prototype = $extend(browser.display.Inter
 		throw "removeChild : none found?";
 	}
 	,nmeUnifyChildrenWithDOM: function(lastMoveGfx) {
-		var gfx1 = this.nmeGetGraphics();
-		if(gfx1 != null) {
-			lastMoveGfx = gfx1;
-			var _g = 0, _g1 = this.nmeChildren;
-			while(_g < _g1.length) {
-				var child = _g1[_g];
-				++_g;
-				var gfx2 = child.nmeGetGraphics();
-				if(gfx2 != null) {
-					browser.Lib.nmeSetSurfaceZIndexAfter(gfx2.nmeSurface,lastMoveGfx.nmeSurface);
-					lastMoveGfx = gfx2;
-				}
-				child.nmeUnifyChildrenWithDOM(lastMoveGfx);
-			}
+		var gfx = browser.display.InteractiveObject.prototype.nmeUnifyChildrenWithDOM.call(this,lastMoveGfx);
+		var _g = 0, _g1 = this.nmeChildren;
+		while(_g < _g1.length) {
+			var child = _g1[_g];
+			++_g;
+			gfx = child.nmeUnifyChildrenWithDOM(gfx);
 		}
+		return gfx;
 	}
 	,nmeSwapSurface: function(c1,c2) {
 		if(this.nmeChildren[c1] == null) throw "Null element at index " + c1 + " length " + this.nmeChildren.length;
@@ -970,6 +958,10 @@ browser.display.DisplayObjectContainer.prototype = $extend(browser.display.Inter
 				}
 				child.nmeRender(inMask,clipRect);
 			}
+		}
+		if(this.nmeAddedChildren) {
+			this.nmeUnifyChildrenWithDOM();
+			this.nmeAddedChildren = false;
 		}
 	}
 	,nmeRemoveFromStage: function() {
@@ -1040,6 +1032,7 @@ browser.display.DisplayObjectContainer.prototype = $extend(browser.display.Inter
 	,addChild: function(object) {
 		if(object == null) throw "DisplayObjectContainer asked to add null child object";
 		if(object == this) throw "Adding to self";
+		this.nmeAddedChildren = true;
 		if(object.parent == this) {
 			this.setChildIndex(object,this.nmeChildren.length - 1);
 			return object;
@@ -1160,7 +1153,7 @@ NMEPreloader.prototype = $extend(browser.display.Sprite.prototype,{
 		if(width > 0) return width; else return nme.Lib.get_current().get_stage().get_stageWidth();
 	}
 	,getHeight: function() {
-		var height = 640;
+		var height = 480;
 		if(height > 0) return height; else return nme.Lib.get_current().get_stage().get_stageHeight();
 	}
 	,getBackgroundColor: function() {
@@ -1568,6 +1561,11 @@ browser.Lib.nmeSetSurfaceTransform = function(surface,matrix) {
 	if(matrix.a == 1 && matrix.b == 0 && matrix.c == 0 && matrix.d == 1 && surface.getAttribute("data-nme-anim") == null) {
 		surface.style.left = matrix.tx + "px";
 		surface.style.top = matrix.ty + "px";
+		surface.style.setProperty("transform","","");
+		surface.style.setProperty("-moz-transform","","");
+		surface.style.setProperty("-webkit-transform","","");
+		surface.style.setProperty("-o-transform","","");
+		surface.style.setProperty("-ms-transform","","");
 	} else {
 		surface.style.left = "0px";
 		surface.style.top = "0px";
@@ -1579,17 +1577,12 @@ browser.Lib.nmeSetSurfaceTransform = function(surface,matrix) {
 	}
 }
 browser.Lib.nmeSetSurfaceZIndexAfter = function(surface1,surface2) {
-	var c1 = -1;
-	var c2 = -1;
-	var swap;
-	var _g1 = 0, _g = browser.Lib.mMe.__scr.childNodes.length;
-	while(_g1 < _g) {
-		var i = _g1++;
-		if(browser.Lib.mMe.__scr.childNodes[i] == surface1) c1 = i; else if(browser.Lib.mMe.__scr.childNodes[i] == surface2) c2 = i;
-	}
-	if(c1 != -1 && c2 != -1) {
-		swap = browser.Lib.nmeRemoveSurface(browser.Lib.mMe.__scr.childNodes[c1]);
-		if(c2 < browser.Lib.mMe.__scr.childNodes.length - 1) browser.Lib.mMe.__scr.insertBefore(swap,browser.Lib.mMe.__scr.childNodes[c2++]); else browser.Lib.mMe.__scr.appendChild(swap);
+	if(surface1.parentNode == browser.Lib.mMe.__scr && surface2.parentNode == browser.Lib.mMe.__scr) {
+		var nextSibling = surface2.nextSibling;
+		if(surface1.previousSibling != surface2) {
+			var swap = browser.Lib.nmeRemoveSurface(surface1);
+			if(nextSibling == null) browser.Lib.mMe.__scr.appendChild(swap); else browser.Lib.mMe.__scr.insertBefore(swap,nextSibling);
+		}
 	}
 }
 browser.Lib.nmeSwapSurface = function(surface1,surface2) {
@@ -1649,6 +1642,13 @@ browser.Lib.Run = function(tgt,width,height) {
 	}
 	if(Reflect.hasField(tgt,"on" + browser.Lib.HTML_TOUCH_EVENT_TYPES[0])) {
 		var _g = 0, _g1 = browser.Lib.HTML_TOUCH_EVENT_TYPES;
+		while(_g < _g1.length) {
+			var type = _g1[_g];
+			++_g;
+			tgt.addEventListener(type,($_=browser.Lib.nmeGetStage(),$bind($_,$_.nmeQueueStageEvent)),true);
+		}
+	} else {
+		var _g = 0, _g1 = browser.Lib.HTML_TOUCH_ALT_EVENT_TYPES;
 		while(_g < _g1.length) {
 			var type = _g1[_g];
 			++_g;
@@ -1788,7 +1788,10 @@ browser.display.Bitmap.prototype = $extend(browser.display.DisplayObject.prototy
 				browser.Lib.nmeSetSurfaceTransform(this.nmeGraphics.nmeSurface,m);
 				this._nmeRenderFlags &= -33;
 			}
-			browser.Lib.nmeSetSurfaceOpacity(this.nmeGraphics.nmeSurface,(this.parent != null?this.parent.nmeCombinedAlpha:1) * this.alpha);
+			if(!this.nmeInit) {
+				browser.Lib.nmeSetSurfaceOpacity(this.nmeGraphics.nmeSurface,0);
+				this.nmeInit = true;
+			} else browser.Lib.nmeSetSurfaceOpacity(this.nmeGraphics.nmeSurface,(this.parent != null?this.parent.nmeCombinedAlpha:1) * this.alpha);
 		}
 	}
 	,nmeGetObjectUnderPoint: function(point) {
@@ -2311,12 +2314,20 @@ browser.display.Graphics.prototype = {
 				var fillColour = d.fillColour;
 				var fillAlpha = d.fillAlpha;
 				var g = d.solidGradient;
-				if(g != null) ctx.fillStyle = this.createCanvasGradient(ctx,g); else ctx.fillStyle = this.createCanvasColor(fillColour,Math.min(1.0,Math.max(0.0,fillAlpha)));
+				var bitmap = d.bitmap;
+				if(g != null) ctx.fillStyle = this.createCanvasGradient(ctx,g); else if(bitmap != null && (bitmap.flags & 16) > 0) {
+					var m = bitmap.matrix;
+					if(m != null) ctx.transform(m.a,m.b,m.c,m.d,m.tx,m.ty);
+					if((bitmap.flags & 65536) == 0) {
+						ctx.mozImageSmoothingEnabled = false;
+						ctx.webkitImageSmoothingEnabled = false;
+					}
+					ctx.fillStyle = ctx.createPattern(bitmap.texture_buffer,"repeat");
+				} else ctx.fillStyle = this.createCanvasColor(fillColour,Math.min(1.0,Math.max(0.0,fillAlpha)));
 				ctx.fill();
 				if(doStroke) ctx.stroke();
 				ctx.save();
-				var bitmap = d.bitmap;
-				if(bitmap != null) {
+				if(bitmap != null && (bitmap.flags & 16) == 0) {
 					var img = bitmap.texture_buffer;
 					var m = bitmap.matrix;
 					if(m != null) ctx.transform(m.a,m.b,m.c,m.d,m.tx,m.ty);
@@ -3242,6 +3253,15 @@ browser.display.Stage.prototype = $extend(browser.display.DisplayObjectContainer
 			if(type == browser.events.MouseEvent.MOUSE_DOWN) this.nmeCheckFocusInOuts(evt,stack);
 		}
 	}
+	,nmeOnFocus: function(event,hasFocus) {
+		if(hasFocus) {
+			this.dispatchEvent(new browser.events.FocusEvent(browser.events.FocusEvent.FOCUS_IN));
+			this.nmeBroadcast(new browser.events.Event(browser.events.Event.ACTIVATE));
+		} else {
+			this.dispatchEvent(new browser.events.FocusEvent(browser.events.FocusEvent.FOCUS_OUT));
+			this.nmeBroadcast(new browser.events.Event(browser.events.Event.DEACTIVATE));
+		}
+	}
 	,nmeOnKey: function(code,pressed,inChar,ctrl,alt,shift,keyLocation) {
 		var event = new browser.events.KeyboardEvent(pressed?browser.events.KeyboardEvent.KEY_DOWN:browser.events.KeyboardEvent.KEY_UP,true,false,inChar,code,keyLocation,ctrl,alt,shift);
 		this.dispatchEvent(event);
@@ -3301,6 +3321,12 @@ browser.display.Stage.prototype = $extend(browser.display.DisplayObjectContainer
 		switch(evt.type) {
 		case "resize":
 			this.nmeOnResize(browser.Lib.nmeGetWidth(),browser.Lib.nmeGetHeight());
+			break;
+		case "focus":
+			this.nmeOnFocus(evt,true);
+			break;
+		case "blur":
+			this.nmeOnFocus(evt,false);
 			break;
 		case "mousemove":
 			this.nmeOnMouse(evt,browser.events.MouseEvent.MOUSE_MOVE);
@@ -4483,12 +4509,11 @@ browser.text.Font.prototype = {
 		if(browser.text.Font.nmeFontData[this.fontName] == null) try {
 			browser.text.Font.nmeOfResource(name);
 		} catch( e ) {
-			console.log("Glyph data for font '" + name + "' does not exist, defaulting to '" + "Bitstream_Vera_Sans" + "'.");
 			this.fontName = "Bitstream_Vera_Sans";
-		} else try {
+		}
+		if(browser.text.Font.nmeFontData[this.fontName] != null) try {
 			this.nmeGlyphData = haxe.Unserializer.run(browser.text.Font.nmeFontData[this.fontName]);
 		} catch( e ) {
-			console.log("Error decoding font '" + name + "', defaulting to '" + "Bitstream_Vera_Sans" + "'.");
 			this.fontName = "Bitstream_Vera_Sans";
 		}
 		return name;
@@ -4586,7 +4611,7 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 		return this.mWidth;
 	}
 	,get_width: function() {
-		return this.getBounds(this.get_stage()).width;
+		return Math.max(this.mWidth,this.getBounds(this.get_stage()).width);
 	}
 	,set_type: function(inType) {
 		this.mType = inType;
@@ -4619,7 +4644,7 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 		return this.mTextColour;
 	}
 	,set_text: function(inText) {
-		this.mText = inText;
+		this.mText = Std.string(inText);
 		this.mHTMLMode = false;
 		this.RebuildText();
 		this._nmeRenderFlags |= 64;
@@ -4634,7 +4659,14 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 		this.mParagraphs = new Array();
 		this.mHTMLText = inHTMLText;
 		if(!this.mHTMLMode) {
-			var wrapper = js.Lib.document.createElement("div");
+			var domElement = js.Lib.document.createElement("div");
+			if(this.background || this.border) {
+				domElement.style.width = this.mWidth + "px";
+				domElement.style.height = this.mHeight + "px";
+			}
+			if(this.background) domElement.style.backgroundColor = "#" + StringTools.hex(this.backgroundColor,6);
+			if(this.border) domElement.style.border = "1px solid #" + StringTools.hex(this.borderColor,6);
+			var wrapper = domElement;
 			wrapper.innerHTML = inHTMLText;
 			var destination = new browser.display.Graphics(wrapper);
 			var nmeSurface = this.nmeGraphics.nmeSurface;
@@ -4667,7 +4699,7 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 		return this.mHeight;
 	}
 	,get_height: function() {
-		return this.getBounds(this.get_stage()).height;
+		return Math.max(this.mHeight,this.getBounds(this.get_stage()).height);
 	}
 	,set_defaultTextFormat: function(inFmt) {
 		this.setTextFormat(inFmt);
@@ -4746,7 +4778,7 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 			}
 		}
 		if(this.autoSize == "NONE" && w <= this.mLimitRenderX) {
-			if(inAlign == browser.text.TextFormatAlign.CENTER) align_x = this.mLimitRenderX - w >> 1; else if(inAlign == browser.text.TextFormatAlign.RIGHT) align_x = this.mLimitRenderX - w;
+			if(inAlign == browser.text.TextFormatAlign.CENTER) align_x = Math.round(this.mWidth) - w >> 1; else if(inAlign == browser.text.TextFormatAlign.RIGHT) align_x = Math.round(this.mWidth) - w;
 		}
 		var x_list = new Array();
 		this.mLineInfo.push({ mY0 : inY, mIndex : inCharIdx - 1, mX : x_list});
@@ -4801,7 +4833,7 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 		this.nmeGraphics.clear();
 		if(this.background) {
 			this.nmeGraphics.beginFill(this.backgroundColor);
-			this.nmeGraphics.drawRect(-2,-2,this.get_width() + 4,this.get_height() + 4);
+			this.nmeGraphics.drawRect(0,0,this.get_width(),this.get_height());
 			this.nmeGraphics.endFill();
 		}
 		this.nmeGraphics.lineStyle(this.mTextColour);
@@ -4893,8 +4925,8 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 		}
 		if(this.border) {
 			this.nmeGraphics.endFill();
-			this.nmeGraphics.lineStyle(1,this.borderColor);
-			this.nmeGraphics.drawRect(-2,-2,this.get_width() + 4,this.get_height() + 4);
+			this.nmeGraphics.lineStyle(1,this.borderColor,1,true);
+			this.nmeGraphics.drawRect(.5,.5,this.get_width() - .5,this.get_height() - .5);
 		}
 	}
 	,nmeRender: function(inMask,clipRect) {
@@ -5270,7 +5302,7 @@ com.funbox.bcp.minigame2.MiniGame2.prototype = $extend(com.minigloop.Game.protot
 		switch(e.type) {
 		case browser.events.MouseEvent.MOUSE_MOVE:
 			this.mMouseX = e.localX - js.Lib.document.getElementById("banner").offsetLeft;
-			this.mMouseY = e.localY - js.Lib.document.getElementById("banner").offsetLeft;
+			this.mMouseY = e.localY - js.Lib.document.getElementById("banner").offsetTop;
 			break;
 		case browser.events.MouseEvent.MOUSE_DOWN:
 			this.mMousePressed = true;
@@ -5909,7 +5941,7 @@ com.funbox.bcp.minigame2.entities.item.ItemMoney.prototype = $extend(com.funbox.
 		}
 		if(this.mCanFall) {
 			this.mX += Math.cos(this.mAcceleration) * 2;
-			this.mAcceleration += 0.1;
+			this.mAcceleration += 0.003 * dt;
 		}
 		com.funbox.bcp.minigame2.entities.TouchObject.prototype.update.call(this,dt);
 	}
@@ -6143,8 +6175,8 @@ com.funbox.bcp.minigame2.screens.PreloaderScreen = function(canvas) {
 	this.bg = null;
 	this.loadas = null;
 	com.funbox.bcp.minigame2.Global.stage = canvas.get_stage();
-	com.funbox.bcp.minigame2.Global.StageWidth = canvas.get_stage().get_stageWidth();
-	com.funbox.bcp.minigame2.Global.StageHeight = canvas.get_stage().get_stageHeight() - 160;
+	com.funbox.bcp.minigame2.Global.StageWidth = 640;
+	com.funbox.bcp.minigame2.Global.StageHeight = 480;
 	this.bg = new browser.display.Sprite();
 	this.bg.get_graphics().beginFill(0,1);
 	this.bg.get_graphics().drawRect(0,0,2000,2000);
@@ -6352,13 +6384,10 @@ com.funbox.bcp.minigame2.screens.ScoreCardScreen.prototype = $extend(com.miniglo
 });
 com.funbox.bcp.minigame2.screens.TutorialScreen = function(canvas) {
 	com.minigloop.ui.Screen.call(this,canvas);
-<<<<<<< HEAD
 	this.mCurrentState = 0;
 	this.mBagInitX = 0;
 	this.mMoneyInitX = 0;
-=======
 	console.log("ontutorialcreen");
->>>>>>> 1b78573151de182cb44df5905048c36af0ec6a16
 	this.mCanvasTutorial = new browser.display.Sprite();
 	this.mCanvasEffect = new browser.display.Sprite();
 	this.mCanvasMouse = new browser.display.Sprite();
@@ -6482,13 +6511,10 @@ $hxClasses["com.funbox.bcp.minigame2.type.EnumTouchObjectType"] = com.funbox.bcp
 com.funbox.bcp.minigame2.type.EnumTouchObjectType.__name__ = ["com","funbox","bcp","minigame2","type","EnumTouchObjectType"];
 com.funbox.bcp.minigame2.util = {}
 com.funbox.bcp.minigame2.util.NInterval = function(callbackFunc,timeLimit) {
-<<<<<<< HEAD
+	this.mTimeCounter = 0;
 	this.mTimeLimit = 0;
 	this.mTimeCounter = 0;
 	this.mCallbackFunc = null;
-=======
-	this.mTimeCounter = 0;
->>>>>>> 1b78573151de182cb44df5905048c36af0ec6a16
 	this.mCallbackFunc = callbackFunc;
 	this.mTimeLimit = timeLimit;
 	console.log("interval created");
@@ -6574,6 +6600,8 @@ com.funbox.bcp.minigame2.util.ScaleTweener = function(bitmap,__callback) {
 	this._t = 0;
 	this._value = 0;
 	this._isPaused = false;
+	this.mTimeCounter = 0;
+	this.mTimeLimitByFrame = Math.round(1000 / 30);
 	this.update(0);
 };
 $hxClasses["com.funbox.bcp.minigame2.util.ScaleTweener"] = com.funbox.bcp.minigame2.util.ScaleTweener;
@@ -6584,7 +6612,10 @@ com.funbox.bcp.minigame2.util.ScaleTweener.prototype = {
 		this._obj.set_scaleX(this._value);
 		this._obj.set_scaleY(this._value);
 		this._value = Math.sin(this._t);
-		this._t += this._factor;
+		if(this.mTimeCounter + dt >= this.mTimeLimitByFrame) {
+			this.mTimeCounter = 0;
+			this._t += this._factor;
+		} else this.mTimeCounter += dt;
 		if(this._t == 1) this._t = 0.99;
 		if(this._t >= 3) {
 			this._obj.set_scaleX(0);
@@ -6642,6 +6673,8 @@ com.minigloop.display.AtlasSprite = function(canvas,imgId,atlasId,align) {
 	com.minigloop.display.VisualObject.call(this,canvas);
 	this._scaleX = 1;
 	this._scaleY = 1;
+	this.mTimeCounter = 0;
+	this.mTimeLimitByFrame = Math.round(1000 / 30);
 	this.mCanPlay = true;
 	this._container = new browser.display.Sprite();
 	this._canvas.addChild(this._container);
@@ -6680,7 +6713,10 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 			if(this._container.nmeChildren.length > 0) this._container.removeChildAt(0);
 			this._container.addChild(this._frames[this._currentIndex]);
 			this._frames[this._currentIndex].set_scaleX(this._scaleX);
-			this._currentIndex++;
+			if(this.mTimeCounter + dt >= this.mTimeLimitByFrame) {
+				this.mTimeCounter = 0;
+				this._currentIndex++;
+			} else this.mTimeCounter += dt;
 			if(this._currentIndex == this._frames.length) this._currentIndex = 0;
 		}
 		this._container.set_x(this.position.x + this._offsetX);
@@ -7618,14 +7654,16 @@ if(typeof window != "undefined") {
 		return f(msg,[url + ":" + line]);
 	};
 }
-browser.Lib.HTML_DIV_EVENT_TYPES = ["resize","mouseup","mouseover","mouseout","mousemove","mousedown","mousewheel","dblclick","click"];
+browser.Lib.HTML_DIV_EVENT_TYPES = ["resize","mouseover","mouseout","mousewheel","dblclick","click"];
 browser.Lib.HTML_TOUCH_EVENT_TYPES = ["touchstart","touchmove","touchend"];
-browser.Lib.HTML_WINDOW_EVENT_TYPES = ["keyup","keypress","keydown","resize"];
+browser.Lib.HTML_TOUCH_ALT_EVENT_TYPES = ["mousedown","mousemove","mouseup"];
+browser.Lib.HTML_WINDOW_EVENT_TYPES = ["keyup","keypress","keydown","resize","blur","focus"];
 browser.Lib.starttime = haxe.Timer.stamp();
 browser.events.Event.ACTIVATE = "activate";
 browser.events.Event.ADDED = "added";
 browser.events.Event.ADDED_TO_STAGE = "addedToStage";
 browser.events.Event.COMPLETE = "complete";
+browser.events.Event.DEACTIVATE = "deactivate";
 browser.events.Event.ENTER_FRAME = "enterFrame";
 browser.events.Event.OPEN = "open";
 browser.events.Event.REMOVED = "removed";

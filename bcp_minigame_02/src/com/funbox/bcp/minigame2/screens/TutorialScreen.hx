@@ -56,15 +56,13 @@ class TutorialScreen extends Screen {
 	public function new(canvas:Sprite) {
 		super(canvas);
 		
-<<<<<<< HEAD
-			mCurrentState = 0;
+		mCurrentState = 0;
 	
 		mBagInitX = 0;
 		mMoneyInitX = 0;
 		
-=======
 		trace("ontutorialcreen");
->>>>>>> 1b78573151de182cb44df5905048c36af0ec6a16
+		
 		mCanvasTutorial = new Sprite();
 		mCanvasEffect = new Sprite();
 		mCanvasMouse = new Sprite();
