@@ -56,11 +56,15 @@ class TutorialScreen extends Screen {
 	public function new(canvas:Sprite) {
 		super(canvas);
 		
+<<<<<<< HEAD
 			mCurrentState = 0;
 	
 		mBagInitX = 0;
 		mMoneyInitX = 0;
 		
+=======
+		trace("ontutorialcreen");
+>>>>>>> 1b78573151de182cb44df5905048c36af0ec6a16
 		mCanvasTutorial = new Sprite();
 		mCanvasEffect = new Sprite();
 		mCanvasMouse = new Sprite();
@@ -97,18 +101,23 @@ class TutorialScreen extends Screen {
 		mMoneyInitX = (Global.StageWidth / 2) - (mTutorialTicketMoneySprite.getWidth() / 2) + 100;
 		
 		mCurrentState = TutorialScreen.STATE_SHOW_TUTORIAL;
+		
+		trace("ontutorialcreen_2");
 	}
 	
 	private function onFinishWait():Void {
+		trace("onfinish");
 		mInterval = null;
 		mCurrentState = TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
 	}
 	
 	private function onGoGame():Void {
+		trace("gogame");
 		ScreenManager.instance.gotoScreen(GameScreen);
 	}
 	
 	override public function update(dt):Void {
+		trace("onupdate");
 		mBGSprite.update(dt);
 		mBGMaskSprite.update(dt);
 		mTutorialSprite.update(dt);
@@ -149,10 +158,12 @@ class TutorialScreen extends Screen {
 				mTutorialBagMoneySprite = null;
 			}
 		case TutorialScreen.STATE_MOUSE_RIGHT:
+			trace("state mouse right");
 			var nx2:Float = mTutorialHandSprite.getX() + (0.15 * dt);
 			mTutorialHandSprite.setX(nx2);
 			
 			if (nx2 >= mMoneyInitX) {
+				trace("creating interval");
 				mCurrentState = TutorialScreen.STATE_WAIT;
 				mInterval = new NInterval(onFinishWait, 400);
 				
