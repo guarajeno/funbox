@@ -30,7 +30,7 @@ class Button extends SpriteEntity
 		setState("down");
 		setState("up");
 		
-		setCollision(-20, -20, 40, 40);
+		
 		
 		collision.buttonMode = true;
 		collision.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
