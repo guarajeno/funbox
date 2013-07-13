@@ -19,12 +19,16 @@ class SpriteAndTextEffect extends BaseEffect {
 	
 	private var mClipContainer:Sprite;
 	
+	private var mAniEndStartAlphaOther:Bool;
+	
 	public function new(clipName:String, aniData:String, clipNameOther:String, aniDataOther:String,
 		canvas:Sprite, pos1:Vector2D, pos2:Vector2D) {
 		super(clipName, aniData, canvas, pos1.x, pos1.y);
 		
 		mOtherX = pos2.x;
 		mOtherY = pos2.y;
+		
+		mAniEndStartAlphaOther = false;
 		
 		mClipContainer = new Sprite();
 		mCanvas.addChild(mClipContainer);
@@ -44,6 +48,15 @@ class SpriteAndTextEffect extends BaseEffect {
 	}
 
 	override public function update(dt:Int):Void {
+		if (mAniEndStartAlphaOther && mAniEndStartAlpha) {
+			mClipContainer.alpha -= mAlphaFactor;
+				
+			if (mClipContainer.alpha <= 0) {
+				mClipContainer.alpha = 0;
+				isDead = true;
+			}
+		}
+		
 		if (!mPauseAnimation) {
 			if (mAnimationBitmapOther != null) {
 				mAnimationBitmapOther.position.x = mX + mOtherX;
@@ -58,28 +71,28 @@ class SpriteAndTextEffect extends BaseEffect {
 		}
 		
 		if (mAnimationBitmapOther != null) {
-			//if (mAnimationBitmapOther.getCurrentIndex() == (mAnimationBitmapOther.getLength() - 1)) {
-				//mAnimationBitmapOther.stop();
-				
-				mClipContainer.alpha -= mAlphaFactor;
-				
-				if (mClipContainer.alpha <= 0) {
-					mClipContainer.alpha = 0;
-					isDead = true;
-				}
-			//}
-		}
-		
-		if (mBitmapOther != null) {
-			mClipContainer.alpha -= mAlphaFactor;
-			
-			if (mClipContainer.alpha <= 0) {
-				mClipContainer.alpha = 0;
-				isDead = true;
+			if (mAnimationBitmapOther.getCurrentIndex() == (mAnimationBitmapOther.getLength() - 1)) {
+				mAnimationBitmapOther.stop();
+				mAniEndStartAlphaOther = true;
 			}
 		}
 		
+		if (mBitmapOther != null) {
+			mAniEndStartAlphaOther = true;
+		}
+		
+		var aniEndStartAlpha:Bool = false;
+		
+		if (mAniEndStartAlpha && !mAniEndStartAlphaOther) {
+			aniEndStartAlpha = true;
+			mAniEndStartAlpha = false;
+		}
+		
 		super.update(dt);
+		
+		if (aniEndStartAlpha) {
+			mAniEndStartAlpha = true;
+		}
 	}
 	
 	override public function free():Void {

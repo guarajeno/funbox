@@ -13,6 +13,7 @@ class BaseEffect extends BaseActor {
 	
 	private var mDelayToStart:Int;
 	private var mDieWithAlpha:Bool;
+	private var mAniEndStartAlpha:Bool;
 	
 	private var mAlphaFactor:Float;
 	
@@ -23,6 +24,7 @@ class BaseEffect extends BaseActor {
 		mDelayToStart = 0;
 		mAlphaFactor = 0.06;
 		mDieWithAlpha = false;
+		mAniEndStartAlpha = false;
 	}
 	
 	public function DieWithAlpha(value:Bool):Void {
@@ -40,6 +42,26 @@ class BaseEffect extends BaseActor {
 			mPauseAnimation = false;
 		}
 		
+		if (mAniEndStartAlpha) {
+			if (mAnimationBitmap != null) {
+				mAnimationBitmap.setAlpha(mAnimationBitmap.getAlpha() - mAlphaFactor);
+						
+				if (mAnimationBitmap.getAlpha() <= 0) {
+					mAnimationBitmap.setAlpha(0);
+					isDead = true;
+				}
+			}
+			
+			if (mBitmap != null) {
+				mBitmap.alpha -= mAlphaFactor;
+						
+				if (mBitmap.alpha <= 0) {
+					mBitmap.alpha = 0;
+					isDead = true;
+				}
+			}
+		}
+		
 		if (!mDieWithAlpha) {
 			if (!mStaticImage) {
 				if (mAnimationBitmap.getCurrentIndex() == (mAnimationBitmap.getLength() - 1)) {
@@ -49,25 +71,14 @@ class BaseEffect extends BaseActor {
 		}
 		else {
 			if (!mStaticImage) {
-				//if (mAnimationBitmap.getCurrentIndex() == (mAnimationBitmap.getLength() - 1)) {
-				//	mAnimationBitmap.stop();
-					
-					mAnimationBitmap.setAlpha(mAnimationBitmap.getAlpha() - mAlphaFactor);
-					
-					if (mAnimationBitmap.getAlpha() <= 0) {
-						mAnimationBitmap.setAlpha(0);
-						isDead = true;
-					}
-				//}
+				if (mAnimationBitmap.getCurrentIndex() == (mAnimationBitmap.getLength() - 1)) {
+					mAnimationBitmap.stop();
+					mAniEndStartAlpha = true;
+				}
 			}
 			else {
 				if (mBitmap != null) {
-					mBitmap.alpha -= mAlphaFactor;
-					
-					if (mBitmap.alpha <= 0) {
-						mBitmap.alpha = 0;
-						isDead = true;
-					}
+					mAniEndStartAlpha = true;
 				}
 			}
 		}

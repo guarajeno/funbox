@@ -9,7 +9,7 @@ import nme.ui.Mouse;
 class GamePlayer extends BaseActor {
 
 	public function new(clipName:String, aniData:String, canvas:Sprite, offsetX:Float, offsetY:Float) {
-		super(clipName, aniData, canvas, 0, 0);
+		super(clipName, aniData, canvas, Global.StageWidth / 2, Global.StageHeight / 2);
 		
 		mOffsetX = offsetX;
 		mOffsetY = offsetY;

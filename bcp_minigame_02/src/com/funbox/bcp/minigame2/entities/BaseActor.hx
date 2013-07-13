@@ -94,8 +94,9 @@ class BaseActor {
 			mStaticImage = true;
 			
 			mBitmap = NUtils.getAsset(clipName);
-			mBitmap.x = -mBitmap.width;
-			mBitmap.y = -mBitmap.height;
+
+			mBitmap.x = mX + mOffsetX + mFlipOffsetX;
+			mBitmap.y = mY + mOffsetY;
 			
 			mWidth = mBitmap.width;
 			mHeight = mBitmap.height;
@@ -106,8 +107,8 @@ class BaseActor {
 			mStaticImage = false;
 			
 			mAnimationBitmap = new AtlasSprite(mCanvas, clipName, aniData);
-			mAnimationBitmap.position.x = -mAnimationBitmap.currentWidth();
-			mAnimationBitmap.position.y = -mAnimationBitmap.currentHeight();
+			mAnimationBitmap.position.x = mX + mOffsetX + mFlipOffsetX;
+			mAnimationBitmap.position.y = mY + mOffsetY;
 			
 			mWidth = mAnimationBitmap.currentWidth();
 			mHeight = mAnimationBitmap.currentHeight();

@@ -5259,7 +5259,7 @@ com.funbox.bcp.minigame2.MiniGame2 = function(canvas,gameHud) {
 	this.mGameHud = gameHud;
 	this.mMouseX = 0;
 	this.mMouseY = 0;
-	this.mLevelTime = 30100;
+	this.mLevelTime = 45100;
 	this.mMousePressed = false;
 	this.mGhostGameMask = new browser.display.Sprite();
 	this.mGhostGameMask.get_graphics().beginFill(16777215,0);
@@ -5406,7 +5406,7 @@ com.funbox.bcp.minigame2.engine.FallingObjectManager.prototype = {
 	,onCreateEntitie: function() {
 		var x = com.funbox.bcp.minigame2.util.NMath.random(30,610);
 		var y = -80;
-		var speed = new com.minigloop.util.Vector2D(0,com.funbox.bcp.minigame2.util.NMath.random(0.05,0.4));
+		var speed = new com.minigloop.util.Vector2D(0,com.funbox.bcp.minigame2.util.NMath.random(0.03,0.3));
 		var typeToChoose = this.mTouchObjectsToChoose[com.funbox.bcp.minigame2.util.NUtils.getValueFromProbabilityChart(this.mTouchObjectsToChoose.length,10)];
 		var tObj = this.mEntitiesController.createEntitie(0,0,speed,typeToChoose);
 		tObj.setX(com.funbox.bcp.minigame2.util.NMath.random(tObj.getWidth() + com.funbox.bcp.minigame2.Global.ScreenOffsetWidth,com.funbox.bcp.minigame2.Global.StageWidth - tObj.getWidth() - com.funbox.bcp.minigame2.Global.ScreenOffsetWidth));
@@ -5513,16 +5513,16 @@ com.funbox.bcp.minigame2.entities.BaseActor = function(clipName,aniData,canvas,x
 	if(clipName != null && aniData == null) {
 		this.mStaticImage = true;
 		this.mBitmap = com.funbox.bcp.minigame2.util.NUtils.getAsset(clipName);
-		this.mBitmap.set_x(-this.mBitmap.get_width());
-		this.mBitmap.set_y(-this.mBitmap.get_height());
+		this.mBitmap.set_x(this.mX + this.mOffsetX + this.mFlipOffsetX);
+		this.mBitmap.set_y(this.mY + this.mOffsetY);
 		this.mWidth = this.mBitmap.get_width();
 		this.mHeight = this.mBitmap.get_height();
 		this.mCanvas.addChild(this.mBitmap);
 	} else {
 		this.mStaticImage = false;
 		this.mAnimationBitmap = new com.minigloop.display.AtlasSprite(this.mCanvas,clipName,aniData);
-		this.mAnimationBitmap.position.x = -this.mAnimationBitmap.currentWidth();
-		this.mAnimationBitmap.position.y = -this.mAnimationBitmap.currentHeight();
+		this.mAnimationBitmap.position.x = this.mX + this.mOffsetX + this.mFlipOffsetX;
+		this.mAnimationBitmap.position.y = this.mY + this.mOffsetY;
 		this.mWidth = this.mAnimationBitmap.currentWidth();
 		this.mHeight = this.mAnimationBitmap.currentHeight();
 	}
@@ -5607,6 +5607,7 @@ com.funbox.bcp.minigame2.engine.effectManager.BaseEffect = function(clipName,ani
 	this.mDelayToStart = 0;
 	this.mAlphaFactor = 0.06;
 	this.mDieWithAlpha = false;
+	this.mAniEndStartAlpha = false;
 };
 $hxClasses["com.funbox.bcp.minigame2.engine.effectManager.BaseEffect"] = com.funbox.bcp.minigame2.engine.effectManager.BaseEffect;
 com.funbox.bcp.minigame2.engine.effectManager.BaseEffect.__name__ = ["com","funbox","bcp","minigame2","engine","effectManager","BaseEffect"];
@@ -5617,23 +5618,32 @@ com.funbox.bcp.minigame2.engine.effectManager.BaseEffect.prototype = $extend(com
 			this.mDelayToStart = 0;
 			this.mPauseAnimation = false;
 		}
+		if(this.mAniEndStartAlpha) {
+			if(this.mAnimationBitmap != null) {
+				this.mAnimationBitmap.setAlpha(this.mAnimationBitmap.getAlpha() - this.mAlphaFactor);
+				if(this.mAnimationBitmap.getAlpha() <= 0) {
+					this.mAnimationBitmap.setAlpha(0);
+					this.isDead = true;
+				}
+			}
+			if(this.mBitmap != null) {
+				this.mBitmap.alpha -= this.mAlphaFactor;
+				if(this.mBitmap.alpha <= 0) {
+					this.mBitmap.alpha = 0;
+					this.isDead = true;
+				}
+			}
+		}
 		if(!this.mDieWithAlpha) {
 			if(!this.mStaticImage) {
 				if(this.mAnimationBitmap.getCurrentIndex() == this.mAnimationBitmap.getLength() - 1) this.isDead = true;
 			}
 		} else if(!this.mStaticImage) {
-			this.mAnimationBitmap.setAlpha(this.mAnimationBitmap.getAlpha() - this.mAlphaFactor);
-			if(this.mAnimationBitmap.getAlpha() <= 0) {
-				this.mAnimationBitmap.setAlpha(0);
-				this.isDead = true;
+			if(this.mAnimationBitmap.getCurrentIndex() == this.mAnimationBitmap.getLength() - 1) {
+				this.mAnimationBitmap.stop();
+				this.mAniEndStartAlpha = true;
 			}
-		} else if(this.mBitmap != null) {
-			this.mBitmap.alpha -= this.mAlphaFactor;
-			if(this.mBitmap.alpha <= 0) {
-				this.mBitmap.alpha = 0;
-				this.isDead = true;
-			}
-		}
+		} else if(this.mBitmap != null) this.mAniEndStartAlpha = true;
 		if(!this.isDead) com.funbox.bcp.minigame2.entities.BaseActor.prototype.update.call(this,dt);
 	}
 	,DieWithAlpha: function(value) {
@@ -5684,6 +5694,7 @@ com.funbox.bcp.minigame2.engine.effectManager.SpriteAndTextEffect = function(cli
 	com.funbox.bcp.minigame2.engine.effectManager.BaseEffect.call(this,clipName,aniData,canvas,pos1.x,pos1.y);
 	this.mOtherX = pos2.x;
 	this.mOtherY = pos2.y;
+	this.mAniEndStartAlphaOther = false;
 	this.mClipContainer = new browser.display.Sprite();
 	this.mCanvas.addChild(this.mClipContainer);
 	if(clipNameOther != null && aniDataOther != null) {
@@ -5713,6 +5724,13 @@ com.funbox.bcp.minigame2.engine.effectManager.SpriteAndTextEffect.prototype = $e
 		com.funbox.bcp.minigame2.engine.effectManager.BaseEffect.prototype.free.call(this);
 	}
 	,update: function(dt) {
+		if(this.mAniEndStartAlphaOther && this.mAniEndStartAlpha) {
+			this.mClipContainer.alpha -= this.mAlphaFactor;
+			if(this.mClipContainer.alpha <= 0) {
+				this.mClipContainer.alpha = 0;
+				this.isDead = true;
+			}
+		}
 		if(!this.mPauseAnimation) {
 			if(this.mAnimationBitmapOther != null) {
 				this.mAnimationBitmapOther.position.x = this.mX + this.mOtherX;
@@ -5725,20 +5743,19 @@ com.funbox.bcp.minigame2.engine.effectManager.SpriteAndTextEffect.prototype = $e
 			}
 		}
 		if(this.mAnimationBitmapOther != null) {
-			this.mClipContainer.alpha -= this.mAlphaFactor;
-			if(this.mClipContainer.alpha <= 0) {
-				this.mClipContainer.alpha = 0;
-				this.isDead = true;
+			if(this.mAnimationBitmapOther.getCurrentIndex() == this.mAnimationBitmapOther.getLength() - 1) {
+				this.mAnimationBitmapOther.stop();
+				this.mAniEndStartAlphaOther = true;
 			}
 		}
-		if(this.mBitmapOther != null) {
-			this.mClipContainer.alpha -= this.mAlphaFactor;
-			if(this.mClipContainer.alpha <= 0) {
-				this.mClipContainer.alpha = 0;
-				this.isDead = true;
-			}
+		if(this.mBitmapOther != null) this.mAniEndStartAlphaOther = true;
+		var aniEndStartAlpha = false;
+		if(this.mAniEndStartAlpha && !this.mAniEndStartAlphaOther) {
+			aniEndStartAlpha = true;
+			this.mAniEndStartAlpha = false;
 		}
 		com.funbox.bcp.minigame2.engine.effectManager.BaseEffect.prototype.update.call(this,dt);
+		if(aniEndStartAlpha) this.mAniEndStartAlpha = true;
 	}
 	,__class__: com.funbox.bcp.minigame2.engine.effectManager.SpriteAndTextEffect
 });
@@ -5949,7 +5966,7 @@ com.funbox.bcp.minigame2.entities.item.ItemMoney.prototype = $extend(com.funbox.
 });
 com.funbox.bcp.minigame2.entities.player = {}
 com.funbox.bcp.minigame2.entities.player.GamePlayer = function(clipName,aniData,canvas,offsetX,offsetY) {
-	com.funbox.bcp.minigame2.entities.BaseActor.call(this,clipName,aniData,canvas,0,0);
+	com.funbox.bcp.minigame2.entities.BaseActor.call(this,clipName,aniData,canvas,com.funbox.bcp.minigame2.Global.StageWidth / 2,com.funbox.bcp.minigame2.Global.StageHeight / 2);
 	this.mOffsetX = offsetX;
 	this.mOffsetY = offsetY;
 	this.mAnimationBitmap.gotoAndStop(0);
@@ -6721,6 +6738,9 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 		}
 		this._container.set_x(this.position.x + this._offsetX);
 		this._container.set_y(this.position.y + this._offsetY);
+	}
+	,stop: function() {
+		this.mCanPlay = false;
 	}
 	,gotoAndStop: function(frame) {
 		if(this._container.nmeChildren.length > 0) this._container.removeChildAt(0);

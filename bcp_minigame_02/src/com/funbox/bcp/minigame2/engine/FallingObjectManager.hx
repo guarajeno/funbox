@@ -53,7 +53,7 @@ class FallingObjectManager {
 	private function onCreateEntitie():Void {
 		var x:Float = NMath.random(30, 610);
 		var y:Float = -80;
-		var speed:Vector2D = new Vector2D(0, NMath.random(0.05, 0.4));
+		var speed:Vector2D = new Vector2D(0, NMath.random(0.03, 0.3));
 		var typeToChoose:Int = mTouchObjectsToChoose[NUtils.getValueFromProbabilityChart(mTouchObjectsToChoose.length, 10)];
 		
 		var tObj:TouchObject = mEntitiesController.createEntitie(0, 0, speed, typeToChoose);
