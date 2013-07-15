@@ -422,7 +422,7 @@ function _postFacebook(score){
 		window.openOnce = true;
 		FB.ui({ method: 'feed',
 			caption: 'Acabo de hacer ' + score + ' puntos mientras aprendía a prevenir '+getTipoFraude(),
-			picture: 'http://www.cuentapremiobcp.com/img/fb.jpg',
+			picture: 'http://circusint.com/clientes/bcp/seguridad/img/200x200.jpg',
 			name: 'Tú también juega y protégete contra los fraudes aquí:',
 			link: 'http://www.juntossomosmasseguros.com'
 		}, function(){});
