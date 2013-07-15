@@ -79,7 +79,7 @@ class TouchObject extends BaseActor {
 					score_earned = 100;
 				}
 				
-				//SoundManager.play("fx_dinero");
+				SoundManager.play("fx_sapo");
 				
 				var newScore:Int = Global.minigame.getGameHud().GetScore();
 				newScore += score_earned;

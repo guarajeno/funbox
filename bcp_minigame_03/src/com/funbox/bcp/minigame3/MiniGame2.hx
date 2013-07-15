@@ -32,6 +32,8 @@ class MiniGame2 extends Game {
 	private var mMouseY:Float;
 	private var mMousePressed:Bool;
 	
+	private var mOnEndGame:Bool;
+	
 	private var mLevelTime:Int;
 	
 	public function getMouseX():Float { return mMouseX; }
@@ -53,6 +55,7 @@ class MiniGame2 extends Game {
 		
 		mLevelTime = 45100;
 		mMousePressed = false;
+		mOnEndGame = false;
 		
 		// mask created for listening the mouse events of the window
 		mGhostGameMask = new Sprite();
@@ -99,20 +102,34 @@ class MiniGame2 extends Game {
 		}
 	}
 	
+	public function onLoseByFrog():Void {
+		mOnEndGame = true;
+	}
+	
 	override public function update(dt:Int):Dynamic {
 		mVTEngine.update(dt);
 		
-		mLevelTime -= dt;
-		
-		if (mLevelTime <= 0) { 
+		if (!mOnEndGame) {
+			mLevelTime -= dt;
+			
+			if (mLevelTime <= 0) { 
+				mLevelTime = 0;
+				mGameHud.SetTime(mLevelTime);
+				
+				Global.totalPoints = mGameHud.GetScore();
+				ScreenManager.instance.gotoScreen(ScoreCardScreen);
+			}
+			else {
+				mGameHud.SetTime(mLevelTime);
+			}
+		}
+		else if (mOnEndGame) {
+			mOnEndGame = false;
 			mLevelTime = 0;
 			mGameHud.SetTime(mLevelTime);
 			
 			Global.totalPoints = mGameHud.GetScore();
 			ScreenManager.instance.gotoScreen(ScoreCardScreen);
-		}
-		else {
-			mGameHud.SetTime(mLevelTime);
 		}
 	}
 	

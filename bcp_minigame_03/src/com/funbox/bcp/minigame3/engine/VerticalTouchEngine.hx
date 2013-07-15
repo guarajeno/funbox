@@ -23,6 +23,7 @@ class VerticalTouchEngine {
 	private var mBGCanvas:Sprite;
 	
 	private var mBGSprite:BaseActor;
+	private var mBGMiniCollisionSprite:BaseActor;
 	private var mBGMaskSprite:BaseActor;
 	
 	private var mPlayer:GamePlayer;
@@ -36,6 +37,8 @@ class VerticalTouchEngine {
 	public function getEffectManager():EffectManager 			{ return mEffectManager; }
 	public function getEntitiesController():EntitiesController 	{ return mEntitiesController; }
 	public function getCashMachine():GamePlayerCashMachine 		{ return mGamePlayerCashMachine; }
+	
+	public function getPlayerCollision():BaseActor 				{ return mBGMiniCollisionSprite; }
 	
 	public function new(miniGameRef:MiniGame2, gameCanvas:Sprite) {
 		mGameCanvas = gameCanvas;
@@ -55,12 +58,13 @@ class VerticalTouchEngine {
 		
 		mEntitiesController = new EntitiesController(mEntitiesCanvas);
 		mEnemiesWaveManager = new EnemiesWaveManager(mEntitiesController);
-		mGamePlayerCashMachine = new GamePlayerCashMachine(Global.StageWidth / 2, 0);
+		mGamePlayerCashMachine = new GamePlayerCashMachine(mBGCanvas, Global.StageWidth / 2, 0);
 		
 		mPlayer = new GamePlayer("spMinigame03_mouseHand_click", null,
 			mPlayerCanvas, -13, -10);
 		
 		mBGSprite = new BaseActor("spMinigame03_bg", null, mBGCanvas, 0, 0);
+		
 		mBGMaskSprite = new BaseActor("spMinigame03_background_mask", null, mGameCanvas, 0, 0);
 			
 		mEnemiesWaveManager.start();
@@ -74,6 +78,7 @@ class VerticalTouchEngine {
 		mEffectManager.update(dt);
 		mBGSprite.update(dt);
 		mBGMaskSprite.update(dt);
+		mGamePlayerCashMachine.update(dt);
 	}
 	
 	public function free():Void {
@@ -83,6 +88,7 @@ class VerticalTouchEngine {
 		mBGSprite.free();
 		mBGMaskSprite.free();
 		mPlayer.free();
+		mGamePlayerCashMachine.free();
 		
 		mBGSprite = null;
 		mEntitiesController = null;
@@ -90,6 +96,7 @@ class VerticalTouchEngine {
 		mEffectManager = null;
 		mBGMaskSprite = null;
 		mPlayer = null;
+		mGamePlayerCashMachine = null;
 		
 		mGameCanvas.removeChild(mBGCanvas);
 		mGameCanvas.removeChild(mEntitiesCanvas);

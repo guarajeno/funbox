@@ -50,7 +50,7 @@ class GameScreen extends Screen
 	}
 	
 	private function onFinishTransition():Void {
-		//SoundManager.play("bgm_juego_2", true);
+		SoundManager.play("bgm_3", true);
 		
 		_gameTransition.free();
 		_gameTransition = null;

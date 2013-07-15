@@ -37,13 +37,13 @@ class EnemiesWaveManager {
 	private function onFinishThenCreate_1():Void {
 		onCreateEntitie();
 		
-		mIntervalCreation_1 = new NInterval(onFinishThenCreate_1, 950);
+		mIntervalCreation_1 = new NInterval(onFinishThenCreate_1, 850);
 	}
 	
 	private function onFinishThenCreate_2():Void {
 		onCreateEntitie();
 		
-		mIntervalCreation_2 = new NInterval(onFinishThenCreate_2, 1500);
+		mIntervalCreation_2 = new NInterval(onFinishThenCreate_2, 1200);
 	}
 	
 	public function start():Void {

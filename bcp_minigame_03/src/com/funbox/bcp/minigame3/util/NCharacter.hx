@@ -114,12 +114,14 @@ class NCharacter {
 		mCallbackFunction = callbackFuncion;
 	}
 	
-	public function addState(id:String, clipName:String, tileData:String):Void {
+	public function addState(id:String, clipName:String, tileData:String, offsetX:Float = 0, offsetY:Float = 0):Void {
 		var animation:AtlasSprite = new AtlasSprite(mAnimationCanvas, clipName, tileData);
 		mDictionary.set(id, animation);
 		
 		animation.stop();
 		animation.onEndAnimationCallback(sharedOnEndAnimation);
+		animation.setOffsetX(offsetX);
+		animation.setOffsetY(offsetY);
 		
 		mAnimationCanvas.removeChild(animation.container());
 	}
@@ -127,14 +129,21 @@ class NCharacter {
 	public function gotoState(state:String):Void {
 		if (mCurrentState != state) {
 			mCurrentState = state;
-			
+
 			if (mDictionary.exists(state)) {
+				var newAnimation:AtlasSprite = mDictionary.get(state);
+				newAnimation.gotoAndPlay(0);	
+				mWidth = newAnimation.currentWidth();
+				mHeight = newAnimation.currentHeight();
+				newAnimation.position.x = mX;
+				newAnimation.position.y = mY;
+				newAnimation.update(16);
+				
 				if (mCurrentAnimation != null) {
 					mAnimationCanvas.removeChild(mCurrentAnimation.container());
 				}
 				
-				mCurrentAnimation = mDictionary.get(state);
-				mCurrentAnimation.gotoAndPlay(0);
+				mCurrentAnimation = newAnimation;			
 				
 				mAnimationCanvas.addChild(mCurrentAnimation.container());
 			}

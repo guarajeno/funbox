@@ -24,6 +24,8 @@ class EntitiesController {
 		switch (type) {
 		case EnumTouchObjectType.FROG:
 			touchObj = new Enemy_Frog(mCanvas, speed);
+			touchObj.setOffsetX(touchObj.getWidth() / 2);
+			touchObj.setOffsetY(touchObj.getHeight() / 2);
 		}
 		
 		if (touchObj != null) {

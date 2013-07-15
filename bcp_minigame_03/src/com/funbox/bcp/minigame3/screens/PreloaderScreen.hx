@@ -89,6 +89,8 @@ class PreloaderScreen extends Screen
 		
 		// load sounds
 		SoundManager.addSound("sound/scorecard.mp3", "scorecard");
+		SoundManager.addSound("sound/fx_sapo.mp3", "fx_sapo");
+		SoundManager.addSound("sound/bgm_3.mp3", "bgm_3");
 		
 		////////// minigame03 Assets ///////////
 		////////////// interface - scorecard ///////////////////////
@@ -101,6 +103,8 @@ class PreloaderScreen extends Screen
 			
 		// bg and mask bg
 		AssetsLoader.addAsset("images/minigame03/interfaces/spMinigame03_bg.jpg", "spMinigame03_bg");
+		AssetsLoader.addAsset("images/minigame03/interfaces/spMinigame03_miniCollision_bg.jpg",
+			"spMinigame03_miniCollision_bg");
 		AssetsLoader.addAsset("images/minigame03/interfaces/spMinigame03_background_mask.png", 
 			"spMinigame03_background_mask");
 			

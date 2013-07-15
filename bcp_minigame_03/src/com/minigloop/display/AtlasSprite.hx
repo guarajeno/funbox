@@ -26,6 +26,9 @@ class AtlasSprite extends VisualObject
 	private var _offsetX:Float;
 	private var _offsetY:Float;
 	
+	private var mImageOffsetX:Float;
+	private var mImageOffsetY:Float;
+	
 	private var mAlpha:Float;
 	
 	private var _scaleX:Float;
@@ -43,6 +46,9 @@ class AtlasSprite extends VisualObject
 		mAlpha = value;
 		_container.alpha = mAlpha;
 	}
+	
+	public function setOffsetX(value:Float):Void { mImageOffsetX = value; }
+	public function setOffsetY(value:Float):Void { mImageOffsetY = value; }
 	
 	public function container():Sprite { return _container; }
 	
@@ -70,6 +76,8 @@ class AtlasSprite extends VisualObject
 		
 		mCallbackFunction = null;
 		
+		mImageOffsetX = 0;
+		mImageOffsetY = 0;
 		mTimeCounter = 0;
 		mTimeLimitByFrame = Math.round(1000 / 30); // because needs to run in 30 fps
 		
@@ -120,8 +128,8 @@ class AtlasSprite extends VisualObject
 		_frames[frame].scaleX = _scaleX;
 		_frames[frame].alpha = mAlpha;
 		
-		_container.x = position.x + _offsetX;
-		_container.y = position.y + _offsetY;
+		_container.x = position.x + _offsetX + mImageOffsetX;
+		_container.y = position.y + _offsetY + mImageOffsetY;
 		
 		_currentIndex = frame;
 		mCanPlay = true;
@@ -136,8 +144,8 @@ class AtlasSprite extends VisualObject
 		_frames[frame].scaleX = _scaleX;
 		_frames[frame].alpha = mAlpha;
 		
-		_container.x = position.x + _offsetX;
-		_container.y = position.y + _offsetY;
+		_container.x = position.x + _offsetX + mImageOffsetX;
+		_container.y = position.y + _offsetY + mImageOffsetY;
 		
 		_currentIndex = frame;
 		mCanPlay = false;
@@ -171,8 +179,8 @@ class AtlasSprite extends VisualObject
 			}
 		}
 		
-		_container.x = position.x + _offsetX;
-		_container.y = position.y + _offsetY;
+		_container.x = position.x + _offsetX + mImageOffsetX;
+		_container.y = position.y + _offsetY + mImageOffsetY;
 	}
 	
 	public function destroy() {
