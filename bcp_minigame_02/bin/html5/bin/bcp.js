@@ -5564,7 +5564,7 @@ com.funbox.bcp.minigame2.entities.BaseActor.prototype = {
 	}
 	,setFlip: function(value) {
 		this.mFlip = value;
-		if(this.mStaticImage) this.mBitmap.set_scaleX(this.mFlip?-1:1); else this.mAnimationBitmap.setScaleX(this.mFlip?-1:1);
+		if(this.mStaticImage) this.mBitmap.set_scaleX(this.mFlip?-0.99:0.99); else this.mAnimationBitmap.setScaleX(this.mFlip?-0.99:0.99);
 		this.mFlipOffsetX = this.mFlip?this.mWidth:0;
 	}
 	,setOffsetY: function(value) {

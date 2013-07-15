@@ -65,10 +65,10 @@ class BaseActor {
 		mFlip = value; 
 		
 		if (mStaticImage) {
-			mBitmap.scaleX = mFlip ? -1 : 1;
+			mBitmap.scaleX = mFlip ? -0.99 : 0.99;
 		}
 		else {
-			mAnimationBitmap.setScaleX(mFlip ? -1 : 1);
+			mAnimationBitmap.setScaleX(mFlip ? -0.99 : 0.99);
 		}
 		
 		mFlipOffsetX = mFlip ? mWidth : 0;
