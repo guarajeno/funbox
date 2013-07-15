@@ -8,7 +8,7 @@
 	
 	$output = array();
     while($row = mysql_fetch_array($result)){
-		$output[] = array('uid'=>$row['uid'], score=>$row['score'], rank=>$row['rank']);
+		$output[] = array('uid'=>$row['uid'], 'score'=>$row['score'], 'rank'=>$row['rank']);
     }
 	echo json_encode($output);
     
