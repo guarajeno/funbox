@@ -1,5 +1,6 @@
 package com.funbox.bcp.minigame3.entities;
 
+import com.funbox.bcp.minigame3.engine.effectManager.BaseEffect;
 import com.funbox.bcp.minigame3.engine.effectManager.SpriteAndTextEffect;
 import com.funbox.bcp.minigame3.Global;
 import com.funbox.bcp.minigame3.type.EnumTouchObjectType;
@@ -61,6 +62,10 @@ class TouchObject extends BaseActor {
 		
 		Global.minigame.getVTEngine().getEffectManager().createEffect(mX + getWidth() / 2, 
 			mY + getHeight() / 2, "spMinigame03_ani_effect_puff", "spMinigame03_ani_effect_puff");
+			
+		var baseEffect:BaseEffect = Global.minigame.getVTEngine().getEffectManager().createEffect(mX + getWidth() / 2, 
+			mY + getHeight() / 2, "spMinigame03_score_100", null);
+		baseEffect.DieWithAlpha(true);
 	}
 	
 	override public function update(dt:Int):Void {

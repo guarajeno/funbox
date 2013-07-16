@@ -12,6 +12,8 @@ class ScreenManager
 	private static var _currentScreen:Screen;
 	private static var _canvas:Sprite;
 	
+	public function getCurrentScreen():Screen { return _currentScreen; }
+	
 	public function new()
 	{
 	}

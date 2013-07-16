@@ -168,20 +168,27 @@ class NCharacter {
 	}
 	
 	public function free():Void {
-		var iterator:Iterator<AtlasSprite> = mDictionary.iterator();
-		
-		while (iterator.hasNext()) {
-			var atlasSprite:AtlasSprite = iterator.next();
-			atlasSprite.destroy();
-			atlasSprite = null;
+		if (mDictionary != null) {
+			var iteratorKeys:Iterator<String> = mDictionary.keys();
+			
+			while (iteratorKeys.hasNext()) {
+				var keyValue:String = iteratorKeys.next();
+				var atlasSprite:AtlasSprite = mDictionary.get(keyValue);
+				atlasSprite.destroy();
+				atlasSprite = null;
+				mDictionary.remove(keyValue);
+			}
+			
+			iteratorKeys = null;
+			mDictionary = null;
 		}
-		
-		iterator = null;
-		mDictionary = null;
 		
 		mCanvas.removeChild(mAnimationCanvas);
 		mCanvas = null;
 		mAnimationCanvas = null;
+		mCallbackFunction = null;
+		mCurrentState = null;
+		mCurrentAnimation = null;
 	}
 	
 }

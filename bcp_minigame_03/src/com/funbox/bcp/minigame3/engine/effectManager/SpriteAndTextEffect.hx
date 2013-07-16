@@ -106,6 +106,9 @@ class SpriteAndTextEffect extends BaseEffect {
 			mAnimationBitmapOther = null;
 		}
 		
+		mCanvas.removeChild(mClipContainer);
+		mClipContainer = null;
+		
 		super.free();
 	}
 }

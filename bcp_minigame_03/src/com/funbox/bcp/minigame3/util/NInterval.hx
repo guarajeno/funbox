@@ -33,4 +33,8 @@ class NInterval{
 		}
 	}
 	
+	public function free():Void {
+		mCallbackFunc = null;
+	}
+	
 }

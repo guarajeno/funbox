@@ -64,7 +64,25 @@ class EntitiesController {
 	}
 	
 	public function free():Void {
+		var i:Int = 0;
+		var length:Int = mEntities.length - 1;
 		
+		while (i <= length) {
+			var sObj:TouchObject = mEntities[i];
+			
+			if (sObj != null) {
+				sObj.free();
+				sObj = null;
+				
+				mEntities.splice(i, 1);
+				length--;
+			}
+			
+			i++;
+		}
+		
+		mEntities = null;
+		mCanvas = null;
 	}
 	
 }

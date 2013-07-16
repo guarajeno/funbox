@@ -60,8 +60,8 @@ class VerticalTouchEngine {
 		mEnemiesWaveManager = new EnemiesWaveManager(mEntitiesController);
 		mGamePlayerCashMachine = new GamePlayerCashMachine(mBGCanvas, Global.StageWidth / 2, 0);
 		
-		mPlayer = new GamePlayer("spMinigame03_mouseHand_click", null,
-			mPlayerCanvas, -13, -10);
+		mPlayer = new GamePlayer("spMinigame03_mouseHand_click_attack", "spMinigame03_mouseHand_click_attack",
+			mPlayerCanvas, 17, 15);
 		
 		mBGSprite = new BaseActor("spMinigame03_bg", null, mBGCanvas, 0, 0);
 		
@@ -97,6 +97,7 @@ class VerticalTouchEngine {
 		mBGMaskSprite = null;
 		mPlayer = null;
 		mGamePlayerCashMachine = null;
+		mMinigameRef = null;
 		
 		mGameCanvas.removeChild(mBGCanvas);
 		mGameCanvas.removeChild(mEntitiesCanvas);

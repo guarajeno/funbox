@@ -126,6 +126,7 @@ class AtlasSprite extends VisualObject
 		
 		_container.addChild(_frames[frame]);
 		_frames[frame].scaleX = _scaleX;
+		_frames[frame].scaleY = _scaleY;
 		_frames[frame].alpha = mAlpha;
 		
 		_container.x = position.x + _offsetX + mImageOffsetX;
@@ -142,6 +143,7 @@ class AtlasSprite extends VisualObject
 		
 		_container.addChild(_frames[frame]);
 		_frames[frame].scaleX = _scaleX;
+		_frames[frame].scaleY = _scaleY;
 		_frames[frame].alpha = mAlpha;
 		
 		_container.x = position.x + _offsetX + mImageOffsetX;
@@ -163,6 +165,7 @@ class AtlasSprite extends VisualObject
 			
 			_container.addChild(_frames[_currentIndex]);
 			_frames[_currentIndex].scaleX = _scaleX;
+			_frames[_currentIndex].scaleY = _scaleY;
 			
 			if ((mTimeCounter + dt) >= mTimeLimitByFrame) {
 				mTimeCounter = 0;

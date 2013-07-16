@@ -125,10 +125,21 @@ class PreloaderScreen extends Screen
 		// tutorial
 		AssetsLoader.addAsset("images/minigame03/interfaces/tutorial/spMinigame03_tutorial_text.png",
 			"spMinigame03_tutorial_text");
+		AssetsLoader.addAsset("images/minigame03/interfaces/tutorial/spMinigame03_tutorial_mouseHand_click.png",
+			"spMinigame03_tutorial_mouseHand_click");
+		AssetsLoader.addAsset("images/minigame03/interfaces/tutorial/spMinigame03_tutorial_frog_stand_front.png",
+			"spMinigame03_tutorial_frog_stand_front");
+		AssetsLoader.addAsset("images/minigame03/interfaces/tutorial/spMinigame03_tutorial_ani_effect_puff.png",
+			"spMinigame03_tutorial_ani_effect_puff");
 			
 		// mouse mask
 		AssetsLoader.addAsset("images/minigame03/mouse_mask/spMinigame03_mouseHand_click.png",
 			"spMinigame03_mouseHand_click");
+			
+		AssetsLoader.addAsset("images/minigame03/mouse_mask/spMinigame03_mouseHand_click_attack.png",
+			"spMinigame03_mouseHand_click_attack");
+		DataLoader.addData("images/minigame03/mouse_mask/spMinigame03_mouseHand_click_attack.json",
+			"spMinigame03_mouseHand_click_attack");
 			
 		// score effect
 		AssetsLoader.addAsset("images/minigame03/score_effect/spMinigame03_score_100.png",

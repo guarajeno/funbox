@@ -68,8 +68,15 @@ class EnemiesWaveManager {
 		mTouchObjectsToChoose = null;
 		mEntitiesController = null;
 		
-		if (mIntervalCreation_1 != null) { mIntervalCreation_1 = null; }
-		if (mIntervalCreation_2 != null) { mIntervalCreation_2 = null; }
+		if (mIntervalCreation_1 != null) { 
+			mIntervalCreation_1.free();
+			mIntervalCreation_1 = null;
+		}
+		
+		if (mIntervalCreation_2 != null) { 
+			mIntervalCreation_2.free();
+			mIntervalCreation_2 = null;
+		}
 	}
 	
 }

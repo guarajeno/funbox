@@ -69,7 +69,25 @@ class EffectManager
 	}
 	
 	public function free():Void {
+		var i:Int = 0;
+		var length:Int = mEffectsRepo.length - 1;
 		
+		while (i <= length) {
+			var sObj:BaseEffect = mEffectsRepo[i];
+			
+			if (sObj != null) {
+				sObj.free();
+				sObj = null;
+				
+				mEffectsRepo.splice(i, 1);
+				length--;
+			}
+			
+			i++;
+		}
+		
+		mEffectsRepo = null;
+		mCanvas = null;
 	}
 	
 }

@@ -16,13 +16,17 @@ import nme.display.Sprite;
  */
 class Enemy_Frog extends TouchObject {
 
-	public static var ST_JUMP:String = "spMinigame03_frog_jump_back";
-	public static var ST_STAND:String = "spMinigame03_frog_stand_back";
+	public static var ST_JUMP:String = "spMinigame03_frog_jump_";
+	public static var ST_STAND:String = "spMinigame03_frog_stand_";
 	
 	private var mLinear:NLinearMovement;
 	private var mTimeInterval:NInterval;
 	
 	private var mCanJump:Bool;
+	private var mDirAni:String;
+	
+	private var mParseAniStand:String;
+	private var mParseAniJump:String;
 	
 	public function new(canvas:Sprite, speed:Vector2D) {
 		var x:Float = Global.StageWidth / 2;
@@ -35,16 +39,42 @@ class Enemy_Frog extends TouchObject {
 		var maxAngle:Float = offsetAngle + (Math.PI + (Math.PI / 2));
 		var randomAngle:Float = NMath.random(minAngle, maxAngle);
 			
+		if (randomAngle >= 0 && randomAngle <= (Math.PI / 4)) {
+			mDirAni = "left";
+		}
+		else if (randomAngle >= (Math.PI / 4) && randomAngle <= ((Math.PI / 4) * 3)) {
+			mDirAni = "back";
+		}
+		else if (randomAngle >= ((Math.PI / 4) * 3) && randomAngle <= Math.PI) {
+			mDirAni = "right";
+		}
+		
+		mParseAniStand = Enemy_Frog.ST_STAND + mDirAni;
+		mParseAniJump = Enemy_Frog.ST_JUMP + mDirAni;
+		
 		x += radio * Math.cos(randomAngle);
 		y += (radio + ellipseYFactor) * Math.sin(randomAngle);
 		
-		super(Enemy_Frog.ST_STAND, Enemy_Frog.ST_STAND, canvas,
-			x, y, speed);
+		super(mParseAniStand, mParseAniStand, canvas, x, y, speed);
 		
-		mCharacter.addState(Enemy_Frog.ST_JUMP, Enemy_Frog.ST_JUMP,
-			Enemy_Frog.ST_JUMP, 0, -30);
+		var offX:Float = 0;
+		var offY:Float = 0;
+		
+		switch (mDirAni) {
+		case "back":
+			offX = 0;
+			offY = -30;
+		case "left":
+			offX = 30;
+			offY = -18;
+		case "right":
+			offX = -30;
+			offY = -18;
+		}
+		
+		mCharacter.addState(mParseAniJump, mParseAniJump, mParseAniJump, offX, offY);
 			
-		mCharacter.gotoState(Enemy_Frog.ST_JUMP);
+		mCharacter.gotoState(mParseAniJump);
 		
 		mCharacter.onEndAnimationCallback(onEndAnimation);
 		
@@ -63,14 +93,14 @@ class Enemy_Frog extends TouchObject {
 		mTimeInterval = new NInterval(onEndInterval, mCanJump ? 650 : 1000);
 		
 		if (mCanJump) {
-			mCharacter.gotoState("spMinigame03_frog_jump_back");
+			mCharacter.gotoState(mParseAniJump);
 		}
 	}
 	
 	private function onEndAnimation():Void {
 		switch (mCharacter.currentState()) {
-		case Enemy_Frog.ST_JUMP:
-			mCharacter.gotoState(Enemy_Frog.ST_STAND);
+		case mParseAniJump:
+			mCharacter.gotoState(mParseAniStand);
 		}
 	}
 	
@@ -96,7 +126,9 @@ class Enemy_Frog extends TouchObject {
 	}
 	
 	override public function free():Void {
+		if (mTimeInterval != null) { mTimeInterval.free(); }
 		mTimeInterval = null;
+		
 		mLinear = null;
 		
 		super.free();

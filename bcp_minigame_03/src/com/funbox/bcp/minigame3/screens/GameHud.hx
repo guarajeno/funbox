@@ -38,8 +38,10 @@ class GameHud {
 	public function new(canvas:Sprite) {
 		mCanvas = canvas;
 		
+		var posY:Float = Global.StageHeight - 30;
+		
 		mPuntajeSprite = new BaseActor("spMinigame03_background_score", null,
-			mCanvas, 5, 5);
+			mCanvas, 5, posY);
 			
 		// texts
 		mTextFormat = new TextFormat();
@@ -53,7 +55,7 @@ class GameHud {
 		mTF_Score.defaultTextFormat = mTextFormat;
 		mTF_Score.text = "0000000";
 		mTF_Score.x = 76;
-		mTF_Score.y = 6;
+		mTF_Score.y = posY;
 		mTF_Score.width = 180;
 		mTF_Score.mouseEnabled = false;
 		//mTF_Score.alwaysShowSelection = false;
@@ -64,7 +66,7 @@ class GameHud {
 		mTF_Time.defaultTextFormat = mTextFormat;
 		mTF_Time.text = "00:00";
 		mTF_Time.x = 215;
-		mTF_Time.y = 6;
+		mTF_Time.y = posY;
 		mTF_Time.width = 180;
 		mTF_Time.mouseEnabled = false;
 		//mTF_Time.alwaysShowSelection = false;
