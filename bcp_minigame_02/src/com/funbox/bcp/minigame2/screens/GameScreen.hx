@@ -14,6 +14,8 @@ import nme.display.Sprite;
  */
 class GameScreen extends Screen
 {
+	public static var instance:GameScreen = null;
+	
 	private var _game:MiniGame2;
 	private var _gameHud:GameHud;
 	
@@ -25,10 +27,14 @@ class GameScreen extends Screen
 	
 	private var mPausedGame:Bool;
 	
+	public function isPauseGame():Bool { return mPausedGame; }
+	
 	public function new(canvas:Sprite) 
 	{
 		super(canvas);
 
+		instance = this;
+		
 		mGameCanvas = new Sprite();
 		mHudCanvas = new Sprite();
 		mFrontCanvas = new Sprite();

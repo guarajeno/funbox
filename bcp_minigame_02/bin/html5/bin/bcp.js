@@ -5981,10 +5981,14 @@ com.funbox.bcp.minigame2.entities.player.GamePlayer.prototype = $extend(com.funb
 		com.funbox.bcp.minigame2.entities.BaseActor.prototype.free.call(this);
 	}
 	,update: function(dt) {
-		this.mX = com.funbox.bcp.minigame2.Global.minigame.getMouseX();
-		this.mY = com.funbox.bcp.minigame2.Global.minigame.getMouseY();
-		if(com.funbox.bcp.minigame2.Global.minigame.isMousePressed() && this.mAnimationBitmap.getCurrentIndex() == 0) this.mAnimationBitmap.gotoAndPlay(0);
-		if(this.mAnimationBitmap.getCurrentIndex() == this.mAnimationBitmap.getLength() - 1) this.mAnimationBitmap.gotoAndStop(0);
+		if(com.funbox.bcp.minigame2.screens.GameScreen.instance != null) {
+			if(!com.funbox.bcp.minigame2.screens.GameScreen.instance.isPauseGame()) {
+				this.mX = com.funbox.bcp.minigame2.Global.minigame.getMouseX();
+				this.mY = com.funbox.bcp.minigame2.Global.minigame.getMouseY();
+				if(com.funbox.bcp.minigame2.Global.minigame.isMousePressed() && this.mAnimationBitmap.getCurrentIndex() == 0) this.mAnimationBitmap.gotoAndPlay(0);
+				if(this.mAnimationBitmap.getCurrentIndex() == this.mAnimationBitmap.getLength() - 1) this.mAnimationBitmap.gotoAndStop(0);
+			}
+		}
 		com.funbox.bcp.minigame2.entities.BaseActor.prototype.update.call(this,dt);
 	}
 	,__class__: com.funbox.bcp.minigame2.entities.player.GamePlayer
@@ -6064,6 +6068,7 @@ com.minigloop.ui.Screen.prototype = {
 }
 com.funbox.bcp.minigame2.screens.GameScreen = function(canvas) {
 	com.minigloop.ui.Screen.call(this,canvas);
+	com.funbox.bcp.minigame2.screens.GameScreen.instance = this;
 	this.mGameCanvas = new browser.display.Sprite();
 	this.mHudCanvas = new browser.display.Sprite();
 	this.mFrontCanvas = new browser.display.Sprite();
@@ -6105,6 +6110,9 @@ com.funbox.bcp.minigame2.screens.GameScreen.prototype = $extend(com.minigloop.ui
 		this._gameTransition.free();
 		this._gameTransition = null;
 		this.mPausedGame = false;
+	}
+	,isPauseGame: function() {
+		return this.mPausedGame;
 	}
 	,__class__: com.funbox.bcp.minigame2.screens.GameScreen
 });

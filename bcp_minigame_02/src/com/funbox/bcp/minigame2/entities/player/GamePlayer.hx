@@ -3,6 +3,7 @@ package com.funbox.bcp.minigame2.entities.player;
 import com.funbox.bcp.minigame2.entities.BaseActor;
 import com.funbox.bcp.minigame2.entities.TouchObject;
 import com.funbox.bcp.minigame2.Global;
+import com.funbox.bcp.minigame2.screens.GameScreen;
 import nme.display.Sprite;
 import nme.ui.Mouse;
 
@@ -20,17 +21,20 @@ class GamePlayer extends BaseActor {
 	}
 	
 	override public function update(dt:Int):Void {
-		mX = Global.minigame.getMouseX();
-		mY = Global.minigame.getMouseY();
-		
-		if (Global.minigame.isMousePressed() && mAnimationBitmap.getCurrentIndex() == 0) {
-			mAnimationBitmap.gotoAndPlay(0);
+		if (GameScreen.instance != null) {
+			if (!GameScreen.instance.isPauseGame()) {
+				mX = Global.minigame.getMouseX();
+				mY = Global.minigame.getMouseY();
+				
+				if (Global.minigame.isMousePressed() && mAnimationBitmap.getCurrentIndex() == 0) {
+					mAnimationBitmap.gotoAndPlay(0);
+				}
+				
+				if (mAnimationBitmap.getCurrentIndex() == (mAnimationBitmap.getLength() - 1)) {
+					mAnimationBitmap.gotoAndStop(0);
+				}
+			}
 		}
-		
-		if (mAnimationBitmap.getCurrentIndex() == (mAnimationBitmap.getLength() - 1)) {
-			mAnimationBitmap.gotoAndStop(0);
-		}
-		
 		super.update(dt);
 	}
 	
