@@ -11,7 +11,7 @@
 	
 	$output = array();
     while($row = mysql_fetch_array($result)){
-		$output[] = array('uid'=>$row['uid'], score=>$row['score'] );
+		$output[] = array('uid'=>$row['uid'], 'score'=>$row['score'] );
     }
 	echo json_encode($output);
     

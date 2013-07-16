@@ -173,7 +173,8 @@ if($user && isset($_GET["logout"])){
    		globals_ids,
    		loggedIn = 0,
 		fbid = 0,
-		fbme = null;
+		fbme = null,
+		fbname = null;
 
   // Additional JS functions here
   window.fbAsyncInit = function() {
@@ -211,6 +212,7 @@ if($user && isset($_GET["logout"])){
 		fbme.pic_square = response.picture.data.url;
 		fbme.uid = fbme.id;
 		fbid = fbme.id;
+		fbname = fbme.name;
 		$('#lblLogin').html("Bienvenido, "+response.first_name);
 		loggedIn = !0;
 		openTab(1);
@@ -346,9 +348,14 @@ if($user && isset($_GET["logout"])){
 				  };
 				 }else{
 					fbme.score = data[0].score;
+
 				 }
 				  var friendList = [];
 				  var empty = 0;
+				  
+				if (fbme.score == undefined || fbme.score == null ) {
+					fbme.score = 0;
+				}
 				  
 				  friendList.push(fbme);
 				  for(var m=0; m<top_friends.length; m++){
@@ -401,7 +408,7 @@ if($user && isset($_GET["logout"])){
   }
   function onSendScore(points) {
 	  if(fbid>0){
-		$.post("insert.php",  { uid: fbid, score: points },
+		$.post("insert.php",  { uid: fbid, score: points , name_fb: fbname},
 		  function (response){ if(response=="fail"){ alert("No se pudieron guardar sus datos, intente nuevamente."); } });
 	  }
   }
@@ -422,7 +429,7 @@ function _postFacebook(score){
 		window.openOnce = true;
 		FB.ui({ method: 'feed',
 			caption: 'Acabo de hacer ' + score + ' puntos mientras aprendía a prevenir '+getTipoFraude(),
-			picture: 'http://www.cuentapremiobcp.com/img/fb.jpg',
+			picture: 'http://circusint.com/clientes/bcp/seguridad/img/200x200.jpg',
 			name: 'Tú también juega y protégete contra los fraudes aquí:',
 			link: 'http://www.juntossomosmasseguros.com'
 		}, function(){});

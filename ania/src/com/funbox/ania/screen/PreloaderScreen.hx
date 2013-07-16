@@ -22,9 +22,25 @@ class PreloaderScreen extends Screen
 		super(canvas);
 		
 		AssetsLoader.init();
+		
+		// mouse cursor
+		AssetsLoader.addAsset("img/common/hand_cursor.png", "hand_cursor");
+		
+		// logo
+		AssetsLoader.addAsset("img/common/web_common_logo.png", "web_common_logo");
+		
+		// buttons
 		AssetsLoader.addAsset("img/common/web_common_buttonsuport.png", "web_common_buttonsuport");
 		AssetsLoader.addAsset("img/common/web_common_button_episodes_normal.png", "web_common_button_episodes_normal");
 		AssetsLoader.addAsset("img/common/web_common_button_episodes_over.png", "web_common_button_episodes_over");
+		AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_normal.png", "web_common_button_parentsandteachers_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_over.png", "web_common_button_parentsandteachers_over");
+		AssetsLoader.addAsset("img/common/web_common_button_myworld_normal.png", "web_common_button_myworld_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_myworld_over.png", "web_common_button_myworld_over");
+		AssetsLoader.addAsset("img/common/web_common_button_mygarden_normal.png", "web_common_button_mygarden_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_mygarden_over.png", "web_common_button_mygarden_over");
+		AssetsLoader.addAsset("img/common/web_common_button_myprojects_normal.png", "web_common_button_myprojects_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_myprojects_over.png", "web_common_button_myprojects_over");
 		
 		DataLoader.init();
 		//DataLoader.addData("atlas/minigame1_guiloader.json", "guiloader");
