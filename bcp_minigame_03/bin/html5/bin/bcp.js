@@ -5490,7 +5490,7 @@ com.funbox.bcp.minigame3.engine.VerticalTouchEngine = function(miniGameRef,gameC
 	this.mEntitiesController = new com.funbox.bcp.minigame3.engine.EntitiesController(this.mEntitiesCanvas);
 	this.mEnemiesWaveManager = new com.funbox.bcp.minigame3.engine.EnemiesWaveManager(this.mEntitiesController);
 	this.mGamePlayerCashMachine = new com.funbox.bcp.minigame3.entities.player.GamePlayerCashMachine(this.mBGCanvas,com.funbox.bcp.minigame3.Global.StageWidth / 2,0);
-	this.mPlayer = new com.funbox.bcp.minigame3.entities.player.GamePlayer("spMinigame03_mouseHand_click_attack","spMinigame03_mouseHand_click_attack",this.mPlayerCanvas,17,15);
+	this.mPlayer = new com.funbox.bcp.minigame3.entities.player.GamePlayer("spMinigame03_mouseHand_click_attack","spMinigame03_mouseHand_click_attack",this.mPlayerCanvas,-2,15);
 	this.mBGSprite = new com.funbox.bcp.minigame3.entities.BaseActor("spMinigame03_bg",null,this.mBGCanvas,0,0);
 	this.mBGMaskSprite = new com.funbox.bcp.minigame3.entities.BaseActor("spMinigame03_background_mask",null,this.mGameCanvas,0,0);
 	this.mEnemiesWaveManager.start();
@@ -5931,8 +5931,6 @@ com.funbox.bcp.minigame3.entities.player.GamePlayer = function(clipName,aniData,
 	com.funbox.bcp.minigame3.entities.BaseActor.call(this,clipName,aniData,canvas,com.funbox.bcp.minigame3.Global.StageWidth / 2,com.funbox.bcp.minigame3.Global.StageHeight / 2);
 	this.mOffsetX = offsetX;
 	this.mOffsetY = offsetY;
-	this.mCharacter.setScaleX(0.7);
-	this.mCharacter.setScaleY(0.7);
 	this.mCharacter.currentAnimation().gotoAndStop(0);
 };
 $hxClasses["com.funbox.bcp.minigame3.entities.player.GamePlayer"] = com.funbox.bcp.minigame3.entities.player.GamePlayer;
@@ -6607,22 +6605,6 @@ com.funbox.bcp.minigame3.util.NCharacter.prototype = {
 	,setX: function(value) {
 		this.mX = value;
 	}
-	,setScaleY: function(value) {
-		this.mScaleY = value;
-		var iterator = this.mDictionary.iterator();
-		while(iterator.hasNext()) {
-			var atlasSprite = iterator.next();
-			atlasSprite.setScaleY(this.mScaleY);
-		}
-	}
-	,setScaleX: function(value) {
-		this.mScaleX = value;
-		var iterator = this.mDictionary.iterator();
-		while(iterator.hasNext()) {
-			var atlasSprite = iterator.next();
-			atlasSprite.setScaleX(this.mScaleX);
-		}
-	}
 	,currentAnimation: function() {
 		return this.mCurrentAnimation;
 	}
@@ -6923,12 +6905,6 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 	}
 	,onEndAnimationCallback: function(callbackFuncion) {
 		this.mCallbackFunction = callbackFuncion;
-	}
-	,setScaleY: function(value) {
-		this._scaleY = value;
-	}
-	,setScaleX: function(value) {
-		this._scaleX = value;
 	}
 	,getLength: function() {
 		return this._frames.length;

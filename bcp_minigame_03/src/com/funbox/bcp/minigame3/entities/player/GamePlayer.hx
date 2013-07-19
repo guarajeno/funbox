@@ -20,8 +20,8 @@ class GamePlayer extends BaseActor {
 		mOffsetX = offsetX;
 		mOffsetY = offsetY;
 		
-		mCharacter.setScaleX(0.7);
-		mCharacter.setScaleY(0.7);
+		//mCharacter.setScaleX(0.7);
+		//mCharacter.setScaleY(0.7);
 		mCharacter.currentAnimation().gotoAndStop(0);
 		
 		//Mouse.hide();

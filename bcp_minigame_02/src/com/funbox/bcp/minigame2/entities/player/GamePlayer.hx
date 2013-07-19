@@ -15,6 +15,8 @@ class GamePlayer extends BaseActor {
 		mOffsetX = offsetX;
 		mOffsetY = offsetY;
 		
+		mAnimationBitmap.setScaleX(1.1);
+		mAnimationBitmap.setScaleY(1.1);
 		mAnimationBitmap.gotoAndStop(0);
 		
 		Mouse.hide();

@@ -61,7 +61,7 @@ class VerticalTouchEngine {
 		mGamePlayerCashMachine = new GamePlayerCashMachine(mBGCanvas, Global.StageWidth / 2, 0);
 		
 		mPlayer = new GamePlayer("spMinigame03_mouseHand_click_attack", "spMinigame03_mouseHand_click_attack",
-			mPlayerCanvas, 17, 15);
+			mPlayerCanvas, -2, 15);
 		
 		mBGSprite = new BaseActor("spMinigame03_bg", null, mBGCanvas, 0, 0);
 		
