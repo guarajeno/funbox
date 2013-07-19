@@ -2,6 +2,7 @@ package com.funbox.bcp.minigame4.entities.enemy;
 import com.funbox.bcp.minigame4.engine.effectManager.EffectManager;
 import com.funbox.bcp.minigame4.entities.BaseActor;
 import com.funbox.bcp.minigame4.Global;
+import com.funbox.bcp.minigame4.util.NInterval;
 import nme.display.Sprite;
 
 /**
@@ -29,6 +30,10 @@ class MosaicosGroup {
 	
 	private var mEffectManager:EffectManager;
 	
+	private var mTimeIntervalDisappear_Mosaico_1:NInterval;
+	private var mTimeIntervalDisappear_Mosaico_2:NInterval;
+	private var mTimeIntervalDisappear_Mosaico_3:NInterval;
+	
 	private var mMosaicoCount:Int;
 	
 	public function new(canvas:Sprite, x:Int, y:Int, effectManager:EffectManager) {
@@ -54,6 +59,51 @@ class MosaicosGroup {
 		mMosaico_1.getCharacter().onEndAnimationCallback(onEndAnimationMosaico_1);
 			
 		mMosaicoCount = 1;
+	}
+	
+	public function onDisappearAll():Void {
+		mTimeIntervalDisappear_Mosaico_1 = new NInterval(onDisappearMosaico_1, 33);
+		mTimeIntervalDisappear_Mosaico_2 = new NInterval(onDisappearMosaico_2, 250);
+		mTimeIntervalDisappear_Mosaico_3 = new NInterval(onDisappearMosaico_3, 500);
+	}
+	
+	private function onDisappearMosaico_1():Void {
+		var mx_1:Float = mMosaico_1.getX();
+		
+		mMosaico_1.free();
+		mMosaico_1 = null;
+			
+		mEffectManager.createEffect(mx_1, mY, "spMinigame04_ani_effect_puff",
+			"spMinigame04_ani_effect_puff");
+			
+		mTimeIntervalDisappear_Mosaico_1.free();
+		mTimeIntervalDisappear_Mosaico_1 = null;
+	}
+	
+	private function onDisappearMosaico_2():Void {
+		var mx_2:Float = mMosaico_2.getX();
+		
+		mMosaico_2.free();
+		mMosaico_2 = null;
+			
+		mEffectManager.createEffect(mx_2, mY, "spMinigame04_ani_effect_puff",
+			"spMinigame04_ani_effect_puff");
+		
+		mTimeIntervalDisappear_Mosaico_2.free();
+		mTimeIntervalDisappear_Mosaico_2 = null;
+	}
+	
+	private function onDisappearMosaico_3():Void {
+		var mx_3:Float = mMosaico_3.getX();
+		
+		mMosaico_3.free();
+		mMosaico_3 = null;
+			
+		mEffectManager.createEffect(mx_3, mY, "spMinigame04_ani_effect_puff",
+			"spMinigame04_ani_effect_puff");
+		
+		mTimeIntervalDisappear_Mosaico_3.free();
+		mTimeIntervalDisappear_Mosaico_3 = null;
 	}
 	
 	private function onEndAnimationMosaico_1():Void {
@@ -144,6 +194,10 @@ class MosaicosGroup {
 		if (mMosaico_1 != null) { mMosaico_1.update(dt); }
 		if (mMosaico_2 != null) { mMosaico_2.update(dt); }
 		if (mMosaico_3 != null) { mMosaico_3.update(dt); }
+		
+		if (mTimeIntervalDisappear_Mosaico_1 != null) { mTimeIntervalDisappear_Mosaico_1.update(dt); }
+		if (mTimeIntervalDisappear_Mosaico_2 != null) { mTimeIntervalDisappear_Mosaico_2.update(dt); }
+		if (mTimeIntervalDisappear_Mosaico_3 != null) { mTimeIntervalDisappear_Mosaico_3.update(dt); }
 	}
 
 	public function free():Void {

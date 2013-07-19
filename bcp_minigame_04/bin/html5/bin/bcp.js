@@ -5375,6 +5375,7 @@ com.funbox.bcp.minigame4.engine.PullAndPushController = function(player,mosaicos
 	this.mPullFactor = 15;
 	this.mCurrentClicks = 0;
 	this.mDoPushEnemies = true;
+	this.mOnEndGame = false;
 	this.mGameCardRef.setReferences(this.mPlayerRef,this.mMosaicosGroupRef);
 	com.funbox.bcp.minigame4.Global.minigame.setMouseCallbacks($bind(this,this.onMouseClick));
 	this.mInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onEndInterval),1500);
@@ -5394,6 +5395,7 @@ com.funbox.bcp.minigame4.engine.PullAndPushController.prototype = {
 		if(this.mComboScoreInterval != null) this.mComboScoreInterval.update(dt);
 	}
 	,onMouseClick: function() {
+		if(this.mOnEndGame) return;
 		var isPausedGame = false;
 		if(com.funbox.bcp.minigame4.screens.GameScreen.instance != null) isPausedGame = com.funbox.bcp.minigame4.screens.GameScreen.instance.isPausedGame();
 		if(!isPausedGame) {
@@ -5425,7 +5427,9 @@ com.funbox.bcp.minigame4.engine.PullAndPushController.prototype = {
 			case com.funbox.bcp.minigame4.engine.PullAndPushController.WAVE_3:
 				if(this.mCurrentClicks >= this.mMouseClickWave_3) {
 					this.mCurrentClicks = 0;
-					com.funbox.bcp.minigame4.Global.minigame.onEndGame();
+					this.mOnEndGame = true;
+					this.mMosaicosGroupRef.onDisappearAll();
+					this.mGameCardRef.onDisappearAll();
 				}
 				break;
 			}
@@ -5445,6 +5449,7 @@ com.funbox.bcp.minigame4.engine.PullAndPushController.prototype = {
 		this.mComboFactor = 1;
 	}
 	,onMouseIntervalFinish: function() {
+		if(this.mOnEndGame) return;
 		this.mDoPushEnemies = true;
 		this.mMouseInterval.free();
 		this.mMouseInterval = null;
@@ -5452,6 +5457,7 @@ com.funbox.bcp.minigame4.engine.PullAndPushController.prototype = {
 	,onEndInterval: function() {
 		this.mInterval.free();
 		this.mInterval = null;
+		if(this.mOnEndGame) return;
 		this.mInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onEndInterval),750);
 		if(this.mDoPushEnemies) {
 			this.mPlayerRef.gotoState("spMinigame04_player_walk_right");
@@ -5796,6 +5802,16 @@ com.funbox.bcp.minigame4.entities.card.GameCard.__name__ = ["com","funbox","bcp"
 com.funbox.bcp.minigame4.entities.card.GameCard.__super__ = com.funbox.bcp.minigame4.entities.BaseActor;
 com.funbox.bcp.minigame4.entities.card.GameCard.prototype = $extend(com.funbox.bcp.minigame4.entities.BaseActor.prototype,{
 	update: function(dt) {
+		if(this.mLinearMovement != null) {
+			this.setX(this.mLinearMovement.getX());
+			this.setY(this.mLinearMovement.getY());
+			var _g = this.mBitmap;
+			_g.set_scaleX(_g.get_scaleX() + 0.005);
+			var _g = this.mBitmap;
+			_g.set_scaleY(_g.get_scaleY() + 0.005);
+			this.mLinearMovement.update(dt);
+		}
+		if(this.mCardFinishInterval != null) this.mCardFinishInterval.update(dt);
 		var atlas = null;
 		var currentIndex = -1;
 		var maxIndex = -1;
@@ -5907,6 +5923,25 @@ com.funbox.bcp.minigame4.entities.card.GameCard.prototype = $extend(com.funbox.b
 		}
 		com.funbox.bcp.minigame4.entities.BaseActor.prototype.update.call(this,dt);
 	}
+	,onFinishIntervalLinear: function() {
+		this.mCardFinishInterval.free();
+		this.mCardFinishInterval = null;
+		com.funbox.bcp.minigame4.Global.minigame.onEndGame();
+	}
+	,onFinishLinear: function() {
+		this.mLinearMovement.free();
+		this.mLinearMovement = null;
+		this.mCardFinishInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishIntervalLinear),1000);
+	}
+	,onFinishInterval: function() {
+		this.mCardFinishInterval.free();
+		this.mCardFinishInterval = null;
+		this.mLinearMovement = new com.funbox.bcp.minigame4.util.NLinearMovement(this.mBitmap.get_x(),this.mBitmap.get_y(),this.mBitmap.get_x() + 80,this.mBitmap.get_y() - 150,0.07);
+		this.mLinearMovement.setCallback($bind(this,this.onFinishLinear));
+	}
+	,onDisappearAll: function() {
+		this.mCardFinishInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishInterval),500);
+	}
 	,setReferences: function(player,mosaicosGroup) {
 		this.mPlayerRef = player;
 		this.mMosaicosGroupRef = mosaicosGroup;
@@ -5950,6 +5985,9 @@ com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup.prototype = {
 		if(this.mMosaico_1 != null) this.mMosaico_1.update(dt);
 		if(this.mMosaico_2 != null) this.mMosaico_2.update(dt);
 		if(this.mMosaico_3 != null) this.mMosaico_3.update(dt);
+		if(this.mTimeIntervalDisappear_Mosaico_1 != null) this.mTimeIntervalDisappear_Mosaico_1.update(dt);
+		if(this.mTimeIntervalDisappear_Mosaico_2 != null) this.mTimeIntervalDisappear_Mosaico_2.update(dt);
+		if(this.mTimeIntervalDisappear_Mosaico_3 != null) this.mTimeIntervalDisappear_Mosaico_3.update(dt);
 	}
 	,appearNextMosaico: function() {
 		this.mMosaicoCount++;
@@ -6023,6 +6061,35 @@ com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup.prototype = {
 			this.mMosaico_1.getCharacter().gotoState("spMinigame04_mosaico_1_stand");
 			break;
 		}
+	}
+	,onDisappearMosaico_3: function() {
+		var mx_3 = this.mMosaico_3.getX();
+		this.mMosaico_3.free();
+		this.mMosaico_3 = null;
+		this.mEffectManager.createEffect(mx_3,this.mY,"spMinigame04_ani_effect_puff","spMinigame04_ani_effect_puff");
+		this.mTimeIntervalDisappear_Mosaico_3.free();
+		this.mTimeIntervalDisappear_Mosaico_3 = null;
+	}
+	,onDisappearMosaico_2: function() {
+		var mx_2 = this.mMosaico_2.getX();
+		this.mMosaico_2.free();
+		this.mMosaico_2 = null;
+		this.mEffectManager.createEffect(mx_2,this.mY,"spMinigame04_ani_effect_puff","spMinigame04_ani_effect_puff");
+		this.mTimeIntervalDisappear_Mosaico_2.free();
+		this.mTimeIntervalDisappear_Mosaico_2 = null;
+	}
+	,onDisappearMosaico_1: function() {
+		var mx_1 = this.mMosaico_1.getX();
+		this.mMosaico_1.free();
+		this.mMosaico_1 = null;
+		this.mEffectManager.createEffect(mx_1,this.mY,"spMinigame04_ani_effect_puff","spMinigame04_ani_effect_puff");
+		this.mTimeIntervalDisappear_Mosaico_1.free();
+		this.mTimeIntervalDisappear_Mosaico_1 = null;
+	}
+	,onDisappearAll: function() {
+		this.mTimeIntervalDisappear_Mosaico_1 = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onDisappearMosaico_1),33);
+		this.mTimeIntervalDisappear_Mosaico_2 = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onDisappearMosaico_2),250);
+		this.mTimeIntervalDisappear_Mosaico_3 = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onDisappearMosaico_3),500);
 	}
 	,__class__: com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup
 }
@@ -6712,6 +6779,60 @@ com.funbox.bcp.minigame4.util.NInterval.prototype = {
 		} else this.mTimeCounter += dt;
 	}
 	,__class__: com.funbox.bcp.minigame4.util.NInterval
+}
+com.funbox.bcp.minigame4.util.NLinearMovement = function(ix,iy,fx,fy,speed) {
+	this.mX = this.mInitX = ix;
+	this.mY = this.mInitY = iy;
+	this.mFinalX = fx;
+	this.mFinalY = fy;
+	this.mSpeed = speed;
+	this.mOnFinish = null;
+	var dx = this.mInitX - this.mFinalX;
+	var dy = this.mInitY - this.mFinalY;
+	var angle = Math.atan2(dy,dx) + Math.PI;
+	this.mOldDistance = Math.sqrt(dx * dx + dy * dy);
+	this.mVX = Math.cos(angle);
+	this.mVY = Math.sin(angle);
+	this.mTime = 0;
+	this.mOnFinishMovement = false;
+};
+$hxClasses["com.funbox.bcp.minigame4.util.NLinearMovement"] = com.funbox.bcp.minigame4.util.NLinearMovement;
+com.funbox.bcp.minigame4.util.NLinearMovement.__name__ = ["com","funbox","bcp","minigame4","util","NLinearMovement"];
+com.funbox.bcp.minigame4.util.NLinearMovement.prototype = {
+	free: function() {
+		this.mOnFinish = null;
+	}
+	,update: function(dt) {
+		if(!this.mOnFinishMovement) {
+			var newSpeed = dt * this.mSpeed;
+			this.mVFX = this.mVX * newSpeed;
+			this.mVFY = this.mVY * newSpeed;
+			this.mX += this.mVFX;
+			this.mY += this.mVFY;
+			var dx = this.mX - this.mFinalX;
+			var dy = this.mY - this.mFinalY;
+			var newDistance = Math.sqrt(dx * dx + dy * dy);
+			if(this.mOldDistance < newDistance) {
+				this.mX = this.mFinalX;
+				this.mY = this.mFinalY;
+				this.mOnFinishMovement = true;
+				if(this.mOnFinish != null) {
+					this.mOnFinish();
+					this.mOnFinish = null;
+				}
+			} else this.mOldDistance = newDistance;
+		}
+	}
+	,setCallback: function(onCallback) {
+		this.mOnFinish = onCallback;
+	}
+	,getY: function() {
+		return this.mY;
+	}
+	,getX: function() {
+		return this.mX;
+	}
+	,__class__: com.funbox.bcp.minigame4.util.NLinearMovement
 }
 com.funbox.bcp.minigame4.util.NUtils = function() {
 };

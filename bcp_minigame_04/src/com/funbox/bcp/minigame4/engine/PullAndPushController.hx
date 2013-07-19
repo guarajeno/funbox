@@ -42,6 +42,7 @@ class PullAndPushController {
 	private var mParentCanvas:Sprite;
 	
 	private var mDoPushEnemies:Bool;
+	private var mOnEndGame:Bool;
 	
 	public function new(player:GamePlayer, mosaicosGroup:MosaicosGroup, 
 		gameCard:GameCard, parentCanvas:Sprite) {
@@ -64,6 +65,7 @@ class PullAndPushController {
 		mPullFactor = 15;
 		mCurrentClicks = 0;
 		mDoPushEnemies = true;
+		mOnEndGame = false;
 		
 		mGameCardRef.setReferences(mPlayerRef, mMosaicosGroupRef);
 		
@@ -75,6 +77,8 @@ class PullAndPushController {
 	private function onEndInterval():Void {
 		mInterval.free();
 		mInterval = null;
+		
+		if (mOnEndGame) { return; }
 		
 		mInterval = new NInterval(onEndInterval, 750);
 		
@@ -104,6 +108,8 @@ class PullAndPushController {
 	}
 	
 	private function onMouseIntervalFinish():Void {
+		if (mOnEndGame) { return; }
+		
 		mDoPushEnemies = true;
 		
 		mMouseInterval.free();
@@ -118,6 +124,8 @@ class PullAndPushController {
 	}
 	
 	private function onMouseClick():Void {
+		if (mOnEndGame) { return; }
+		
 		var isPausedGame:Bool = false;
 		
 		if (GameScreen.instance != null) {
@@ -158,7 +166,10 @@ class PullAndPushController {
 					mCurrentClicks = 0;
 					
 					// ganaste !!!
-					Global.minigame.onEndGame();
+					mOnEndGame = true;
+					mMosaicosGroupRef.onDisappearAll();
+					mGameCardRef.onDisappearAll();
+					//Global.minigame.onEndGame();
 				}
 			}
 			

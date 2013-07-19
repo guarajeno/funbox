@@ -2,6 +2,9 @@ package com.funbox.bcp.minigame4.entities.card;
 import com.funbox.bcp.minigame4.entities.BaseActor;
 import com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup;
 import com.funbox.bcp.minigame4.entities.player.GamePlayer;
+import com.funbox.bcp.minigame4.Global;
+import com.funbox.bcp.minigame4.util.NInterval;
+import com.funbox.bcp.minigame4.util.NLinearMovement;
 import com.minigloop.display.AtlasSprite;
 import nme.display.Sprite;
 
@@ -17,6 +20,9 @@ class GameCard extends BaseActor {
 	private var mMosaicosGroupRef:MosaicosGroup;
 	
 	private var mCurrentAnimationPlayer:AtlasSprite;
+	
+	private var mLinearMovement:NLinearMovement;
+	private var mCardFinishInterval:NInterval;
 	
 	private var mCardInitX:Float;
 	
@@ -40,7 +46,43 @@ class GameCard extends BaseActor {
 		mMosaicosGroupRef = mosaicosGroup;
 	}
 	
+	public function onDisappearAll():Void {
+		mCardFinishInterval = new NInterval(onFinishInterval, 500);
+	}
+	
+	private function onFinishInterval():Void {
+		mCardFinishInterval.free();
+		mCardFinishInterval = null;
+		
+		mLinearMovement = new NLinearMovement(mBitmap.x, mBitmap.y, mBitmap.x + 80, mBitmap.y - 150, 0.07);
+		mLinearMovement.setCallback(onFinishLinear);
+	}
+	
+	private function onFinishLinear():Void {
+		mLinearMovement.free();
+		mLinearMovement = null;
+		
+		mCardFinishInterval = new NInterval(onFinishIntervalLinear, 1000);
+	}
+	
+	private function onFinishIntervalLinear():Void {
+		mCardFinishInterval.free();
+		mCardFinishInterval = null;
+		
+		Global.minigame.onEndGame();
+	}
+	
 	override public function update(dt:Int):Void {
+		if (mLinearMovement != null) { 
+			setX(mLinearMovement.getX());
+			setY(mLinearMovement.getY());
+			mBitmap.scaleX += 0.005;
+			mBitmap.scaleY += 0.005;
+			mLinearMovement.update(dt);
+		}
+		
+		if (mCardFinishInterval != null) { mCardFinishInterval.update(dt); }
+		
 		var atlas:AtlasSprite = null;
 		var currentIndex:Int = -1;
 		var maxIndex:Int = -1;

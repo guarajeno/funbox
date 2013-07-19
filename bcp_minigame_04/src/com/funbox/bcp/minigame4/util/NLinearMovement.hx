@@ -23,6 +23,8 @@ class NLinearMovement {
     private var mSpeed:Float;
 	private var mOldDistance:Float;
 	
+	private var mOnFinish:Dynamic;
+	
 	private var mOnFinishMovement:Bool;
 	
 	public function getX():Float { return mX; }
@@ -37,6 +39,8 @@ class NLinearMovement {
 		
 		mSpeed = speed;
         
+		mOnFinish = null;
+		
         var dx:Float = mInitX - mFinalX;
         var dy:Float = mInitY - mFinalY;
         var angle:Float = Math.atan2(dy, dx) + Math.PI;
@@ -49,6 +53,10 @@ class NLinearMovement {
         mTime = 0;
 		
 		mOnFinishMovement = false;
+	}
+	
+	public function setCallback(onCallback:Dynamic = null):Void {
+		mOnFinish = onCallback;
 	}
 	
 	public function update(dt:Int):Void {
@@ -69,9 +77,17 @@ class NLinearMovement {
                 mX = mFinalX;
                 mY = mFinalY;
                 mOnFinishMovement = true;
-                //if (mOnFinish != null) { mOnFinish(this); }
+				
+                if (mOnFinish != null) { 
+					mOnFinish();
+					mOnFinish = null;
+				}
             }
             else { mOldDistance = newDistance; }
         }
+	}
+	
+	public function free():Void {
+		mOnFinish = null;
 	}
 }
