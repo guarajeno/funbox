@@ -54,9 +54,9 @@ class PreloaderScreen extends Screen
 		DataLoader.init();
 		AssetsLoader.init();
 		
-		AssetsLoader.addAsset("images/minigame04/interfaces/loader/spminigame04_guiloader.png", "guiloader");
-		AssetsLoader.addAsset("images/minigame04/interfaces/spminigame04_bg.jpg", "spminigame04_bg");
-		DataLoader.addData("images/minigame04/interfaces/loader/spminigame04_guiloader.json", "guiloader");
+		AssetsLoader.addAsset("images/minigame04/interfaces/loader/spMinigame04_guiloader.png", "guiloader");
+		AssetsLoader.addAsset("images/minigame04/interfaces/spMinigame04_bg.jpg", "spminigame04_bg");
+		DataLoader.addData("images/minigame04/interfaces/loader/spMinigame04_guiloader.json", "guiloader");
 		
 		AssetsLoader.load(onLoadingAssetsLoaded);
 		DataLoader.load(onLoadingDataLoaded);
@@ -173,26 +173,26 @@ class PreloaderScreen extends Screen
 		/////////////////////////////////////////////////////////////
 			
 		// bg and mask bg
-		AssetsLoader.addAsset("images/minigame04/interfaces/spminigame04_bg.jpg", "spminigame04_bg");
-		AssetsLoader.addAsset("images/minigame04/interfaces/spminigame04_background_mask.png", 
+		AssetsLoader.addAsset("images/minigame04/interfaces/spMinigame04_bg.jpg", "spminigame04_bg");
+		AssetsLoader.addAsset("images/minigame04/interfaces/spMinigame04_background_mask.png", 
 			"spminigame04_background_mask");
 			
 		// transition assets
-		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spminigame04_gui_text_01.png",
+		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spMinigame04_gui_text_01.png",
 			"spminigame04_gui_text_01");
-		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spminigame04_gui_text_02.png",
+		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spMinigame04_gui_text_02.png",
 			"spminigame04_gui_text_02");
-		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spminigame04_gui_text_03.png",
+		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spMinigame04_gui_text_03.png",
 			"spminigame04_gui_text_03");
-		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spminigame04_gui_text_start.png",
+		AssetsLoader.addAsset("images/minigame04/interfaces/popup_start_sequence/spMinigame04_gui_text_start.png",
 			"spminigame04_gui_text_start");
 			
 		// hud
-		AssetsLoader.addAsset("images/minigame04/interfaces/hud/spminigame04_background_score.png",
+		AssetsLoader.addAsset("images/minigame04/interfaces/hud/spMinigame04_background_score.png",
 			"spminigame04_background_score");
 			
 		// tutorial
-		AssetsLoader.addAsset("images/minigame04/interfaces/tutorial/spminigame04_tutorial_text.png",
+		AssetsLoader.addAsset("images/minigame04/interfaces/tutorial/spMinigame04_tutorial_text.png",
 			"spminigame04_tutorial_text");
 			
 		// score effect

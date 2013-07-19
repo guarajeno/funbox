@@ -44,9 +44,6 @@ class MosaicosGroup {
 		mCanvas.addChild(mMosaicoCanvas_1);
 		mCanvas.addChild(mMosaicoCanvas_2);
 		mCanvas.addChild(mMosaicoCanvas_3);
-		
-		mEffectManager.createEffect(mX, mY, "spMinigame04_ani_effect_puff",
-			"spMinigame04_ani_effect_puff");
 			
 		mMosaico_1 = new BaseActor("spMinigame04_mosaico_1_stand", "spMinigame04_mosaico_1_stand",
 			mMosaicoCanvas_3, mX, mY);
