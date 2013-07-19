@@ -35,6 +35,8 @@ class TutorialScreen extends Screen {
 	private var mBGMaskSprite:BaseActor;
 	private var mTutorialSprite:BaseActor;
 
+	private var mCardInitX:Float;
+	
 	private var mCurrentState:Int;
 	private var mInterval:NInterval;
 	
@@ -64,15 +66,19 @@ class TutorialScreen extends Screen {
 		_canvas.addChild(mCanvasEffect);
 		_canvas.addChild(mCanvasMouse);
 		
+		var sumX:Int = 29;
+		
 		mCardSprite = new BaseActor("spMinigame04_tutorial_bcp_card", null, mCanvasTutoSprite, 
-			(Global.StageWidth / 2) - 70, (Global.StageHeight / 2) + 30);
+			(Global.StageWidth / 2) - 70 + sumX, (Global.StageHeight / 2) + 30);
 		mCardSprite.getBitmap().scaleX = mCardSprite.getBitmap().scaleY = 0.5;
 		
+		mCardInitX = mCardSprite.getX();
+		
 		mPlayerSprite = new BaseActor("spMinigame04_tutorial_player_walk_left", "spMinigame04_tutorial_player_walk_left",
-			mCanvasTutoSprite, (Global.StageWidth / 2) - 100, (Global.StageHeight / 2) + 60);
+			mCanvasTutoSprite, (Global.StageWidth / 2) - 100 + sumX, (Global.StageHeight / 2) + 60);
 			
 		mMosaicoSprite = new BaseActor("spMinigame04_tutorial_mosaico_1_walk_right", "spMinigame04_tutorial_mosaico_1_walk_right",
-			mCanvasTutoSprite, (Global.StageWidth / 2) + 60, (Global.StageHeight / 2) + 60);
+			mCanvasTutoSprite, (Global.StageWidth / 2) + 60 + sumX, (Global.StageHeight / 2) + 60);
 		
 		mEffectManager = new EffectManager(mCanvasEffect);
 		
@@ -107,12 +113,31 @@ class TutorialScreen extends Screen {
 		mPlayerSprite.update(dt);
 		mMosaicoSprite.update(dt);
 		
+		switch(mPlayerSprite.getCharacter().currentAnimation().getCurrentIndex()) {
+		case 0: mCardSprite.setX(mCardInitX - 1);
+		case 1: mCardSprite.setX(mCardInitX - 2);
+		case 2: mCardSprite.setX(mCardInitX - 3);
+		case 3: mCardSprite.setX(mCardInitX - 4);
+		case 4: mCardSprite.setX(mCardInitX - 5);
+		case 5: mCardSprite.setX(mCardInitX - 6);
+		case 6: mCardSprite.setX(mCardInitX - 6);
+		case 7: mCardSprite.setX(mCardInitX - 1);
+		case 8: mCardSprite.setX(mCardInitX + 5);
+		case 9: mCardSprite.setX(mCardInitX + 7);
+		case 10: mCardSprite.setX(mCardInitX + 9);
+		case 11: mCardSprite.setX(mCardInitX + 9);
+		case 12: mCardSprite.setX(mCardInitX + 9);
+		case 13: mCardSprite.setX(mCardInitX + 9);
+		} 
+		
 		switch(mCurrentState) {
 		case TutorialScreen.STATE_SHOW_TUTORIAL:
 			if (mTutorialSprite.getAlpha() >= 1.0) {
 				mTutorialSprite.setAlpha(1.0);
 				
-				mCurrentState = TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+				mCurrentState = TutorialScreen.STATE_WAIT;
+				
+				mInterval = new NInterval(onFinishWait, 1000);
 			}
 			else {
 				mTutorialSprite.setAlpha(mTutorialSprite.getAlpha() + (0.0008 * dt));

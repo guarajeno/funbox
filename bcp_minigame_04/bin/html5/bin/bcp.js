@@ -5496,9 +5496,10 @@ com.funbox.bcp.minigame4.engine.VerticalTouchEngine = function(miniGameRef,gameC
 	this.mGameEverythingCanvas.addChild(this.mEffectCanvas);
 	this.mEffectManager = new com.funbox.bcp.minigame4.engine.effectManager.EffectManager(this.mEffectCanvas);
 	this.mEffectManagerScore = new com.funbox.bcp.minigame4.engine.effectManager.EffectManager(this.mEffectScoreCanvas);
-	this.mPlayer = new com.funbox.bcp.minigame4.entities.player.GamePlayer(this.mPlayerCanvas,150,300);
-	this.mMosaicosGroup = new com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup(this.mMosaicosCanvas,310,300,this.mEffectManager);
-	this.mGameCard = new com.funbox.bcp.minigame4.entities.card.GameCard(this.mCardCanvas,185,260);
+	var sumX = 100;
+	this.mPlayer = new com.funbox.bcp.minigame4.entities.player.GamePlayer(this.mPlayerCanvas,150 + sumX,300);
+	this.mMosaicosGroup = new com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup(this.mMosaicosCanvas,310 + sumX,300,this.mEffectManager);
+	this.mGameCard = new com.funbox.bcp.minigame4.entities.card.GameCard(this.mCardCanvas,185 + sumX,260);
 	this.mPullAndPushController = new com.funbox.bcp.minigame4.engine.PullAndPushController(this.mPlayer,this.mMosaicosGroup,this.mGameCard,this.mGameEverythingCanvas);
 	this.mBGSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spminigame04_bg",null,this.mBGCanvas,0,0);
 	this.mBGMaskSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spminigame04_background_mask",null,this.mGameCanvas,0,0);
@@ -5806,9 +5807,9 @@ com.funbox.bcp.minigame4.entities.card.GameCard.prototype = $extend(com.funbox.b
 			this.setX(this.mLinearMovement.getX());
 			this.setY(this.mLinearMovement.getY());
 			var _g = this.mBitmap;
-			_g.set_scaleX(_g.get_scaleX() + 0.005);
+			_g.set_scaleX(_g.get_scaleX() + 0.002);
 			var _g = this.mBitmap;
-			_g.set_scaleY(_g.get_scaleY() + 0.005);
+			_g.set_scaleY(_g.get_scaleY() + 0.002);
 			this.mLinearMovement.update(dt);
 		}
 		if(this.mCardFinishInterval != null) this.mCardFinishInterval.update(dt);
@@ -5923,24 +5924,11 @@ com.funbox.bcp.minigame4.entities.card.GameCard.prototype = $extend(com.funbox.b
 		}
 		com.funbox.bcp.minigame4.entities.BaseActor.prototype.update.call(this,dt);
 	}
-	,onFinishIntervalLinear: function() {
-		this.mCardFinishInterval.free();
-		this.mCardFinishInterval = null;
+	,onFinishInterval: function() {
 		com.funbox.bcp.minigame4.Global.minigame.onEndGame();
 	}
-	,onFinishLinear: function() {
-		this.mLinearMovement.free();
-		this.mLinearMovement = null;
-		this.mCardFinishInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishIntervalLinear),1000);
-	}
-	,onFinishInterval: function() {
-		this.mCardFinishInterval.free();
-		this.mCardFinishInterval = null;
-		this.mLinearMovement = new com.funbox.bcp.minigame4.util.NLinearMovement(this.mBitmap.get_x(),this.mBitmap.get_y(),this.mBitmap.get_x() + 80,this.mBitmap.get_y() - 150,0.07);
-		this.mLinearMovement.setCallback($bind(this,this.onFinishLinear));
-	}
 	,onDisappearAll: function() {
-		this.mCardFinishInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishInterval),500);
+		this.mCardFinishInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishInterval),1300);
 	}
 	,setReferences: function(player,mosaicosGroup) {
 		this.mPlayerRef = player;
@@ -6567,10 +6555,12 @@ com.funbox.bcp.minigame4.screens.TutorialScreen = function(canvas) {
 	this._canvas.addChild(this.mCanvasTutoSprite);
 	this._canvas.addChild(this.mCanvasEffect);
 	this._canvas.addChild(this.mCanvasMouse);
-	this.mCardSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spMinigame04_tutorial_bcp_card",null,this.mCanvasTutoSprite,com.funbox.bcp.minigame4.Global.StageWidth / 2 - 70,com.funbox.bcp.minigame4.Global.StageHeight / 2 + 30);
+	var sumX = 29;
+	this.mCardSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spMinigame04_tutorial_bcp_card",null,this.mCanvasTutoSprite,com.funbox.bcp.minigame4.Global.StageWidth / 2 - 70 + sumX,com.funbox.bcp.minigame4.Global.StageHeight / 2 + 30);
 	this.mCardSprite.getBitmap().set_scaleX(this.mCardSprite.getBitmap().set_scaleY(0.5));
-	this.mPlayerSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spMinigame04_tutorial_player_walk_left","spMinigame04_tutorial_player_walk_left",this.mCanvasTutoSprite,com.funbox.bcp.minigame4.Global.StageWidth / 2 - 100,com.funbox.bcp.minigame4.Global.StageHeight / 2 + 60);
-	this.mMosaicoSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spMinigame04_tutorial_mosaico_1_walk_right","spMinigame04_tutorial_mosaico_1_walk_right",this.mCanvasTutoSprite,com.funbox.bcp.minigame4.Global.StageWidth / 2 + 60,com.funbox.bcp.minigame4.Global.StageHeight / 2 + 60);
+	this.mCardInitX = this.mCardSprite.getX();
+	this.mPlayerSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spMinigame04_tutorial_player_walk_left","spMinigame04_tutorial_player_walk_left",this.mCanvasTutoSprite,com.funbox.bcp.minigame4.Global.StageWidth / 2 - 100 + sumX,com.funbox.bcp.minigame4.Global.StageHeight / 2 + 60);
+	this.mMosaicoSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spMinigame04_tutorial_mosaico_1_walk_right","spMinigame04_tutorial_mosaico_1_walk_right",this.mCanvasTutoSprite,com.funbox.bcp.minigame4.Global.StageWidth / 2 + 60 + sumX,com.funbox.bcp.minigame4.Global.StageHeight / 2 + 60);
 	this.mEffectManager = new com.funbox.bcp.minigame4.engine.effectManager.EffectManager(this.mCanvasEffect);
 	this.mBGSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spminigame04_bg",null,this.mCanvasTutorial,0,0);
 	this.mBGMaskSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spminigame04_background_mask",null,this.mCanvasTutorial,0,0);
@@ -6614,11 +6604,56 @@ com.funbox.bcp.minigame4.screens.TutorialScreen.prototype = $extend(com.minigloo
 		this.mCardSprite.update(dt);
 		this.mPlayerSprite.update(dt);
 		this.mMosaicoSprite.update(dt);
+		switch(this.mPlayerSprite.getCharacter().currentAnimation().getCurrentIndex()) {
+		case 0:
+			this.mCardSprite.setX(this.mCardInitX - 1);
+			break;
+		case 1:
+			this.mCardSprite.setX(this.mCardInitX - 2);
+			break;
+		case 2:
+			this.mCardSprite.setX(this.mCardInitX - 3);
+			break;
+		case 3:
+			this.mCardSprite.setX(this.mCardInitX - 4);
+			break;
+		case 4:
+			this.mCardSprite.setX(this.mCardInitX - 5);
+			break;
+		case 5:
+			this.mCardSprite.setX(this.mCardInitX - 6);
+			break;
+		case 6:
+			this.mCardSprite.setX(this.mCardInitX - 6);
+			break;
+		case 7:
+			this.mCardSprite.setX(this.mCardInitX - 1);
+			break;
+		case 8:
+			this.mCardSprite.setX(this.mCardInitX + 5);
+			break;
+		case 9:
+			this.mCardSprite.setX(this.mCardInitX + 7);
+			break;
+		case 10:
+			this.mCardSprite.setX(this.mCardInitX + 9);
+			break;
+		case 11:
+			this.mCardSprite.setX(this.mCardInitX + 9);
+			break;
+		case 12:
+			this.mCardSprite.setX(this.mCardInitX + 9);
+			break;
+		case 13:
+			this.mCardSprite.setX(this.mCardInitX + 9);
+			break;
+		}
 		switch(this.mCurrentState) {
 		case com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_SHOW_TUTORIAL:
 			if(this.mTutorialSprite.getAlpha() >= 1.0) {
 				this.mTutorialSprite.setAlpha(1.0);
-				this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+				this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_WAIT;
+				this.mInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishWait),1000);
 			} else this.mTutorialSprite.setAlpha(this.mTutorialSprite.getAlpha() + 0.0008 * dt);
 			break;
 		case com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_WAIT:
@@ -6635,6 +6670,10 @@ com.funbox.bcp.minigame4.screens.TutorialScreen.prototype = $extend(com.minigloo
 	}
 	,onGoGame: function() {
 		com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame4.screens.GameScreen);
+	}
+	,onFinishWait: function() {
+		this.mInterval = null;
+		this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
 	}
 	,__class__: com.funbox.bcp.minigame4.screens.TutorialScreen
 });
@@ -6780,29 +6819,11 @@ com.funbox.bcp.minigame4.util.NInterval.prototype = {
 	}
 	,__class__: com.funbox.bcp.minigame4.util.NInterval
 }
-com.funbox.bcp.minigame4.util.NLinearMovement = function(ix,iy,fx,fy,speed) {
-	this.mX = this.mInitX = ix;
-	this.mY = this.mInitY = iy;
-	this.mFinalX = fx;
-	this.mFinalY = fy;
-	this.mSpeed = speed;
-	this.mOnFinish = null;
-	var dx = this.mInitX - this.mFinalX;
-	var dy = this.mInitY - this.mFinalY;
-	var angle = Math.atan2(dy,dx) + Math.PI;
-	this.mOldDistance = Math.sqrt(dx * dx + dy * dy);
-	this.mVX = Math.cos(angle);
-	this.mVY = Math.sin(angle);
-	this.mTime = 0;
-	this.mOnFinishMovement = false;
-};
+com.funbox.bcp.minigame4.util.NLinearMovement = function() { }
 $hxClasses["com.funbox.bcp.minigame4.util.NLinearMovement"] = com.funbox.bcp.minigame4.util.NLinearMovement;
 com.funbox.bcp.minigame4.util.NLinearMovement.__name__ = ["com","funbox","bcp","minigame4","util","NLinearMovement"];
 com.funbox.bcp.minigame4.util.NLinearMovement.prototype = {
-	free: function() {
-		this.mOnFinish = null;
-	}
-	,update: function(dt) {
+	update: function(dt) {
 		if(!this.mOnFinishMovement) {
 			var newSpeed = dt * this.mSpeed;
 			this.mVFX = this.mVX * newSpeed;
@@ -6822,9 +6843,6 @@ com.funbox.bcp.minigame4.util.NLinearMovement.prototype = {
 				}
 			} else this.mOldDistance = newDistance;
 		}
-	}
-	,setCallback: function(onCallback) {
-		this.mOnFinish = onCallback;
 	}
 	,getY: function() {
 		return this.mY;

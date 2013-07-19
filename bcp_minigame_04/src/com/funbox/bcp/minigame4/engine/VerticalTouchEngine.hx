@@ -68,9 +68,11 @@ class VerticalTouchEngine {
 		mEffectManager = new EffectManager(mEffectCanvas);
 		mEffectManagerScore = new EffectManager(mEffectScoreCanvas);
 		
-		mPlayer = new GamePlayer(mPlayerCanvas, 150, 300);
-		mMosaicosGroup = new MosaicosGroup(mMosaicosCanvas, 310, 300, mEffectManager);
-		mGameCard = new GameCard(mCardCanvas, 185, 260);
+		var sumX:Int = 100;
+		
+		mPlayer = new GamePlayer(mPlayerCanvas, 150 + sumX, 300);
+		mMosaicosGroup = new MosaicosGroup(mMosaicosCanvas, 310 + sumX, 300, mEffectManager);
+		mGameCard = new GameCard(mCardCanvas, 185 + sumX, 260);
 		
 		mPullAndPushController = new PullAndPushController(mPlayer, mMosaicosGroup, 
 			mGameCard, mGameEverythingCanvas);

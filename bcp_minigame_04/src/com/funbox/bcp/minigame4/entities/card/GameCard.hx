@@ -47,15 +47,17 @@ class GameCard extends BaseActor {
 	}
 	
 	public function onDisappearAll():Void {
-		mCardFinishInterval = new NInterval(onFinishInterval, 500);
+		mCardFinishInterval = new NInterval(onFinishInterval, 1300);
 	}
 	
 	private function onFinishInterval():Void {
-		mCardFinishInterval.free();
-		mCardFinishInterval = null;
+		Global.minigame.onEndGame();
 		
-		mLinearMovement = new NLinearMovement(mBitmap.x, mBitmap.y, mBitmap.x + 80, mBitmap.y - 150, 0.07);
-		mLinearMovement.setCallback(onFinishLinear);
+		//mCardFinishInterval.free();
+		//mCardFinishInterval = null;
+		
+		//mLinearMovement = new NLinearMovement(mBitmap.x, mBitmap.y, mBitmap.x + 80, mBitmap.y - 150, 0.07);
+		//mLinearMovement.setCallback(onFinishLinear);
 	}
 	
 	private function onFinishLinear():Void {
@@ -76,8 +78,8 @@ class GameCard extends BaseActor {
 		if (mLinearMovement != null) { 
 			setX(mLinearMovement.getX());
 			setY(mLinearMovement.getY());
-			mBitmap.scaleX += 0.005;
-			mBitmap.scaleY += 0.005;
+			mBitmap.scaleX += 0.002;
+			mBitmap.scaleY += 0.002;
 			mLinearMovement.update(dt);
 		}
 		
