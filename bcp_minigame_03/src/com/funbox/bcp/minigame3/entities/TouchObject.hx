@@ -73,7 +73,7 @@ class TouchObject extends BaseActor {
 			var mouseX:Int = Std.int(Global.minigame.getMouseX());
 			var mouseY:Int = Std.int(Global.minigame.getMouseY());
 			
-			if (hitTestPoint(mouseX, mouseY)) {
+			/*if (hitTestPoint(mouseX, mouseY)) {
 				isDead = true;
 				makePuffEffect();
 				
@@ -89,7 +89,7 @@ class TouchObject extends BaseActor {
 				var newScore:Int = Global.minigame.getGameHud().GetScore();
 				newScore += score_earned;
 				Global.minigame.getGameHud().SetScore(newScore);
-			}
+			}*/
 		}
 		
 		if (mAreTouchableItems) {

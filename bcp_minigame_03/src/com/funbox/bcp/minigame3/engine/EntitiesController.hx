@@ -12,6 +12,8 @@ class EntitiesController {
 	private var mCanvas:Sprite;
 	private var mEntities:Array <TouchObject>;
 	
+	public function getEntities():Array < TouchObject > { return mEntities; }
+	
 	public function new(canvas:Sprite) {
 		mCanvas = canvas;
 		

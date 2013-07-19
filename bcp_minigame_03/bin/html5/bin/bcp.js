@@ -5473,6 +5473,9 @@ com.funbox.bcp.minigame3.engine.EntitiesController.prototype = {
 		if(touchObj != null) this.mEntities.push(touchObj);
 		return touchObj;
 	}
+	,getEntities: function() {
+		return this.mEntities;
+	}
 	,__class__: com.funbox.bcp.minigame3.engine.EntitiesController
 }
 com.funbox.bcp.minigame3.engine.VerticalTouchEngine = function(miniGameRef,gameCanvas) {
@@ -5534,6 +5537,9 @@ com.funbox.bcp.minigame3.engine.VerticalTouchEngine.prototype = {
 	}
 	,getCashMachine: function() {
 		return this.mGamePlayerCashMachine;
+	}
+	,getEntitiesController: function() {
+		return this.mEntitiesController;
 	}
 	,getEffectManager: function() {
 		return this.mEffectManager;
@@ -5813,20 +5819,6 @@ com.funbox.bcp.minigame3.entities.TouchObject.prototype = $extend(com.funbox.bcp
 		if(com.funbox.bcp.minigame3.Global.minigame.isMousePressed()) {
 			var mouseX = com.funbox.bcp.minigame3.Global.minigame.getMouseX() | 0;
 			var mouseY = com.funbox.bcp.minigame3.Global.minigame.getMouseY() | 0;
-			if(this.hitTestPoint(mouseX,mouseY)) {
-				this.isDead = true;
-				this.makePuffEffect();
-				var score_earned = 0;
-				switch(this.mType) {
-				case com.funbox.bcp.minigame3.type.EnumTouchObjectType.FROG:
-					score_earned = 100;
-					break;
-				}
-				com.minigloop.util.SoundManager.play("fx_sapo");
-				var newScore = com.funbox.bcp.minigame3.Global.minigame.getGameHud().GetScore();
-				newScore += score_earned;
-				com.funbox.bcp.minigame3.Global.minigame.getGameHud().SetScore(newScore);
-			}
 		}
 		if(this.mAreTouchableItems) {
 		}
@@ -5931,6 +5923,8 @@ com.funbox.bcp.minigame3.entities.player.GamePlayer = function(clipName,aniData,
 	com.funbox.bcp.minigame3.entities.BaseActor.call(this,clipName,aniData,canvas,com.funbox.bcp.minigame3.Global.StageWidth / 2,com.funbox.bcp.minigame3.Global.StageHeight / 2);
 	this.mOffsetX = offsetX;
 	this.mOffsetY = offsetY;
+	this.mCharacter.setScaleX(1.1);
+	this.mCharacter.setScaleY(1.1);
 	this.mCharacter.currentAnimation().gotoAndStop(0);
 };
 $hxClasses["com.funbox.bcp.minigame3.entities.player.GamePlayer"] = com.funbox.bcp.minigame3.entities.player.GamePlayer;
@@ -5945,10 +5939,30 @@ com.funbox.bcp.minigame3.entities.player.GamePlayer.prototype = $extend(com.funb
 		var gameScreen = com.funbox.bcp.minigame3.screens.GameScreen.instance;
 		if(gameScreen != null) {
 			if(!gameScreen.isPausedGame()) {
-				if(com.funbox.bcp.minigame3.Global.minigame.isMousePressed() && this.mCharacter.currentAnimation().getCurrentIndex() == 0) this.mCharacter.currentAnimation().gotoAndPlay(0);
-				if(this.mCharacter.currentAnimation().getCurrentIndex() == this.mCharacter.currentAnimation().getLength() - 1) this.mCharacter.currentAnimation().gotoAndStop(0);
+				var objsArray = com.funbox.bcp.minigame3.Global.minigame.getVTEngine().getEntitiesController().getEntities();
+				var i = 0;
+				var length = objsArray.length - 1;
+				while(i <= length) {
+					var sObj = objsArray[i];
+					if(sObj != null) {
+						if(objsArray[i].hitTestPoint(this.mX | 0,this.mY | 0)) {
+							objsArray[i].isDead = true;
+							var clipScoreName = "spMinigame02_score_100";
+							com.funbox.bcp.minigame3.Global.minigame.getVTEngine().getEffectManager().createEffect(objsArray[i].getX() + objsArray[i].getWidth() / 2,objsArray[i].getY() + objsArray[i].getHeight() / 2,"spMinigame03_ani_effect_puff","spMinigame03_ani_effect_puff");
+							var baseEffect = com.funbox.bcp.minigame3.Global.minigame.getVTEngine().getEffectManager().createEffect(objsArray[i].getX() + objsArray[i].getWidth() / 2,objsArray[i].getY() + objsArray[i].getHeight() / 2,"spMinigame03_score_100",null);
+							baseEffect.DieWithAlpha(true);
+							var score_earned = 100;
+							com.minigloop.util.SoundManager.play("fx_sapo");
+							var newScore = com.funbox.bcp.minigame3.Global.minigame.getGameHud().GetScore();
+							newScore += score_earned;
+							com.funbox.bcp.minigame3.Global.minigame.getGameHud().SetScore(newScore);
+						}
+					}
+					i++;
+				}
 				this.mX = com.funbox.bcp.minigame3.Global.minigame.getMouseX();
 				this.mY = com.funbox.bcp.minigame3.Global.minigame.getMouseY();
+				if(this.mY >= com.funbox.bcp.minigame3.Global.StageHeight / 2 + 25) this.mY = com.funbox.bcp.minigame3.Global.StageHeight / 2 + 25;
 			}
 		}
 		com.funbox.bcp.minigame3.entities.BaseActor.prototype.update.call(this,dt);
@@ -6605,6 +6619,22 @@ com.funbox.bcp.minigame3.util.NCharacter.prototype = {
 	,setX: function(value) {
 		this.mX = value;
 	}
+	,setScaleY: function(value) {
+		this.mScaleY = value;
+		var iterator = this.mDictionary.iterator();
+		while(iterator.hasNext()) {
+			var atlasSprite = iterator.next();
+			atlasSprite.setScaleY(this.mScaleY);
+		}
+	}
+	,setScaleX: function(value) {
+		this.mScaleX = value;
+		var iterator = this.mDictionary.iterator();
+		while(iterator.hasNext()) {
+			var atlasSprite = iterator.next();
+			atlasSprite.setScaleX(this.mScaleX);
+		}
+	}
 	,currentAnimation: function() {
 		return this.mCurrentAnimation;
 	}
@@ -6905,6 +6935,12 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 	}
 	,onEndAnimationCallback: function(callbackFuncion) {
 		this.mCallbackFunction = callbackFuncion;
+	}
+	,setScaleY: function(value) {
+		this._scaleY = value;
+	}
+	,setScaleX: function(value) {
+		this._scaleX = value;
 	}
 	,getLength: function() {
 		return this._frames.length;
