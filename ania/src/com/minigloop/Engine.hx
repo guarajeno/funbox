@@ -1,5 +1,6 @@
 package com.minigloop;
 
+import com.funbox.ania.Global;
 import com.minigloop.input.Mouse;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
@@ -25,8 +26,6 @@ class Engine
 	
 	private var _bufferCanvas:Sprite;
 	private var _statsCanvas:Sprite;
-	//private var _canvas:Bitmap;
-	//private var _canvasData:BitmapData;
 	private var _stage:Stage;
 	private var _gameClass:Class<Screen>;
 
@@ -48,12 +47,14 @@ class Engine
 		_stage.addChild(_bufferCanvas);
 		_stage.addChild(_statsCanvas);
 		
+		Global.stage = _stage;
+		
 		//_statsCanvas.addChild(new Stats(false, true));
 		
 		Mouse.init(_stage);
 		
-		ScreenManager.instance.init(_bufferCanvas);
-		ScreenManager.instance.gotoScreen(_gameClass);
+		ScreenManager.init(_bufferCanvas);
+		ScreenManager.gotoScreen(_gameClass);
 		
 		_stage.addEventListener(Event.ENTER_FRAME, loop);
 	}
@@ -69,6 +70,6 @@ class Engine
 	
 	public function update(dt:Int)
 	{
-		ScreenManager.instance.update(dt);
+		ScreenManager.update(dt);
 	}
 }

@@ -15,31 +15,18 @@ class Main extends Sprite
 {
 	var inited:Bool;
 
-	/* ENTRY POINT */
-	
 	function resize(e) 
 	{
 		if (!inited) init();
-		// else (resize or orientation change)
 	}
 	
 	function init() 
 	{
 		if (inited) return;
 		inited = true;
-
-		// (your code here)
-		
-		// Stage:
-		// stage.stageWidth x stage.stageHeight @ stage.dpiScale
-		
-		// Assets:
-		// nme.Assets.getBitmapData("img/assetname.jpg");
 		
 		new Engine(stage, PreloaderScreen);
 	}
-
-	/* SETUP */
 
 	public function new() 
 	{
@@ -60,7 +47,6 @@ class Main extends Sprite
 	
 	public static function main() 
 	{
-		// static entry point
 		Lib.current.stage.align = nme.display.StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = nme.display.StageScaleMode.NO_SCALE;
 		Lib.current.addChild(new Main());

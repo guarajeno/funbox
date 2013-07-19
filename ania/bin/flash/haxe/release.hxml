@@ -9,5 +9,5 @@
 --dead-code-elimination
 -swf-version 11
 -swf9 bin/flash/bin/ania.swf
--swf-header 1200:800:60:0
+-swf-header 1600:800:60:0
 -cp bin/flash/haxe

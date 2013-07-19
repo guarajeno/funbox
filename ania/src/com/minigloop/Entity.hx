@@ -30,11 +30,6 @@ class Entity
 		_skin = new Sprite();
 		_canvas.addChild(_skin);
 		_animations = {};
-		
-
-		//var swf:SWF = new SWF(Assets.getBytes("assets/swf/assets.swf"));
-		//var mc = swf.createMovieClip("Player_Stand");
-		//_skin.addChild(mc);
 
 		x = 0;
 		y = 0;
