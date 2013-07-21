@@ -1,4 +1,5 @@
 package com.funbox.bcp.minigame3.screens;
+import com.funbox.bcp.minigame3.entities.BaseActor;
 import com.funbox.bcp.minigame3.Global;
 import com.funbox.bcp.minigame3.MiniGame2;
 import com.minigloop.ui.Screen;
@@ -25,6 +26,8 @@ class GameScreen extends Screen
 	private var mHudCanvas:Sprite;
 	private var mFrontCanvas:Sprite;
 	
+	private var mMouseBotAni:BaseActor;
+	
 	private var mPausedGame:Bool;
 	
 	public function isPausedGame():Bool { return mPausedGame; }
@@ -38,6 +41,11 @@ class GameScreen extends Screen
 		mGameCanvas = new Sprite();
 		mHudCanvas = new Sprite();
 		mFrontCanvas = new Sprite();
+		
+		mMouseBotAni = new BaseActor("spMinigame04_mouse_bot", "spMinigame04_mouse_bot",
+			mFrontCanvas, 320, 85);
+		mMouseBotAni.getCharacter().setScaleX(1.1);
+		mMouseBotAni.getCharacter().setScaleY(1.1);
 		
 		_canvas.addChild(mGameCanvas);
 		_canvas.addChild(mHudCanvas);
@@ -65,9 +73,12 @@ class GameScreen extends Screen
 	}
 	
 	override public function update(dt:Int):Dynamic {
+		
 		if (_gameTransition != null) { _gameTransition.update(dt); }
 		
 		if (!mPausedGame) {
+			mMouseBotAni.update(dt);
+			
 			_gameHud.update(dt);
 			_game.update(dt);
 		}
@@ -77,6 +88,9 @@ class GameScreen extends Screen
 		if (_gameTransition != null) { 
 			_gameTransition.free();
 		}
+		
+		mMouseBotAni.free();
+		mMouseBotAni = null;
 		
 		_game.destroy();
 		_game = null;

@@ -93,6 +93,12 @@ class PreloaderScreen extends Screen
 		SoundManager.addSound("sound/bgm_3.mp3", "bgm_3");
 		
 		////////// minigame03 Assets ///////////
+		// mouse bot
+		AssetsLoader.addAsset("images/minigame03/interfaces/mouse_bot/spMinigame04_mouse_bot.png",
+			"spMinigame04_mouse_bot");
+		DataLoader.addData("images/minigame03/interfaces/mouse_bot/spMinigame04_mouse_bot.json",
+			"spMinigame04_mouse_bot");
+		
 		////////////// interface - scorecard ///////////////////////
 		AssetsLoader.addAsset("images/minigame03/interfaces/scorecard/btn_volver.png", "volver");
 		AssetsLoader.addAsset("images/minigame03/interfaces/scorecard/btn_regresar.png", "regresar");

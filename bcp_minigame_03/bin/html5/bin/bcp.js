@@ -5614,6 +5614,9 @@ com.funbox.bcp.minigame3.entities.BaseActor.prototype = {
 		if(this.mX + this.mWidth >= secondOBjX && secondOBjX + actor.getWidth() >= this.mX && this.mY + this.mHeight >= secondOBjY && secondOBjY + actor.getHeight() >= this.mY) return true;
 		return false;
 	}
+	,getCharacter: function() {
+		return this.mCharacter;
+	}
 	,setOffsetY: function(value) {
 		this.mOffsetY = value;
 	}
@@ -6075,6 +6078,9 @@ com.funbox.bcp.minigame3.screens.GameScreen = function(canvas) {
 	this.mGameCanvas = new browser.display.Sprite();
 	this.mHudCanvas = new browser.display.Sprite();
 	this.mFrontCanvas = new browser.display.Sprite();
+	this.mMouseBotAni = new com.funbox.bcp.minigame3.entities.BaseActor("spMinigame04_mouse_bot","spMinigame04_mouse_bot",this.mFrontCanvas,320,85);
+	this.mMouseBotAni.getCharacter().setScaleX(1.1);
+	this.mMouseBotAni.getCharacter().setScaleY(1.1);
 	this._canvas.addChild(this.mGameCanvas);
 	this._canvas.addChild(this.mHudCanvas);
 	this._canvas.addChild(this.mFrontCanvas);
@@ -6091,6 +6097,8 @@ com.funbox.bcp.minigame3.screens.GameScreen.__super__ = com.minigloop.ui.Screen;
 com.funbox.bcp.minigame3.screens.GameScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	destroy: function() {
 		if(this._gameTransition != null) this._gameTransition.free();
+		this.mMouseBotAni.free();
+		this.mMouseBotAni = null;
 		this._game.destroy();
 		this._game = null;
 		this._gameHud.free();
@@ -6106,6 +6114,7 @@ com.funbox.bcp.minigame3.screens.GameScreen.prototype = $extend(com.minigloop.ui
 	,update: function(dt) {
 		if(this._gameTransition != null) this._gameTransition.update(dt);
 		if(!this.mPausedGame) {
+			this.mMouseBotAni.update(dt);
 			this._gameHud.update(dt);
 			this._game.update(dt);
 		}
@@ -6265,6 +6274,8 @@ com.funbox.bcp.minigame3.screens.PreloaderScreen.prototype = $extend(com.miniglo
 		com.minigloop.util.SoundManager.addSound("sound/scorecard.mp3","scorecard");
 		com.minigloop.util.SoundManager.addSound("sound/fx_sapo.mp3","fx_sapo");
 		com.minigloop.util.SoundManager.addSound("sound/bgm_3.mp3","bgm_3");
+		com.minigloop.util.AssetsLoader.addAsset("images/minigame03/interfaces/mouse_bot/spMinigame04_mouse_bot.png","spMinigame04_mouse_bot");
+		com.minigloop.util.DataLoader.addData("images/minigame03/interfaces/mouse_bot/spMinigame04_mouse_bot.json","spMinigame04_mouse_bot");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame03/interfaces/scorecard/btn_volver.png","volver");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame03/interfaces/scorecard/btn_regresar.png","regresar");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame03/interfaces/scorecard/gui_scorecard_twitter_over.png","twitter");
