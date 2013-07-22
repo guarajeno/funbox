@@ -86,7 +86,7 @@ class AtlasSprite extends VisualObject
 		_container = new Sprite();
 		_canvas.addChild(_container);
 		
-		_currentIndex = 0;
+		_currentIndex = 1;
 		_frames = new Array<Bitmap>();
 		
 		var obj:Dynamic = Json.parse(DataLoader.getData(atlasId));
@@ -99,7 +99,8 @@ class AtlasSprite extends VisualObject
 			
 			var src:BitmapData = AssetsLoader.getAsset(imgId).bitmapData;
 			var bmd:BitmapData = new BitmapData(frame.sourceSize.w, frame.sourceSize.h, true, 0x00000000);
-			bmd.copyPixels(src, new Rectangle(frame.frame.x, frame.frame.y, frame.frame.w, frame.frame.h), new Point(frame.spriteSourceSize.x, frame.spriteSourceSize.y));
+			bmd.copyPixels(src, new Rectangle(frame.frame.x, frame.frame.y, frame.frame.w, frame.frame.h),
+				new Point(frame.spriteSourceSize.x, frame.spriteSourceSize.y));
 			
 			var bm:Bitmap = new Bitmap(bmd);
 			_frames.push(bm);
@@ -120,35 +121,11 @@ class AtlasSprite extends VisualObject
 	}
 	
 	public function gotoAndPlay(frame:Int):Void {
-		if (_container.numChildren > 0) {
-			_container.removeChildAt(0);
-		}
-		
-		_container.addChild(_frames[frame]);
-		_frames[frame].scaleX = _scaleX;
-		_frames[frame].scaleY = _scaleY;
-		_frames[frame].alpha = mAlpha;
-		
-		_container.x = position.x + _offsetX + mImageOffsetX;
-		_container.y = position.y + _offsetY + mImageOffsetY;
-		
 		_currentIndex = frame;
 		mCanPlay = true;
 	}
 	
 	public function gotoAndStop(frame:Int):Void {
-		if (_container.numChildren > 0) {
-			_container.removeChildAt(0);
-		}
-		
-		_container.addChild(_frames[frame]);
-		_frames[frame].scaleX = _scaleX;
-		_frames[frame].scaleY = _scaleY;
-		_frames[frame].alpha = mAlpha;
-		
-		_container.x = position.x + _offsetX + mImageOffsetX;
-		_container.y = position.y + _offsetY + mImageOffsetY;
-		
 		_currentIndex = frame;
 		mCanPlay = false;
 	}
@@ -158,14 +135,15 @@ class AtlasSprite extends VisualObject
 	}
 	
 	override public function update(dt:Int):Void {
+		_container.x = position.x + _offsetX + mImageOffsetX;
+		_container.y = position.y + _offsetY + mImageOffsetY;
+		
 		if (mCanPlay) {
-			if (_container.numChildren > 0) {
-				_container.removeChildAt(0);
-			}
-			
-			_container.addChild(_frames[_currentIndex]);
 			_frames[_currentIndex].scaleX = _scaleX;
 			_frames[_currentIndex].scaleY = _scaleY;
+			
+			if (_container.numChildren > 0) { _container.removeChildAt(0); }
+			_container.addChild(_frames[_currentIndex]);
 			
 			if ((mTimeCounter + dt) >= mTimeLimitByFrame) {
 				mTimeCounter = 0;
@@ -181,9 +159,6 @@ class AtlasSprite extends VisualObject
 				_currentIndex = 0;
 			}
 		}
-		
-		_container.x = position.x + _offsetX + mImageOffsetX;
-		_container.y = position.y + _offsetY + mImageOffsetY;
 	}
 	
 	public function destroy() {
