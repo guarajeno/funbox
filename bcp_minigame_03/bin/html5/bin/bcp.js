@@ -6078,9 +6078,10 @@ com.funbox.bcp.minigame3.screens.GameScreen = function(canvas) {
 	this.mGameCanvas = new browser.display.Sprite();
 	this.mHudCanvas = new browser.display.Sprite();
 	this.mFrontCanvas = new browser.display.Sprite();
-	this.mMouseBotAni = new com.funbox.bcp.minigame3.entities.BaseActor("spMinigame04_mouse_bot","spMinigame04_mouse_bot",this.mFrontCanvas,320,85);
+	this.mMouseBotAni = new com.funbox.bcp.minigame3.entities.BaseActor("spMinigame04_mouse_bot","spMinigame04_mouse_bot",this.mFrontCanvas,300,85);
 	this.mMouseBotAni.getCharacter().setScaleX(1.1);
 	this.mMouseBotAni.getCharacter().setScaleY(1.1);
+	this.mMouseBotAni.update(16);
 	this._canvas.addChild(this.mGameCanvas);
 	this._canvas.addChild(this.mHudCanvas);
 	this._canvas.addChild(this.mFrontCanvas);
@@ -6868,7 +6869,7 @@ com.minigloop.display.AtlasSprite = function(canvas,imgId,atlasId,align) {
 	this.mCanPlay = true;
 	this._container = new browser.display.Sprite();
 	this._canvas.addChild(this._container);
-	this._currentIndex = 0;
+	this._currentIndex = 1;
 	this._frames = new Array();
 	var obj = haxe.Json.parse(com.minigloop.util.DataLoader.getData(atlasId));
 	var i;
@@ -6902,11 +6903,13 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 		this.mCallbackFunction = null;
 	}
 	,update: function(dt) {
+		this._container.set_x(this.position.x + this._offsetX + this.mImageOffsetX);
+		this._container.set_y(this.position.y + this._offsetY + this.mImageOffsetY);
 		if(this.mCanPlay) {
-			if(this._container.nmeChildren.length > 0) this._container.removeChildAt(0);
-			this._container.addChild(this._frames[this._currentIndex]);
 			this._frames[this._currentIndex].set_scaleX(this._scaleX);
 			this._frames[this._currentIndex].set_scaleY(this._scaleY);
+			if(this._container.nmeChildren.length > 0) this._container.removeChildAt(0);
+			this._container.addChild(this._frames[this._currentIndex]);
 			if(this.mTimeCounter + dt >= this.mTimeLimitByFrame) {
 				this.mTimeCounter = 0;
 				this._currentIndex++;
@@ -6916,31 +6919,15 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 				this._currentIndex = 0;
 			}
 		}
-		this._container.set_x(this.position.x + this._offsetX + this.mImageOffsetX);
-		this._container.set_y(this.position.y + this._offsetY + this.mImageOffsetY);
 	}
 	,stop: function() {
 		this.mCanPlay = false;
 	}
 	,gotoAndStop: function(frame) {
-		if(this._container.nmeChildren.length > 0) this._container.removeChildAt(0);
-		this._container.addChild(this._frames[frame]);
-		this._frames[frame].set_scaleX(this._scaleX);
-		this._frames[frame].set_scaleY(this._scaleY);
-		this._frames[frame].alpha = this.mAlpha;
-		this._container.set_x(this.position.x + this._offsetX + this.mImageOffsetX);
-		this._container.set_y(this.position.y + this._offsetY + this.mImageOffsetY);
 		this._currentIndex = frame;
 		this.mCanPlay = false;
 	}
 	,gotoAndPlay: function(frame) {
-		if(this._container.nmeChildren.length > 0) this._container.removeChildAt(0);
-		this._container.addChild(this._frames[frame]);
-		this._frames[frame].set_scaleX(this._scaleX);
-		this._frames[frame].set_scaleY(this._scaleY);
-		this._frames[frame].alpha = this.mAlpha;
-		this._container.set_x(this.position.x + this._offsetX + this.mImageOffsetX);
-		this._container.set_y(this.position.y + this._offsetY + this.mImageOffsetY);
 		this._currentIndex = frame;
 		this.mCanPlay = true;
 	}

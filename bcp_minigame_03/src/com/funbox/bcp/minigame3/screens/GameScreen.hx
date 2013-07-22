@@ -43,9 +43,10 @@ class GameScreen extends Screen
 		mFrontCanvas = new Sprite();
 		
 		mMouseBotAni = new BaseActor("spMinigame04_mouse_bot", "spMinigame04_mouse_bot",
-			mFrontCanvas, 320, 85);
+			mFrontCanvas, 300, 85);
 		mMouseBotAni.getCharacter().setScaleX(1.1);
 		mMouseBotAni.getCharacter().setScaleY(1.1);
+		mMouseBotAni.update(16);
 		
 		_canvas.addChild(mGameCanvas);
 		_canvas.addChild(mHudCanvas);
