@@ -1,9 +1,14 @@
 package com.minigloop.display;
+import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
+#if js
+import js.Lib;
+#end
 import nme.display.Bitmap;
 import nme.display.Sprite;
 import nme.events.MouseEvent;
 import nme.geom.Rectangle;
+
 //import nme.display
 
 /**
@@ -26,37 +31,44 @@ class Button extends SpriteEntity
 		
 		this._callback = _callback;
 		
-		setState("over");
+		setState("up");
+		
+		collision.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		collision.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		collision.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		collision.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+		
+		collision.useHandCursor = true;
+	}
+	
+	private function onMouseMove(e:MouseEvent):Void 
+	{
+		if (state != "down") setState("over");
+	}
+	
+	private function onMouseDown(e:MouseEvent):Void 
+	{
 		setState("down");
-		setState("up");
-		
-		setCollision(-20, -20, 40, 40);
-		
-		collision.buttonMode = true;
-		collision.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
-		collision.addEventListener(MouseEvent.MOUSE_OVER, onOver);
-		collision.addEventListener(MouseEvent.MOUSE_OUT, onOut);
-		collision.addEventListener(MouseEvent.MOUSE_UP, onOut);
 	}
 	
-	override public function update(dt:Int):Void 
-	{
-		super.update(dt);
-	}
-	
-	private function onOver(e:MouseEvent):Void 
-	{
-		setState("over");
-	}
-	
-	private function onOut(e:MouseEvent):Void 
+	private function onMouseUp(e:MouseEvent):Void 
 	{
 		setState("up");
-	}
-	
-	private function onDown(e:MouseEvent):Void 
-	{
 		_callback();
-		setState("down");
+	}
+	
+	private function onMouseOut(e:MouseEvent):Void 
+	{		
+		setState("up");
+	}
+	
+	override public function destroy():Void 
+	{
+		super.destroy();
+		
+		_canvas.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		_canvas.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		_canvas.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		_canvas.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 	}
 }

@@ -59,35 +59,17 @@ class ScoreCardScreen extends Screen
 		
 		SoundManager.play("scorecard");
 		
-		//_box_1 = new Sprite();
-		//_box_1.graphics.beginFill(0xFFFFFF, 0.5);
-		//_box_1.graphics.drawRect(165, 345, 140, 40);
-		//_canvas.addChild(_box_1);
-		//
-		//_box_1 = new Sprite();
-		//_box_1.graphics.beginFill(0xFFFFFF, 0.5);
-		//_box_1.graphics.drawRect(325, 345, 140, 40);
-		//_canvas.addChild(_box_1);
-		//
-		//_box_1 = new Sprite();
-		//_box_1.graphics.beginFill(0xFFFFFF, 0.5);
-		//_box_1.graphics.drawRect(280, 290, 33, 33);
-		//_canvas.addChild(_box_1);
-		//
-		//_box_1 = new Sprite();
-		//_box_1.graphics.beginFill(0xFFFFFF, 0.5);
-		//_box_1.graphics.drawRect(320, 290, 33, 33);
-		//_canvas.addChild(_box_1);
 		
-		_volver = AssetsLoader.getAsset("volver");
-		_volver.x = 325;
-		_volver.y = 341;
-		_volver.visible = false;
 		
-		_regresar = AssetsLoader.getAsset("regresar");
-		_regresar.x = 165;
-		_regresar.y = 342;
-		_regresar.visible = false;
+		//_volver = AssetsLoader.getAsset("volver");
+		//_volver.x = 325;
+		//_volver.y = 341;
+		//_volver.visible = false;
+		//
+		//_regresar = AssetsLoader.getAsset("regresar");
+		//_regresar.x = 165;
+		//_regresar.y = 342;
+		//_regresar.visible = false;
 		
 		_fb = AssetsLoader.getAsset("facebook");
 		_fb.x = 280;
@@ -104,8 +86,8 @@ class ScoreCardScreen extends Screen
 		_canvas.addChild(_fb);
 		_canvas.addChild(_tw);
 		
-		_canvas.addEventListener(MouseEvent.CLICK, onClick);
-		_canvas.addEventListener(MouseEvent.MOUSE_MOVE, onMove);
+		//_canvas.addEventListener(MouseEvent.CLICK, onClick);
+		//_canvas.addEventListener(MouseEvent.MOUSE_MOVE, onMove);
 	}
 	
 	private function onMove(e:MouseEvent):Void 
