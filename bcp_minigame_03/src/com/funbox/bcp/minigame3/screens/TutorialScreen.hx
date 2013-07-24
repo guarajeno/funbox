@@ -141,7 +141,7 @@ class TutorialScreen extends Screen {
 					mClickOneWay = false;
 				}
 				else {
-					mClickToContiue.setAlpha(mClickToContiue.getAlpha() - 0.07);
+					mClickToContiue.setAlpha(mClickToContiue.getAlpha() - (0.0008 * dt));
 				}
 			}
 			else {
@@ -150,7 +150,7 @@ class TutorialScreen extends Screen {
 					mClickOneWay = true;
 				}
 				else {
-					mClickToContiue.setAlpha(mClickToContiue.getAlpha() + 0.07);
+					mClickToContiue.setAlpha(mClickToContiue.getAlpha() + (0.0008 * dt));
 				}
 			}
 			

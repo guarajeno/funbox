@@ -5997,8 +5997,8 @@ com.funbox.bcp.minigame3.screens.GameHud = function(canvas) {
 	this.mTF_Score.setTextFormat(this.mTextFormat);
 	this.mTF_Score.set_defaultTextFormat(this.mTextFormat);
 	this.mTF_Score.set_text("0000000");
-	this.mTF_Score.set_x(76);
-	this.mTF_Score.set_y(posY);
+	this.mTF_Score.set_x(72);
+	this.mTF_Score.set_y(posY + 3);
 	this.mTF_Score.set_width(180);
 	this.mTF_Score.mouseEnabled = false;
 	this.mTF_Score.selectable = false;
@@ -6006,8 +6006,8 @@ com.funbox.bcp.minigame3.screens.GameHud = function(canvas) {
 	this.mTF_Time.setTextFormat(this.mTextFormat);
 	this.mTF_Time.set_defaultTextFormat(this.mTextFormat);
 	this.mTF_Time.set_text("00:00");
-	this.mTF_Time.set_x(215);
-	this.mTF_Time.set_y(posY);
+	this.mTF_Time.set_x(212);
+	this.mTF_Time.set_y(posY + 3);
 	this.mTF_Time.set_width(180);
 	this.mTF_Time.mouseEnabled = false;
 	this.mTF_Time.selectable = false;
@@ -6470,11 +6470,11 @@ com.funbox.bcp.minigame3.screens.TutorialScreen.prototype = $extend(com.minigloo
 				if(this.mClickToContiue.getAlpha() <= 0) {
 					this.mClickToContiue.setAlpha(0);
 					this.mClickOneWay = false;
-				} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() - 0.07);
+				} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() - 0.0008 * dt);
 			} else if(this.mClickToContiue.getAlpha() >= 1) {
 				this.mClickToContiue.setAlpha(1);
 				this.mClickOneWay = true;
-			} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() + 0.07);
+			} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() + 0.0008 * dt);
 			if(this.mMousePressed && !this.mMousePressedCancel) {
 				this.mMousePressedCancel = true;
 				this.mClickToContiue.free();
