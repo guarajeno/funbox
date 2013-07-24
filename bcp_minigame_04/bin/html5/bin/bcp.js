@@ -6120,7 +6120,7 @@ com.funbox.bcp.minigame4.entities.player.GamePlayer.prototype = $extend(com.funb
 com.funbox.bcp.minigame4.screens = {}
 com.funbox.bcp.minigame4.screens.GameHud = function(canvas) {
 	this.mCanvas = canvas;
-	var posY = com.funbox.bcp.minigame4.Global.StageHeight - 30;
+	var posY = 5;
 	this.mPuntajeSprite = new com.funbox.bcp.minigame4.entities.BaseActor("spminigame04_background_score",null,this.mCanvas,5,posY);
 	this.mTextFormat = new browser.text.TextFormat();
 	this.mTextFormat.color = -1;
@@ -6131,8 +6131,8 @@ com.funbox.bcp.minigame4.screens.GameHud = function(canvas) {
 	this.mTF_Score.setTextFormat(this.mTextFormat);
 	this.mTF_Score.set_defaultTextFormat(this.mTextFormat);
 	this.mTF_Score.set_text("0000000");
-	this.mTF_Score.set_x(76);
-	this.mTF_Score.set_y(posY);
+	this.mTF_Score.set_x(72);
+	this.mTF_Score.set_y(posY + 3);
 	this.mTF_Score.set_width(180);
 	this.mTF_Score.mouseEnabled = false;
 	this.mTF_Score.selectable = false;
@@ -6140,8 +6140,8 @@ com.funbox.bcp.minigame4.screens.GameHud = function(canvas) {
 	this.mTF_Time.setTextFormat(this.mTextFormat);
 	this.mTF_Time.set_defaultTextFormat(this.mTextFormat);
 	this.mTF_Time.set_text("00:00");
-	this.mTF_Time.set_x(215);
-	this.mTF_Time.set_y(posY);
+	this.mTF_Time.set_x(212);
+	this.mTF_Time.set_y(posY + 3);
 	this.mTF_Time.set_width(180);
 	this.mTF_Time.mouseEnabled = false;
 	this.mTF_Time.selectable = false;
@@ -6386,6 +6386,7 @@ com.funbox.bcp.minigame4.screens.PreloaderScreen.prototype = $extend(com.miniglo
 		com.minigloop.util.SoundManager.init();
 		com.minigloop.util.SoundManager.addSound("sound/scorecard.mp3","scorecard");
 		com.minigloop.util.SoundManager.addSound("sound/bgm_4.mp3","bgm_4");
+		com.minigloop.util.AssetsLoader.addAsset("images/minigame04/interfaces/gui_text_tutorial_generic.png","gui_text_tutorial_generic");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame04/interfaces/tutorial/spMinigame04_tutorial_bcp_card.png","spMinigame04_tutorial_bcp_card");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame04/interfaces/tutorial/spMinigame04_tutorial_mosaico_1_walk_right.png","spMinigame04_tutorial_mosaico_1_walk_right");
 		com.minigloop.util.DataLoader.addData("images/minigame04/interfaces/tutorial/spMinigame04_tutorial_mosaico_1_walk_right.json","spMinigame04_tutorial_mosaico_1_walk_right");
@@ -6547,6 +6548,8 @@ com.funbox.bcp.minigame4.screens.ScoreCardScreen.prototype = $extend(com.miniglo
 com.funbox.bcp.minigame4.screens.TutorialScreen = function(canvas) {
 	com.minigloop.ui.Screen.call(this,canvas);
 	this.mCurrentState = 0;
+	this.mMousePressed = false;
+	this.mMousePressedCancel = false;
 	this.mCanvasTutorial = new browser.display.Sprite();
 	this.mCanvasEffect = new browser.display.Sprite();
 	this.mCanvasMouse = new browser.display.Sprite();
@@ -6569,6 +6572,15 @@ com.funbox.bcp.minigame4.screens.TutorialScreen = function(canvas) {
 	this.mTutorialSprite.setY(com.funbox.bcp.minigame4.Global.StageHeight / 2 - this.mTutorialSprite.getHeight() / 2 - 20);
 	this.mTutorialSprite.setAlpha(0.0);
 	this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_SHOW_TUTORIAL;
+	this.mClickOneWay = true;
+	this.mClickToContiue = new com.funbox.bcp.minigame4.entities.BaseActor("gui_text_tutorial_generic",null,this.mCanvasTutorial,0,0);
+	this.mClickToContiue.setX(com.funbox.bcp.minigame4.Global.StageWidth / 2 - this.mClickToContiue.getWidth() / 2);
+	this.mClickToContiue.setY(com.funbox.bcp.minigame4.Global.StageHeight - this.mClickToContiue.getHeight() / 2 - 20);
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.ROLL_OUT,$bind(this,this.onMouseHandler));
 };
 $hxClasses["com.funbox.bcp.minigame4.screens.TutorialScreen"] = com.funbox.bcp.minigame4.screens.TutorialScreen;
 com.funbox.bcp.minigame4.screens.TutorialScreen.__name__ = ["com","funbox","bcp","minigame4","screens","TutorialScreen"];
@@ -6582,6 +6594,8 @@ com.funbox.bcp.minigame4.screens.TutorialScreen.prototype = $extend(com.minigloo
 		this.mPlayerSprite.free();
 		this.mCardSprite.free();
 		this.mMosaicoSprite.free();
+		if(this.mClickToContiue != null) this.mClickToContiue.free();
+		this.mClickToContiue = null;
 		this._canvas.removeChild(this.mCanvasEffect);
 		this._canvas.removeChild(this.mCanvasTutorial);
 		this._canvas.removeChild(this.mCanvasTutoSprite);
@@ -6597,6 +6611,24 @@ com.funbox.bcp.minigame4.screens.TutorialScreen.prototype = $extend(com.minigloo
 		com.minigloop.ui.Screen.prototype.destroy.call(this);
 	}
 	,update: function(dt) {
+		if(this.mClickToContiue != null) {
+			if(this.mClickOneWay) {
+				if(this.mClickToContiue.getAlpha() <= 0) {
+					this.mClickToContiue.setAlpha(0);
+					this.mClickOneWay = false;
+				} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() - 0.0008 * dt);
+			} else if(this.mClickToContiue.getAlpha() >= 1) {
+				this.mClickToContiue.setAlpha(1);
+				this.mClickOneWay = true;
+			} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() + 0.0008 * dt);
+			if(this.mMousePressed && !this.mMousePressedCancel) {
+				this.mMousePressedCancel = true;
+				this.mClickToContiue.free();
+				this.mClickToContiue = null;
+				this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+			}
+			if(this.mClickToContiue != null) this.mClickToContiue.update(dt);
+		}
 		this.mBGSprite.update(dt);
 		this.mBGMaskSprite.update(dt);
 		this.mTutorialSprite.update(dt);
@@ -6674,6 +6706,22 @@ com.funbox.bcp.minigame4.screens.TutorialScreen.prototype = $extend(com.minigloo
 	,onFinishWait: function() {
 		this.mInterval = null;
 		this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+	}
+	,onMouseHandler: function(e) {
+		switch(e.type) {
+		case browser.events.MouseEvent.MOUSE_DOWN:
+			this.mMousePressed = true;
+			break;
+		case browser.events.MouseEvent.MOUSE_UP:
+			this.mMousePressed = false;
+			break;
+		case browser.events.MouseEvent.MOUSE_OUT:
+			this.mMousePressed = false;
+			break;
+		case browser.events.MouseEvent.ROLL_OUT:
+			this.mMousePressed = false;
+			break;
+		}
 	}
 	,__class__: com.funbox.bcp.minigame4.screens.TutorialScreen
 });
