@@ -37,15 +37,15 @@ class GamePlayer extends BaseActor {
 			if (!gameScreen.isPausedGame()) {
 				
 				
-				/*if (Global.minigame.isMousePressed() && mCharacter.currentAnimation().getCurrentIndex() == 0) {
+				if (Global.minigame.isMousePressed() && mCharacter.currentAnimation().getCurrentIndex() == 0) {
 					mCharacter.currentAnimation().gotoAndPlay(0);
 				}
 				
 				if (mCharacter.currentAnimation().getCurrentIndex() == (mCharacter.currentAnimation().getLength() - 1)) {
 					mCharacter.currentAnimation().gotoAndStop(0);
-				}*/
+				}
 				
-				var objsArray:Array<TouchObject> = Global.minigame.getVTEngine().getEntitiesController().getEntities();
+				/*var objsArray:Array<TouchObject> = Global.minigame.getVTEngine().getEntitiesController().getEntities();
 				
 				var i:Int = 0;
 				var length:Int = objsArray.length - 1;
@@ -79,14 +79,10 @@ class GamePlayer extends BaseActor {
 					}
 					
 					i++;
-				}
+				}*/
 				
 				mX = Global.minigame.getMouseX();
 				mY = Global.minigame.getMouseY();
-				
-				if (mY >= ((Global.StageHeight / 2) + 25)) {
-					mY = ((Global.StageHeight / 2) + 25);
-				}
 			}
 		}
 		
