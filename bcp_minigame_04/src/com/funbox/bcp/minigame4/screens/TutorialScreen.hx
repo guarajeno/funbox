@@ -159,8 +159,8 @@ class TutorialScreen extends Screen {
 			if (mMousePressed && !mMousePressedCancel) {
 				mMousePressedCancel = true;
 				
-				mClickToContiue.free();
-				mClickToContiue = null;
+				//mClickToContiue.free();
+				//mClickToContiue = null;
 				mCurrentState = TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
 			}
 			
@@ -202,7 +202,7 @@ class TutorialScreen extends Screen {
 				
 				mCurrentState = TutorialScreen.STATE_WAIT;
 				
-				mInterval = new NInterval(onFinishWait, 1000);
+				mInterval = new NInterval(onFinishWait, 9000000);
 			}
 			else {
 				mTutorialSprite.setAlpha(mTutorialSprite.getAlpha() + (0.0008 * dt));

@@ -5471,7 +5471,7 @@ com.funbox.bcp.minigame4.engine.PullAndPushController.prototype = {
 			this.mMosaicosGroupRef.gotoState(com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup.ST_WALK_LEFT);
 			this.mGameCardRef.gotoState(com.funbox.bcp.minigame4.entities.enemy.MosaicosGroup.ST_WALK_LEFT);
 			var _g = this.mParentCanvas;
-			_g.set_x(_g.get_x() - 10);
+			_g.set_x(_g.get_x() - 20);
 			if(this.mParentCanvas.get_x() <= -80) this.mParentCanvas.set_x(-80);
 		}
 	}
@@ -6623,8 +6623,6 @@ com.funbox.bcp.minigame4.screens.TutorialScreen.prototype = $extend(com.minigloo
 			} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() + 0.0008 * dt);
 			if(this.mMousePressed && !this.mMousePressedCancel) {
 				this.mMousePressedCancel = true;
-				this.mClickToContiue.free();
-				this.mClickToContiue = null;
 				this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
 			}
 			if(this.mClickToContiue != null) this.mClickToContiue.update(dt);
@@ -6685,7 +6683,7 @@ com.funbox.bcp.minigame4.screens.TutorialScreen.prototype = $extend(com.minigloo
 			if(this.mTutorialSprite.getAlpha() >= 1.0) {
 				this.mTutorialSprite.setAlpha(1.0);
 				this.mCurrentState = com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_WAIT;
-				this.mInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishWait),1000);
+				this.mInterval = new com.funbox.bcp.minigame4.util.NInterval($bind(this,this.onFinishWait),9000000);
 			} else this.mTutorialSprite.setAlpha(this.mTutorialSprite.getAlpha() + 0.0008 * dt);
 			break;
 		case com.funbox.bcp.minigame4.screens.TutorialScreen.STATE_WAIT:

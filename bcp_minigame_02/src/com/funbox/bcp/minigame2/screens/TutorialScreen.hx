@@ -53,6 +53,11 @@ class TutorialScreen extends Screen {
 	private var mCanvasEffect:Sprite;
 	private var mCanvasMouse:Sprite;
 	
+	private var mMousePressed:Bool;
+	private var mMousePressedCancel:Bool;
+	private var mClickOneWay:Bool;
+	private var mClickToContiue:BaseActor;
+	
 	public function new(canvas:Sprite) {
 		super(canvas);
 		
@@ -60,6 +65,8 @@ class TutorialScreen extends Screen {
 	
 		mBagInitX = 0;
 		mMoneyInitX = 0;
+		mMousePressed = false;
+		mMousePressedCancel = false;
 		
 		trace("ontutorialcreen");
 		
@@ -101,6 +108,31 @@ class TutorialScreen extends Screen {
 		mCurrentState = TutorialScreen.STATE_SHOW_TUTORIAL;
 		
 		trace("ontutorialcreen_2");
+		
+		mClickOneWay = true;
+		
+		mClickToContiue = new BaseActor("gui_text_tutorial_generic", null, mCanvasTutorial, 0, 0);
+		mClickToContiue.setX((Global.StageWidth / 2) - (mClickToContiue.getWidth() / 2));
+		mClickToContiue.setY((Global.StageHeight) - (mClickToContiue.getHeight() / 2) - 20);
+		
+		canvas.addEventListener(MouseEvent.MOUSE_MOVE, onMouseHandler);
+		canvas.addEventListener(MouseEvent.MOUSE_DOWN, onMouseHandler);
+		canvas.addEventListener(MouseEvent.MOUSE_UP, onMouseHandler);
+		canvas.addEventListener(MouseEvent.MOUSE_OUT, onMouseHandler);
+		canvas.addEventListener(MouseEvent.ROLL_OUT, onMouseHandler);
+	}
+	
+	private function onMouseHandler(e:MouseEvent):Void {
+		switch(e.type) {
+		case MouseEvent.MOUSE_DOWN:
+			mMousePressed = true;
+		case MouseEvent.MOUSE_UP:
+			mMousePressed = false;
+		case MouseEvent.MOUSE_OUT:
+			mMousePressed = false;
+		case MouseEvent.ROLL_OUT:
+			mMousePressed = false;
+		}
 	}
 	
 	private function onFinishWait():Void {
@@ -115,6 +147,39 @@ class TutorialScreen extends Screen {
 	}
 	
 	override public function update(dt):Void {
+		if (mClickToContiue != null) {
+			if (mClickOneWay) {
+				if (mClickToContiue.getAlpha() <= 0) {
+					mClickToContiue.setAlpha(0);
+					mClickOneWay = false;
+				}
+				else {
+					mClickToContiue.setAlpha(mClickToContiue.getAlpha() - (0.0008 * dt));
+				}
+			}
+			else {
+				if (mClickToContiue.getAlpha() >= 1) {
+					mClickToContiue.setAlpha(1);
+					mClickOneWay = true;
+				}
+				else {
+					mClickToContiue.setAlpha(mClickToContiue.getAlpha() + (0.0008 * dt));
+				}
+			}
+			
+			if (mMousePressed && !mMousePressedCancel) {
+				mMousePressedCancel = true;
+				
+				mClickToContiue.free();
+				mClickToContiue = null;
+				mCurrentState = TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+			}
+			
+			if (mClickToContiue != null) {
+				mClickToContiue.update(dt);
+			}
+		}
+		
 		trace("onupdate");
 		mBGSprite.update(dt);
 		mBGMaskSprite.update(dt);
@@ -163,7 +228,7 @@ class TutorialScreen extends Screen {
 			if (nx2 >= mMoneyInitX) {
 				trace("creating interval");
 				mCurrentState = TutorialScreen.STATE_WAIT;
-				mInterval = new NInterval(onFinishWait, 400);
+				mInterval = new NInterval(onFinishWait, 9000000);
 				
 				var effect2:SpriteAndTextEffect = mEffectManager.createSpriteAndTextEffect(
 					"spMinigame02_tutorial_check_secure", "spMinigame02_tutorial_check_secure",
@@ -197,6 +262,12 @@ class TutorialScreen extends Screen {
 	
 	override public function destroy():Dynamic {
 		mTutorialHandSprite.free();
+		
+		if (mClickToContiue != null) {
+			mClickToContiue.free();
+		}
+		
+		mClickToContiue = null;
 		
 		if (mTutorialBagMoneySprite != null) {
 			mTutorialBagMoneySprite.free();

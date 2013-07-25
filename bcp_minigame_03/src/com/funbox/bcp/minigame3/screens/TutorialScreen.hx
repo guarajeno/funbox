@@ -192,7 +192,7 @@ class TutorialScreen extends Screen {
 				mHandSprite.setX(mFrogInitX);
 				mCurrentState = TutorialScreen.STATE_WAIT;
 				
-				mInterval = new NInterval(onFinishWait, 500);
+				mInterval = new NInterval(onFinishWait, 9000000);
 				
 				mFrogAnimation.free();
 				mFrogAnimation = null;

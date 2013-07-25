@@ -99,7 +99,7 @@ class PullAndPushController {
 			mMosaicosGroupRef.gotoState(MosaicosGroup.ST_WALK_LEFT);
 			mGameCardRef.gotoState(MosaicosGroup.ST_WALK_LEFT);
 			
-			mParentCanvas.x -= 10;
+			mParentCanvas.x -= 20;
 			
 			if (mParentCanvas.x <= -80) {
 				mParentCanvas.x = -80;

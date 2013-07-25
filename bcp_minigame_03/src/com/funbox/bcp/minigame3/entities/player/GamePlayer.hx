@@ -83,6 +83,10 @@ class GamePlayer extends BaseActor {
 				
 				mX = Global.minigame.getMouseX();
 				mY = Global.minigame.getMouseY();
+				
+				if (mY >= (Global.StageHeight - 40)) {
+					mY = (Global.StageHeight - 40);
+				}
 			}
 		}
 		

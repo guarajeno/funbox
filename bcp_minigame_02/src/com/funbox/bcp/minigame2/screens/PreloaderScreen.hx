@@ -93,6 +93,8 @@ class PreloaderScreen extends Screen
 		SoundManager.addSound("sound/scorecard.mp3", "scorecard");
 		
 		////////// minigame02 Assets ///////////
+		AssetsLoader.addAsset("images/minigame02/interfaces/gui_text_tutorial_generic.png", "gui_text_tutorial_generic");
+		
 		////////////// interface - scorecard ///////////////////////
 		AssetsLoader.addAsset("images/minigame02/interfaces/scorecard/btn_volver.png", "volver");
 		AssetsLoader.addAsset("images/minigame02/interfaces/scorecard/btn_regresar.png", "regresar");

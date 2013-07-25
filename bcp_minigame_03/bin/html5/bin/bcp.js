@@ -5951,6 +5951,7 @@ com.funbox.bcp.minigame3.entities.player.GamePlayer.prototype = $extend(com.funb
 				if(this.mCharacter.currentAnimation().getCurrentIndex() == this.mCharacter.currentAnimation().getLength() - 1) this.mCharacter.currentAnimation().gotoAndStop(0);
 				this.mX = com.funbox.bcp.minigame3.Global.minigame.getMouseX();
 				this.mY = com.funbox.bcp.minigame3.Global.minigame.getMouseY();
+				if(this.mY >= com.funbox.bcp.minigame3.Global.StageHeight - 40) this.mY = com.funbox.bcp.minigame3.Global.StageHeight - 40;
 			}
 		}
 		com.funbox.bcp.minigame3.entities.BaseActor.prototype.update.call(this,dt);
@@ -6500,7 +6501,7 @@ com.funbox.bcp.minigame3.screens.TutorialScreen.prototype = $extend(com.minigloo
 			if(this.mHandSprite.getX() <= this.mFrogInitX) {
 				this.mHandSprite.setX(this.mFrogInitX);
 				this.mCurrentState = com.funbox.bcp.minigame3.screens.TutorialScreen.STATE_WAIT;
-				this.mInterval = new com.funbox.bcp.minigame3.util.NInterval($bind(this,this.onFinishWait),500);
+				this.mInterval = new com.funbox.bcp.minigame3.util.NInterval($bind(this,this.onFinishWait),9000000);
 				this.mFrogAnimation.free();
 				this.mFrogAnimation = null;
 				this.mEffectManager.createEffect(this.mHandSprite.getX(),this.mHandSprite.getY(),"spMinigame03_tutorial_ani_effect_puff","spMinigame03_ani_effect_puff");
