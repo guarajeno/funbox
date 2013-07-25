@@ -20,11 +20,13 @@ class Button extends SpriteEntity
 {
 	private var _callback:Dynamic;
 	private var _button:Button;
+	//private var _over:Bool;
 	
 	public function new(canvas:Sprite, upId:String, overId:String, downId:String, _callback:Dynamic) 
 	{
 		super(canvas);
 		
+		//_over = over;
 		addState("up", upId, null);
 		addState("over", overId, null);
 		addState("down", downId, null);
@@ -37,6 +39,8 @@ class Button extends SpriteEntity
 		collision.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		collision.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		collision.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+		collision.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+		//collision.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 		
 		collision.useHandCursor = true;
 	}
@@ -51,6 +55,15 @@ class Button extends SpriteEntity
 		setState("down");
 	}
 	
+	private function onMouseOver(e:MouseEvent):Void 
+	{
+		//if (_over)
+		//{
+			//skin.scaleX = 1;
+			//skin.scaleY = 1;
+		//}
+	}
+	
 	private function onMouseUp(e:MouseEvent):Void 
 	{
 		setState("up");
@@ -58,7 +71,13 @@ class Button extends SpriteEntity
 	}
 	
 	private function onMouseOut(e:MouseEvent):Void 
-	{		
+	{	
+		//if (_over)
+		//{
+			//skin.scaleX = 0.9;
+			//skin.scaleY = 0.9;
+		//}
+		
 		setState("up");
 	}
 	

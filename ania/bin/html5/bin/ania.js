@@ -5022,6 +5022,7 @@ com.minigloop.display.Button = function(canvas,upId,overId,downId,_callback) {
 	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseDown));
 	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this.onMouseUp));
 	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this.onMouseOut));
+	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_OVER,$bind(this,this.onMouseOver));
 	this.collision.set_useHandCursor(true);
 };
 $hxClasses["com.minigloop.display.Button"] = com.minigloop.display.Button;
@@ -5041,6 +5042,8 @@ com.minigloop.display.Button.prototype = $extend(com.minigloop.display.SpriteEnt
 	,onMouseUp: function(e) {
 		this.setState("up");
 		this._callback();
+	}
+	,onMouseOver: function(e) {
 	}
 	,onMouseDown: function(e) {
 		this.setState("down");
@@ -5097,40 +5100,45 @@ com.funbox.ania.component.ImagePopup.prototype = $extend(com.minigloop.display.V
 });
 com.funbox.ania.component.MenuBar = function(canvas) {
 	com.minigloop.display.VisualObject.call(this,canvas);
-	this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_buttonsuport");
+	this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_button_suport");
 	this._background.set_x(com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._background.get_width() / 2);
-	this._background.set_y(-140);
+	this._background.set_y(0);
 	this._canvas.addChild(this._background);
 	this._btnLogo = new com.minigloop.display.Button(canvas,"web_common_logo","web_common_logo","web_common_logo",$bind(this,this.onLogo_Click));
 	this._btnLogo.setCollision(0,0,200,200);
 	this._btnLogo.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnLogo.collision.get_width() / 2;
 	this._btnLogo.position.y = 0;
+	this._btnHome = new com.minigloop.display.Button(canvas,"web_common_button_home_normal","web_common_button_home_over","web_common_button_home_normal",$bind(this,this.onHome_Click));
+	this._btnHome.setCollision(0,0,90,40);
+	this._btnHome.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnHome.collision.get_width() / 2 - 430;
+	this._btnHome.position.y = 80;
 	this._btnEpisodes = new com.minigloop.display.Button(canvas,"web_common_button_episodes_normal","web_common_button_episodes_over","web_common_button_episodes_normal",$bind(this,this.onEpisodes_Click));
 	this._btnEpisodes.setCollision(0,0,90,40);
-	this._btnEpisodes.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 - 470;
-	this._btnEpisodes.position.y = 70;
+	this._btnEpisodes.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 - 320;
+	this._btnEpisodes.position.y = 80;
+	this._btnMyWorld = new com.minigloop.display.Button(canvas,"web_common_button_characters_normal","web_common_button_characters_over","web_common_button_characters_normal",$bind(this,this.onMyWorld_Click));
+	this._btnMyWorld.setCollision(0,0,110,40);
+	this._btnMyWorld.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 - 190;
+	this._btnMyWorld.position.y = 80;
 	this._btnTeachers = new com.minigloop.display.Button(canvas,"web_common_button_parentsandteachers_normal","web_common_button_parentsandteachers_over","web_common_button_parentsandteachers_normal",$bind(this,this.onTeachers_Click));
 	this._btnTeachers.setCollision(0,0,170,40);
-	this._btnTeachers.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 - 360;
-	this._btnTeachers.position.y = 70;
-	this._btnMyWorld = new com.minigloop.display.Button(canvas,"web_common_button_myworld_normal","web_common_button_myworld_over","web_common_button_myworld_normal",$bind(this,this.onMyWorld_Click));
-	this._btnMyWorld.setCollision(0,0,110,40);
-	this._btnMyWorld.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 + 150;
-	this._btnMyWorld.position.y = 70;
-	this._btnMyGarden = new com.minigloop.display.Button(canvas,"web_common_button_mygarden_normal","web_common_button_mygarden_over","web_common_button_mygarden_normal",$bind(this,this.onMyGarden_Click));
-	this._btnMyGarden.setCollision(0,0,150,40);
-	this._btnMyGarden.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 + 280;
-	this._btnMyGarden.position.y = 70;
-	this._btnMyProjects = new com.minigloop.display.Button(canvas,"web_common_button_myprojects_normal","web_common_button_myprojects_over","web_common_button_myprojects_normal",$bind(this,this.onMyProyects_Click));
+	this._btnTeachers.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 + 400;
+	this._btnTeachers.position.y = 75;
+	this._btnMyGarden = new com.minigloop.display.Button(canvas,"web_common_button_doityourself_normal","web_common_button_doityourself_over","web_common_button_doityourself_normal",$bind(this,this.onMyGarden_Click));
+	this._btnMyGarden.setCollision(0,0,140,40);
+	this._btnMyGarden.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 + 150;
+	this._btnMyGarden.position.y = 75;
+	this._btnMyProjects = new com.minigloop.display.Button(canvas,"web_common_button_news_normal","web_common_button_news_over","web_common_button_news_normal",$bind(this,this.onMyProyects_Click));
 	this._btnMyProjects.setCollision(0,0,100,40);
-	this._btnMyProjects.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 + 450;
-	this._btnMyProjects.position.y = 70;
+	this._btnMyProjects.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 + 295;
+	this._btnMyProjects.position.y = 75;
 };
 $hxClasses["com.funbox.ania.component.MenuBar"] = com.funbox.ania.component.MenuBar;
 com.funbox.ania.component.MenuBar.__name__ = ["com","funbox","ania","component","MenuBar"];
 com.funbox.ania.component.MenuBar.__super__ = com.minigloop.display.VisualObject;
 com.funbox.ania.component.MenuBar.prototype = $extend(com.minigloop.display.VisualObject.prototype,{
 	update: function(dt) {
+		this._btnHome.update(dt);
 		this._btnLogo.update(dt);
 		this._btnEpisodes.update(dt);
 		this._btnTeachers.update(dt);
@@ -5145,18 +5153,21 @@ com.funbox.ania.component.MenuBar.prototype = $extend(com.minigloop.display.Visu
 		console.log("TEACHERS");
 	}
 	,onMyWorld_Click: function() {
+		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.MyGardenScreen);
 		console.log("MY WORLD");
 	}
 	,onMyGarden_Click: function() {
-		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.MyGardenScreen);
+		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode02Screen);
 		console.log("MY GARDEN");
 	}
 	,onMyProyects_Click: function() {
 		console.log("MY PROJECTS");
 	}
 	,onLogo_Click: function() {
-		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
+	}
+	,onHome_Click: function() {
 		console.log("HOME");
+		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
 	}
 	,__class__: com.funbox.ania.component.MenuBar
 });
@@ -5225,7 +5236,7 @@ com.funbox.ania.screen.Episode01Screen = function(canvas) {
 	this._previous = new com.funbox.ania.component.ButtonPopup(canvas,-450,500,"web_epidose01_video_previous","web_epidose01_video_previous","web_epidose01_video_previous",1,$bind(this,this.onPrevious_Click));
 	this._previous.setCollision(40,20,420,250);
 	this._activities = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_activities",-670,570,1);
-	this._data = new com.funbox.ania.component.ImagePopup(canvas,"web_common_tadata",620,620,1);
+	this._data = new com.funbox.ania.component.ImagePopup(canvas,"web_common_tadata",0,620,1);
 	this._menuBar = new com.funbox.ania.component.MenuBar(canvas);
 };
 $hxClasses["com.funbox.ania.screen.Episode01Screen"] = com.funbox.ania.screen.Episode01Screen;
@@ -5253,7 +5264,6 @@ com.funbox.ania.screen.Episode02Screen = function(canvas) {
 	this._tree_3 = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose02_floor_front",0,730,0.7);
 	this._flowers = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose02_flowers",190,560,1);
 	this._flower = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose02_bea_flower",200,500,1.2);
-	this._title = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose02_title",700,0,1.2);
 	this._previous = new com.funbox.ania.component.ButtonPopup(canvas,-450,500,"web_epidose02_video_previous","web_epidose02_video_previous","web_epidose02_video_previous",1,$bind(this,this.onPrevious_Click));
 	this._previous.setCollision(40,20,420,250);
 	this._activities = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose02_activities",-670,570,1);
@@ -5382,23 +5392,26 @@ com.funbox.ania.screen.PreloaderScreen = function(canvas) {
 	this._isDataDownloaded = true;
 	com.minigloop.ui.Screen.call(this,canvas);
 	com.minigloop.util.AssetsLoader.init();
-	com.minigloop.util.AssetsLoader.addAsset("img/common/hand_cursor.png","hand_cursor");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_logo.png","web_common_logo");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_background.jpg","web_common_background");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_videosupport.png","web_common_videosupport");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_home_normal.png","web_common_button_home_normal");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_home_over.png","web_common_button_home_over");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_close_normal.png","web_common_button_close_normal");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_close_over.png","web_common_button_close_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_buttonsuport.png","web_common_buttonsuport");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_suport.png","web_common_button_suport");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_episodes_normal.png","web_common_button_episodes_normal");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_episodes_over.png","web_common_button_episodes_over");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_normal.png","web_common_button_parentsandteachers_normal");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_over.png","web_common_button_parentsandteachers_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_myworld_normal.png","web_common_button_myworld_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_myworld_over.png","web_common_button_myworld_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_mygarden_normal.png","web_common_button_mygarden_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_mygarden_over.png","web_common_button_mygarden_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_myprojects_normal.png","web_common_button_myprojects_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_myprojects_over.png","web_common_button_myprojects_over");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_characters_normal.png","web_common_button_characters_normal");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_characters_over.png","web_common_button_characters_over");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_doityourself_normal.png","web_common_button_doityourself_normal");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_doityourself_over.png","web_common_button_doityourself_over");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_store_normal.png","web_common_buttonstore_normal");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_store_over.png","web_common_button_store_over");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_news_normal.png","web_common_button_news_normal");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_news_over.png","web_common_button_news_over");
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_tadata.png","web_common_tadata");
 	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_floor.png","web_epidose01_floor");
 	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_city.png","web_epidose01_city");
@@ -5479,7 +5492,7 @@ com.funbox.ania.screen.PreloaderScreen.__name__ = ["com","funbox","ania","screen
 com.funbox.ania.screen.PreloaderScreen.__super__ = com.minigloop.ui.Screen;
 com.funbox.ania.screen.PreloaderScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	update: function(dt) {
-		if(this._isAssetsDownloaded && this._isDataDownloaded && this._isSoundsDownloaded) com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode02Screen);
+		if(this._isAssetsDownloaded && this._isDataDownloaded && this._isSoundsDownloaded) com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
 	}
 	,onDataLoaded: function() {

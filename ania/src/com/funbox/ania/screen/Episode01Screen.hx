@@ -68,7 +68,7 @@ class Episode01Screen extends Screen
 		_previous.setCollision(40, 20, 420, 250);
 		
 		_activities = new ImagePopup(canvas, "web_epidose01_activities", -670, 570, 1);
-		_data = new ImagePopup(canvas, "web_common_tadata", 620, 620, 1);
+		_data = new ImagePopup(canvas, "web_common_tadata", 0, 620, 1);
 		
 		_menuBar = new MenuBar(canvas);
 	}

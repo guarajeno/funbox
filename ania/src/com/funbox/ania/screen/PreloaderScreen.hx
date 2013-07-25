@@ -27,25 +27,29 @@ class PreloaderScreen extends Screen
 		AssetsLoader.init();
 		
 		// mouse cursor
-		AssetsLoader.addAsset("img/common/hand_cursor.png", "hand_cursor");
+		//AssetsLoader.addAsset("img/common/hand_cursor.png", "hand_cursor");
 		
 		// common
 		AssetsLoader.addAsset("img/common/web_common_logo.png", "web_common_logo");
 		AssetsLoader.addAsset("img/common/web_common_background.jpg", "web_common_background");
 		AssetsLoader.addAsset("img/common/web_common_videosupport.png", "web_common_videosupport");
+		AssetsLoader.addAsset("img/common/web_common_button_home_normal.png", "web_common_button_home_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_home_over.png", "web_common_button_home_over");
 		AssetsLoader.addAsset("img/common/web_common_button_close_normal.png", "web_common_button_close_normal");
 		AssetsLoader.addAsset("img/common/web_common_button_close_over.png", "web_common_button_close_over");
-		AssetsLoader.addAsset("img/common/web_common_buttonsuport.png", "web_common_buttonsuport");
+		AssetsLoader.addAsset("img/common/web_common_button_suport.png", "web_common_button_suport");
 		AssetsLoader.addAsset("img/common/web_common_button_episodes_normal.png", "web_common_button_episodes_normal");
 		AssetsLoader.addAsset("img/common/web_common_button_episodes_over.png", "web_common_button_episodes_over");
 		AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_normal.png", "web_common_button_parentsandteachers_normal");
 		AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_over.png", "web_common_button_parentsandteachers_over");
-		AssetsLoader.addAsset("img/common/web_common_button_myworld_normal.png", "web_common_button_myworld_normal");
-		AssetsLoader.addAsset("img/common/web_common_button_myworld_over.png", "web_common_button_myworld_over");
-		AssetsLoader.addAsset("img/common/web_common_button_mygarden_normal.png", "web_common_button_mygarden_normal");
-		AssetsLoader.addAsset("img/common/web_common_button_mygarden_over.png", "web_common_button_mygarden_over");
-		AssetsLoader.addAsset("img/common/web_common_button_myprojects_normal.png", "web_common_button_myprojects_normal");
-		AssetsLoader.addAsset("img/common/web_common_button_myprojects_over.png", "web_common_button_myprojects_over");
+		AssetsLoader.addAsset("img/common/web_common_button_characters_normal.png", "web_common_button_characters_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_characters_over.png", "web_common_button_characters_over");
+		AssetsLoader.addAsset("img/common/web_common_button_doityourself_normal.png", "web_common_button_doityourself_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_doityourself_over.png", "web_common_button_doityourself_over");
+		AssetsLoader.addAsset("img/common/web_common_button_store_normal.png", "web_common_buttonstore_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_store_over.png", "web_common_button_store_over");
+		AssetsLoader.addAsset("img/common/web_common_button_news_normal.png", "web_common_button_news_normal");
+		AssetsLoader.addAsset("img/common/web_common_button_news_over.png", "web_common_button_news_over");
 		AssetsLoader.addAsset("img/common/web_common_tadata.png", "web_common_tadata");
 		
 		// episode 01
@@ -162,7 +166,7 @@ class PreloaderScreen extends Screen
 	{
 		if (_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded)
 		{
-			ScreenManager.gotoScreen(Episode02Screen);
+			ScreenManager.gotoScreen(Episode01Screen);
 		}
 		
 		super.update(dt);
