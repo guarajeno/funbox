@@ -5826,46 +5826,46 @@ com.funbox.bcp.minigame4.entities.card.GameCard.prototype = $extend(com.funbox.b
 				this.setX(this.mCardInitX);
 			} else switch(currentIndex) {
 			case 0:
-				this.setX(this.mCardInitX - 1);
-				break;
-			case 1:
-				this.setX(this.mCardInitX - 2);
-				break;
-			case 2:
-				this.setX(this.mCardInitX - 3);
-				break;
-			case 3:
 				this.setX(this.mCardInitX - 4);
 				break;
-			case 4:
+			case 1:
 				this.setX(this.mCardInitX - 5);
 				break;
-			case 5:
+			case 2:
 				this.setX(this.mCardInitX - 6);
+				break;
+			case 3:
+				this.setX(this.mCardInitX - 7);
+				break;
+			case 4:
+				this.setX(this.mCardInitX - 8);
+				break;
+			case 5:
+				this.setX(this.mCardInitX - 9);
 				break;
 			case 6:
-				this.setX(this.mCardInitX - 6);
+				this.setX(this.mCardInitX - 9);
 				break;
 			case 7:
-				this.setX(this.mCardInitX - 1);
+				this.setX(this.mCardInitX - 4);
 				break;
 			case 8:
-				this.setX(this.mCardInitX + 5);
+				this.setX(this.mCardInitX);
 				break;
 			case 9:
-				this.setX(this.mCardInitX + 7);
+				this.setX(this.mCardInitX + 3);
 				break;
 			case 10:
-				this.setX(this.mCardInitX + 9);
+				this.setX(this.mCardInitX + 8);
 				break;
 			case 11:
-				this.setX(this.mCardInitX + 9);
+				this.setX(this.mCardInitX + 8);
 				break;
 			case 12:
-				this.setX(this.mCardInitX + 9);
+				this.setX(this.mCardInitX + 8);
 				break;
 			case 13:
-				this.setX(this.mCardInitX + 9);
+				this.setX(this.mCardInitX + 8);
 				break;
 			}
 			break;
@@ -5878,46 +5878,46 @@ com.funbox.bcp.minigame4.entities.card.GameCard.prototype = $extend(com.funbox.b
 				this.setX(this.mCardInitX);
 			} else switch(currentIndex) {
 			case 0:
-				this.setX(this.mCardInitX + 1);
-				break;
-			case 1:
-				this.setX(this.mCardInitX + 2);
-				break;
-			case 2:
-				this.setX(this.mCardInitX + 3);
-				break;
-			case 3:
 				this.setX(this.mCardInitX + 4);
 				break;
-			case 4:
+			case 1:
 				this.setX(this.mCardInitX + 5);
 				break;
-			case 5:
+			case 2:
 				this.setX(this.mCardInitX + 6);
+				break;
+			case 3:
+				this.setX(this.mCardInitX + 7);
+				break;
+			case 4:
+				this.setX(this.mCardInitX + 8);
+				break;
+			case 5:
+				this.setX(this.mCardInitX + 9);
 				break;
 			case 6:
-				this.setX(this.mCardInitX + 6);
+				this.setX(this.mCardInitX + 9);
 				break;
 			case 7:
-				this.setX(this.mCardInitX + 1);
+				this.setX(this.mCardInitX + 4);
 				break;
 			case 8:
-				this.setX(this.mCardInitX - 5);
+				this.setX(this.mCardInitX);
 				break;
 			case 9:
-				this.setX(this.mCardInitX - 7);
+				this.setX(this.mCardInitX - 6);
 				break;
 			case 10:
-				this.setX(this.mCardInitX - 9);
+				this.setX(this.mCardInitX - 12);
 				break;
 			case 11:
-				this.setX(this.mCardInitX - 9);
+				this.setX(this.mCardInitX - 12);
 				break;
 			case 12:
-				this.setX(this.mCardInitX - 9);
+				this.setX(this.mCardInitX - 12);
 				break;
 			case 13:
-				this.setX(this.mCardInitX - 9);
+				this.setX(this.mCardInitX - 12);
 				break;
 			}
 			break;
