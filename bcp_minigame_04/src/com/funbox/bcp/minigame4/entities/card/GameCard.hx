@@ -101,20 +101,20 @@ class GameCard extends BaseActor {
 			}
 			else {
 				switch(currentIndex) {
-				case 0: this.setX(mCardInitX - 1);
-				case 1: this.setX(mCardInitX - 2);
-				case 2: this.setX(mCardInitX - 3);
-				case 3: this.setX(mCardInitX - 4);
-				case 4: this.setX(mCardInitX - 5);
-				case 5: this.setX(mCardInitX - 6);
-				case 6: this.setX(mCardInitX - 6);
-				case 7: this.setX(mCardInitX - 1);
-				case 8: this.setX(mCardInitX + 5);
-				case 9: this.setX(mCardInitX + 7);
-				case 10: this.setX(mCardInitX + 9);
-				case 11: this.setX(mCardInitX + 9);
-				case 12: this.setX(mCardInitX + 9);
-				case 13: this.setX(mCardInitX + 9);
+				case 0: this.setX(mCardInitX - 4);
+				case 1: this.setX(mCardInitX - 5);
+				case 2: this.setX(mCardInitX - 6);
+				case 3: this.setX(mCardInitX - 7);
+				case 4: this.setX(mCardInitX - 8);
+				case 5: this.setX(mCardInitX - 9);
+				case 6: this.setX(mCardInitX - 9);
+				case 7: this.setX(mCardInitX - 4);
+				case 8: this.setX(mCardInitX);
+				case 9: this.setX(mCardInitX + 3);
+				case 10: this.setX(mCardInitX + 8);
+				case 11: this.setX(mCardInitX + 8);
+				case 12: this.setX(mCardInitX + 8);
+				case 13: this.setX(mCardInitX + 8);
 				} 
 			}
 		case MosaicosGroup.ST_WALK_LEFT:
@@ -128,20 +128,20 @@ class GameCard extends BaseActor {
 			}
 			else {
 				switch(currentIndex) {
-				case 0: this.setX(mCardInitX + 1);
-				case 1: this.setX(mCardInitX + 2);
-				case 2: this.setX(mCardInitX + 3);
-				case 3: this.setX(mCardInitX + 4);
-				case 4: this.setX(mCardInitX + 5);
-				case 5: this.setX(mCardInitX + 6);
-				case 6: this.setX(mCardInitX + 6);
-				case 7: this.setX(mCardInitX + 1);
-				case 8: this.setX(mCardInitX - 5);
-				case 9: this.setX(mCardInitX - 7);
-				case 10: this.setX(mCardInitX - 9);
-				case 11: this.setX(mCardInitX - 9);
-				case 12: this.setX(mCardInitX - 9);
-				case 13: this.setX(mCardInitX - 9);
+				case 0: this.setX(mCardInitX + 4);
+				case 1: this.setX(mCardInitX + 5);
+				case 2: this.setX(mCardInitX + 6);
+				case 3: this.setX(mCardInitX + 7);
+				case 4: this.setX(mCardInitX + 8);
+				case 5: this.setX(mCardInitX + 9);
+				case 6: this.setX(mCardInitX + 9);
+				case 7: this.setX(mCardInitX + 4);
+				case 8: this.setX(mCardInitX);
+				case 9: this.setX(mCardInitX - 6);
+				case 10: this.setX(mCardInitX - 12);
+				case 11: this.setX(mCardInitX - 12);
+				case 12: this.setX(mCardInitX - 12);
+				case 13: this.setX(mCardInitX - 12);
 				}
 			}
 		}

@@ -93,6 +93,8 @@ class PreloaderScreen extends Screen
 		
 		////////// minigame04 Assets ///////////
 		// tutorial black and white
+		AssetsLoader.addAsset("images/minigame04/interfaces/gui_text_tutorial_generic.png", "gui_text_tutorial_generic");
+		
 		AssetsLoader.addAsset("images/minigame04/interfaces/tutorial/spMinigame04_tutorial_bcp_card.png", 
 			"spMinigame04_tutorial_bcp_card");
 		

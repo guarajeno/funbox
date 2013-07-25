@@ -5969,6 +5969,8 @@ com.funbox.bcp.minigame2.entities.player.GamePlayer = function(clipName,aniData,
 	com.funbox.bcp.minigame2.entities.BaseActor.call(this,clipName,aniData,canvas,com.funbox.bcp.minigame2.Global.StageWidth / 2,com.funbox.bcp.minigame2.Global.StageHeight / 2);
 	this.mOffsetX = offsetX;
 	this.mOffsetY = offsetY;
+	this.mAnimationBitmap.setScaleX(1.1);
+	this.mAnimationBitmap.setScaleY(1.1);
 	this.mAnimationBitmap.gotoAndStop(0);
 	browser.ui.Mouse.hide();
 };
@@ -5996,6 +5998,7 @@ com.funbox.bcp.minigame2.entities.player.GamePlayer.prototype = $extend(com.funb
 com.funbox.bcp.minigame2.screens = {}
 com.funbox.bcp.minigame2.screens.GameHud = function(canvas) {
 	this.mCanvas = canvas;
+	var posY = 5;
 	this.mPuntajeSprite = new com.funbox.bcp.minigame2.entities.BaseActor("spMinigame02_background_score",null,this.mCanvas,5,5);
 	this.mTextFormat = new browser.text.TextFormat();
 	this.mTextFormat.color = -1;
@@ -6006,8 +6009,8 @@ com.funbox.bcp.minigame2.screens.GameHud = function(canvas) {
 	this.mTF_Score.setTextFormat(this.mTextFormat);
 	this.mTF_Score.set_defaultTextFormat(this.mTextFormat);
 	this.mTF_Score.set_text("0000000");
-	this.mTF_Score.set_x(76);
-	this.mTF_Score.set_y(6);
+	this.mTF_Score.set_x(72);
+	this.mTF_Score.set_y(posY + 3);
 	this.mTF_Score.set_width(180);
 	this.mTF_Score.mouseEnabled = false;
 	this.mTF_Score.selectable = false;
@@ -6015,8 +6018,8 @@ com.funbox.bcp.minigame2.screens.GameHud = function(canvas) {
 	this.mTF_Time.setTextFormat(this.mTextFormat);
 	this.mTF_Time.set_defaultTextFormat(this.mTextFormat);
 	this.mTF_Time.set_text("00:00");
-	this.mTF_Time.set_x(215);
-	this.mTF_Time.set_y(6);
+	this.mTF_Time.set_x(212);
+	this.mTF_Time.set_y(posY + 3);
 	this.mTF_Time.set_width(180);
 	this.mTF_Time.mouseEnabled = false;
 	this.mTF_Time.selectable = false;
@@ -6260,6 +6263,7 @@ com.funbox.bcp.minigame2.screens.PreloaderScreen.prototype = $extend(com.miniglo
 		com.minigloop.util.SoundManager.addSound("sound/bgm_juego_2.mp3","bgm_juego_2");
 		com.minigloop.util.SoundManager.addSound("sound/fx_dinero.mp3","fx_dinero");
 		com.minigloop.util.SoundManager.addSound("sound/scorecard.mp3","scorecard");
+		com.minigloop.util.AssetsLoader.addAsset("images/minigame02/interfaces/gui_text_tutorial_generic.png","gui_text_tutorial_generic");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame02/interfaces/scorecard/btn_volver.png","volver");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame02/interfaces/scorecard/btn_regresar.png","regresar");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame02/interfaces/scorecard/gui_scorecard_twitter_over.png","twitter");
@@ -6412,6 +6416,8 @@ com.funbox.bcp.minigame2.screens.TutorialScreen = function(canvas) {
 	this.mCurrentState = 0;
 	this.mBagInitX = 0;
 	this.mMoneyInitX = 0;
+	this.mMousePressed = false;
+	this.mMousePressedCancel = false;
 	console.log("ontutorialcreen");
 	this.mCanvasTutorial = new browser.display.Sprite();
 	this.mCanvasEffect = new browser.display.Sprite();
@@ -6439,6 +6445,15 @@ com.funbox.bcp.minigame2.screens.TutorialScreen = function(canvas) {
 	this.mMoneyInitX = com.funbox.bcp.minigame2.Global.StageWidth / 2 - this.mTutorialTicketMoneySprite.getWidth() / 2 + 100;
 	this.mCurrentState = com.funbox.bcp.minigame2.screens.TutorialScreen.STATE_SHOW_TUTORIAL;
 	console.log("ontutorialcreen_2");
+	this.mClickOneWay = true;
+	this.mClickToContiue = new com.funbox.bcp.minigame2.entities.BaseActor("gui_text_tutorial_generic",null,this.mCanvasTutorial,0,0);
+	this.mClickToContiue.setX(com.funbox.bcp.minigame2.Global.StageWidth / 2 - this.mClickToContiue.getWidth() / 2);
+	this.mClickToContiue.setY(com.funbox.bcp.minigame2.Global.StageHeight - this.mClickToContiue.getHeight() / 2 - 20);
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this.onMouseHandler));
+	canvas.addEventListener(browser.events.MouseEvent.ROLL_OUT,$bind(this,this.onMouseHandler));
 };
 $hxClasses["com.funbox.bcp.minigame2.screens.TutorialScreen"] = com.funbox.bcp.minigame2.screens.TutorialScreen;
 com.funbox.bcp.minigame2.screens.TutorialScreen.__name__ = ["com","funbox","bcp","minigame2","screens","TutorialScreen"];
@@ -6446,6 +6461,8 @@ com.funbox.bcp.minigame2.screens.TutorialScreen.__super__ = com.minigloop.ui.Scr
 com.funbox.bcp.minigame2.screens.TutorialScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	destroy: function() {
 		this.mTutorialHandSprite.free();
+		if(this.mClickToContiue != null) this.mClickToContiue.free();
+		this.mClickToContiue = null;
 		if(this.mTutorialBagMoneySprite != null) this.mTutorialBagMoneySprite.free();
 		if(this.mTutorialTicketMoneySprite != null) this.mTutorialTicketMoneySprite.free();
 		this.mBGSprite.free();
@@ -6465,6 +6482,24 @@ com.funbox.bcp.minigame2.screens.TutorialScreen.prototype = $extend(com.minigloo
 		com.minigloop.ui.Screen.prototype.destroy.call(this);
 	}
 	,update: function(dt) {
+		if(this.mClickToContiue != null) {
+			if(this.mClickOneWay) {
+				if(this.mClickToContiue.getAlpha() <= 0) {
+					this.mClickToContiue.setAlpha(0);
+					this.mClickOneWay = false;
+				} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() - 0.0008 * dt);
+			} else if(this.mClickToContiue.getAlpha() >= 1) {
+				this.mClickToContiue.setAlpha(1);
+				this.mClickOneWay = true;
+			} else this.mClickToContiue.setAlpha(this.mClickToContiue.getAlpha() + 0.0008 * dt);
+			if(this.mMousePressed && !this.mMousePressedCancel) {
+				this.mMousePressedCancel = true;
+				this.mClickToContiue.free();
+				this.mClickToContiue = null;
+				this.mCurrentState = com.funbox.bcp.minigame2.screens.TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+			}
+			if(this.mClickToContiue != null) this.mClickToContiue.update(dt);
+		}
 		console.log("onupdate");
 		this.mBGSprite.update(dt);
 		this.mBGMaskSprite.update(dt);
@@ -6499,7 +6534,7 @@ com.funbox.bcp.minigame2.screens.TutorialScreen.prototype = $extend(com.minigloo
 			if(nx2 >= this.mMoneyInitX) {
 				console.log("creating interval");
 				this.mCurrentState = com.funbox.bcp.minigame2.screens.TutorialScreen.STATE_WAIT;
-				this.mInterval = new com.funbox.bcp.minigame2.util.NInterval($bind(this,this.onFinishWait),400);
+				this.mInterval = new com.funbox.bcp.minigame2.util.NInterval($bind(this,this.onFinishWait),9000000);
 				var effect2 = this.mEffectManager.createSpriteAndTextEffect("spMinigame02_tutorial_check_secure","spMinigame02_tutorial_check_secure","spMinigame02_tutorial_score_100",null,new com.minigloop.util.Vector2D(this.mMoneyInitX + 8,this.mTutorialTicketMoneySprite.getY() + 7),new com.minigloop.util.Vector2D(-20,-43));
 				effect2.DieWithAlpha(true);
 				this.mEffectManager.createEffect(this.mMoneyInitX + 8,this.mTutorialTicketMoneySprite.getY() + 8,"spMinigame02_ani_effect_puff","spMinigame02_ani_effect_puff");
@@ -6527,6 +6562,22 @@ com.funbox.bcp.minigame2.screens.TutorialScreen.prototype = $extend(com.minigloo
 		console.log("onfinish");
 		this.mInterval = null;
 		this.mCurrentState = com.funbox.bcp.minigame2.screens.TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+	}
+	,onMouseHandler: function(e) {
+		switch(e.type) {
+		case browser.events.MouseEvent.MOUSE_DOWN:
+			this.mMousePressed = true;
+			break;
+		case browser.events.MouseEvent.MOUSE_UP:
+			this.mMousePressed = false;
+			break;
+		case browser.events.MouseEvent.MOUSE_OUT:
+			this.mMousePressed = false;
+			break;
+		case browser.events.MouseEvent.ROLL_OUT:
+			this.mMousePressed = false;
+			break;
+		}
 	}
 	,__class__: com.funbox.bcp.minigame2.screens.TutorialScreen
 });
@@ -6769,6 +6820,9 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 		this._container.set_y(this.position.y + this._offsetY);
 		this._currentIndex = frame;
 		this.mCanPlay = true;
+	}
+	,setScaleY: function(value) {
+		this._scaleY = value;
 	}
 	,setScaleX: function(value) {
 		this._scaleX = value;

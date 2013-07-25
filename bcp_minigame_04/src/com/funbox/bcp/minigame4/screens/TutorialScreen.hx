@@ -51,10 +51,17 @@ class TutorialScreen extends Screen {
 	private var mPlayerSprite:BaseActor;
 	private var mMosaicoSprite:BaseActor;
 	
+	private var mMousePressed:Bool;
+	private var mMousePressedCancel:Bool;
+	private var mClickOneWay:Bool;
+	private var mClickToContiue:BaseActor;
+	
 	public function new(canvas:Sprite) {
 		super(canvas);
 		
 		mCurrentState = 0;
+		mMousePressed = false;
+		mMousePressedCancel = false;
 	
 		mCanvasTutorial = new Sprite();
 		mCanvasEffect = new Sprite();
@@ -92,6 +99,31 @@ class TutorialScreen extends Screen {
 		mTutorialSprite.setAlpha(0.0);
 		
 		mCurrentState = TutorialScreen.STATE_SHOW_TUTORIAL;
+		
+		mClickOneWay = true;
+		
+		mClickToContiue = new BaseActor("gui_text_tutorial_generic", null, mCanvasTutorial, 0, 0);
+		mClickToContiue.setX((Global.StageWidth / 2) - (mClickToContiue.getWidth() / 2));
+		mClickToContiue.setY((Global.StageHeight) - (mClickToContiue.getHeight() / 2) - 20);
+		
+		canvas.addEventListener(MouseEvent.MOUSE_MOVE, onMouseHandler);
+		canvas.addEventListener(MouseEvent.MOUSE_DOWN, onMouseHandler);
+		canvas.addEventListener(MouseEvent.MOUSE_UP, onMouseHandler);
+		canvas.addEventListener(MouseEvent.MOUSE_OUT, onMouseHandler);
+		canvas.addEventListener(MouseEvent.ROLL_OUT, onMouseHandler);
+	}
+	
+	private function onMouseHandler(e:MouseEvent):Void {
+		switch(e.type) {
+		case MouseEvent.MOUSE_DOWN:
+			mMousePressed = true;
+		case MouseEvent.MOUSE_UP:
+			mMousePressed = false;
+		case MouseEvent.MOUSE_OUT:
+			mMousePressed = false;
+		case MouseEvent.ROLL_OUT:
+			mMousePressed = false;
+		}
 	}
 	
 	private function onFinishWait():Void {
@@ -104,6 +136,39 @@ class TutorialScreen extends Screen {
 	}
 	
 	override public function update(dt):Void {
+		if (mClickToContiue != null) {
+			if (mClickOneWay) {
+				if (mClickToContiue.getAlpha() <= 0) {
+					mClickToContiue.setAlpha(0);
+					mClickOneWay = false;
+				}
+				else {
+					mClickToContiue.setAlpha(mClickToContiue.getAlpha() - (0.0008 * dt));
+				}
+			}
+			else {
+				if (mClickToContiue.getAlpha() >= 1) {
+					mClickToContiue.setAlpha(1);
+					mClickOneWay = true;
+				}
+				else {
+					mClickToContiue.setAlpha(mClickToContiue.getAlpha() + (0.0008 * dt));
+				}
+			}
+			
+			if (mMousePressed && !mMousePressedCancel) {
+				mMousePressedCancel = true;
+				
+				//mClickToContiue.free();
+				//mClickToContiue = null;
+				mCurrentState = TutorialScreen.STATE_DISAPPEAR_TUTORIAL;
+			}
+			
+			if (mClickToContiue != null) {
+				mClickToContiue.update(dt);
+			}
+		}
+		
 		mBGSprite.update(dt);
 		mBGMaskSprite.update(dt);
 		mTutorialSprite.update(dt);
@@ -137,7 +202,7 @@ class TutorialScreen extends Screen {
 				
 				mCurrentState = TutorialScreen.STATE_WAIT;
 				
-				mInterval = new NInterval(onFinishWait, 1000);
+				mInterval = new NInterval(onFinishWait, 9000000);
 			}
 			else {
 				mTutorialSprite.setAlpha(mTutorialSprite.getAlpha() + (0.0008 * dt));
@@ -168,6 +233,12 @@ class TutorialScreen extends Screen {
 		mPlayerSprite.free();
 		mCardSprite.free();
 		mMosaicoSprite.free();
+		
+		if (mClickToContiue != null) {
+			mClickToContiue.free();
+		}
+		
+		mClickToContiue = null;
 		
 		_canvas.removeChild(mCanvasEffect);
 		_canvas.removeChild(mCanvasTutorial);

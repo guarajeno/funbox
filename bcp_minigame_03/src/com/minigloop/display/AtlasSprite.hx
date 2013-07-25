@@ -128,6 +128,12 @@ class AtlasSprite extends VisualObject
 	public function gotoAndStop(frame:Int):Void {
 		_currentIndex = frame;
 		mCanPlay = false;
+		
+		_frames[_currentIndex].scaleX = _scaleX;
+		_frames[_currentIndex].scaleY = _scaleY;
+		
+		if (_container.numChildren > 0) { _container.removeChildAt(0); }
+		_container.addChild(_frames[_currentIndex]);
 	}
 	
 	public function stop():Void {
