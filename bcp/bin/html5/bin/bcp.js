@@ -5721,9 +5721,9 @@ com.funbox.bcp.minigame1.screens.PreloaderScreen.prototype = $extend(com.miniglo
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_background_1.jpg","background_1");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_background_2.png","background_2");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_background_score.png","background_score");
+		com.minigloop.util.AssetsLoader.addAsset("images/gui_text_tutorial_generic.png","gui_text_tutorial_generic");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_background_tutorial_1.png","background_tutorial_1");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_background_tutorial_2.png","background_tutorial_2");
-		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_hand_tutorial.png","hand_tutorial");
 		com.minigloop.util.AssetsLoader.addAsset("images/minigame1_hand_tutorial.png","hand_tutorial");
 		com.minigloop.util.AssetsLoader.addAsset("images/btn_volver.png","volver");
 		com.minigloop.util.AssetsLoader.addAsset("images/btn_regresar.png","regresar");
@@ -5788,14 +5788,6 @@ com.funbox.bcp.minigame1.screens.ScoreCardScreen = function(canvas) {
 	this._message.setTextFormat(tf);
 	this._canvas.addChild(this._message);
 	com.minigloop.util.SoundManager.play("scorecard");
-	this._volver = com.minigloop.util.AssetsLoader.getAsset("volver");
-	this._volver.set_x(325);
-	this._volver.set_y(341);
-	this._volver.set_visible(false);
-	this._regresar = com.minigloop.util.AssetsLoader.getAsset("regresar");
-	this._regresar.set_x(165);
-	this._regresar.set_y(342);
-	this._regresar.set_visible(false);
 	this._fb = com.minigloop.util.AssetsLoader.getAsset("facebook");
 	this._fb.set_x(280);
 	this._fb.set_y(290);
@@ -5807,8 +5799,6 @@ com.funbox.bcp.minigame1.screens.ScoreCardScreen = function(canvas) {
 	this._canvas.addChild(this._regresar);
 	this._canvas.addChild(this._fb);
 	this._canvas.addChild(this._tw);
-	this._canvas.addEventListener(browser.events.MouseEvent.CLICK,$bind(this,this.onClick));
-	this._canvas.addEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMove));
 };
 $hxClasses["com.funbox.bcp.minigame1.screens.ScoreCardScreen"] = com.funbox.bcp.minigame1.screens.ScoreCardScreen;
 com.funbox.bcp.minigame1.screens.ScoreCardScreen.__name__ = ["com","funbox","bcp","minigame1","screens","ScoreCardScreen"];
@@ -5818,51 +5808,6 @@ com.funbox.bcp.minigame1.screens.ScoreCardScreen.prototype = $extend(com.miniglo
 		while(this._canvas.nmeChildren.length > 0) this._canvas.removeChildAt(0);
 	}
 	,update: function(dt) {
-	}
-	,onClick: function(e) {
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 165 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 305) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) eval("window.open('http://www.juntossomosmasseguros.com', '_self')");
-		}
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 325 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 465) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) {
-				com.minigloop.util.SoundManager.stopAll();
-				com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame1.screens.GameScreen);
-			}
-		}
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 280 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 313) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 323) {
-				console.log("post facebook");
-				eval("postFacebook(" + com.funbox.bcp.minigame1.Global.totalPoints + ")");
-			}
-		}
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 320 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 353) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 323) {
-				console.log("post twitter");
-				eval("postTwitter(" + com.funbox.bcp.minigame1.Global.totalPoints + ")");
-			}
-		}
-	}
-	,onMove: function(e) {
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 165 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 305) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) this._regresar.set_visible(true);
-		} else this._regresar.set_visible(false);
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 325 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 465) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 345 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 385) this._volver.set_visible(true);
-		} else this._volver.set_visible(false);
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 280 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 313) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 323) {
-				console.log("post facebook");
-				eval("postFacebook(" + com.funbox.bcp.minigame1.Global.totalPoints + ")");
-				this._fb.set_visible(true);
-			}
-		} else this._fb.set_visible(false);
-		if(e.stageX - js.Lib.document.getElementById("banner").offsetLeft > 320 && e.stageX - js.Lib.document.getElementById("banner").offsetLeft < 353) {
-			if(e.stageY - js.Lib.document.getElementById("banner").offsetTop > 290 && e.stageY - js.Lib.document.getElementById("banner").offsetTop < 323) {
-				console.log("post twitter");
-				eval("postTwitter(" + com.funbox.bcp.minigame1.Global.totalPoints + ")");
-				this._tw.set_visible(true);
-			}
-		} else this._tw.set_visible(false);
 	}
 	,__class__: com.funbox.bcp.minigame1.screens.ScoreCardScreen
 });
@@ -5882,15 +5827,26 @@ com.funbox.bcp.minigame1.screens.TutorialScreen = function(canvas) {
 	this._background_1 = com.minigloop.util.AssetsLoader.getAsset("background_tutorial_1");
 	this._background_2 = com.minigloop.util.AssetsLoader.getAsset("background_tutorial_2");
 	this._player = com.minigloop.util.AssetsLoader.getAsset("hand_tutorial");
+	this._continue = com.minigloop.util.AssetsLoader.getAsset("gui_text_tutorial_generic");
 	this._background_1.alpha = 0;
 	this._background_2.alpha = 0;
 	this._player.alpha = 0;
 	canvas.addChild(this._background_1);
 	canvas.addChild(this._background_2);
 	canvas.addChild(this._player);
+	canvas.addChild(this._continue);
+	this._continue.set_x(220);
+	this._continue.set_y(405);
 	this._player.set_x(300);
 	this._player.set_y(320);
-	this.show1();
+	this._hotspot = new browser.display.Sprite();
+	this._hotspot.get_graphics().beginFill(16711680,0.1);
+	this._hotspot.get_graphics().drawRect(0,0,640,480);
+	this._hotspot.addEventListener(browser.events.MouseEvent.CLICK,$bind(this,this.onClick));
+	canvas.addChild(this._hotspot);
+	this._alphaTweener = new com.funbox.bcp.minigame1.utils.AlphaTweener2(this._background_1,0.02,null);
+	this._alphaTweenerPlayer = new com.funbox.bcp.minigame1.utils.AlphaTweener2(this._player,0.02,null);
+	this._alphaTweenerContinue = new com.funbox.bcp.minigame1.utils.AlphaTweener3(this._continue,0.03,null);
 };
 $hxClasses["com.funbox.bcp.minigame1.screens.TutorialScreen"] = com.funbox.bcp.minigame1.screens.TutorialScreen;
 com.funbox.bcp.minigame1.screens.TutorialScreen.__name__ = ["com","funbox","bcp","minigame1","screens","TutorialScreen"];
@@ -5899,20 +5855,19 @@ com.funbox.bcp.minigame1.screens.TutorialScreen.prototype = $extend(com.minigloo
 	update: function(dt) {
 		this._alphaTweener.update(dt);
 		this._alphaTweenerPlayer.update(dt);
+		this._alphaTweenerContinue.update(dt);
 		this._t += 0.06;
 		this._player.set_x(300 + 50 * Math.sin(this._t));
 	}
-	,show2: function() {
+	,onClick: function(e) {
+		console.log("hotspot click");
+		this._canvas.removeEventListener(browser.events.MouseEvent.CLICK,$bind(this,this.onClick));
 		com.minigloop.ui.ScreenManager.getInstance().gotoScreen(com.funbox.bcp.minigame1.screens.GameScreen);
-	}
-	,show1: function() {
-		this._alphaTweener = new com.funbox.bcp.minigame1.utils.AlphaTweener(this._background_1,0.01,$bind(this,this.show2));
-		this._alphaTweenerPlayer = new com.funbox.bcp.minigame1.utils.AlphaTweener(this._player,0.01,null);
 	}
 	,__class__: com.funbox.bcp.minigame1.screens.TutorialScreen
 });
 com.funbox.bcp.minigame1.utils = {}
-com.funbox.bcp.minigame1.utils.AlphaTweener = function(bitmap,_dt,__callback) {
+com.funbox.bcp.minigame1.utils.AlphaTweener2 = function(bitmap,_dt,__callback) {
 	this._value = 0;
 	this._t = 0;
 	this._obj = bitmap;
@@ -5923,21 +5878,43 @@ com.funbox.bcp.minigame1.utils.AlphaTweener = function(bitmap,_dt,__callback) {
 	this._isPaused = false;
 	this.update(0);
 };
-$hxClasses["com.funbox.bcp.minigame1.utils.AlphaTweener"] = com.funbox.bcp.minigame1.utils.AlphaTweener;
-com.funbox.bcp.minigame1.utils.AlphaTweener.__name__ = ["com","funbox","bcp","minigame1","utils","AlphaTweener"];
-com.funbox.bcp.minigame1.utils.AlphaTweener.prototype = {
+$hxClasses["com.funbox.bcp.minigame1.utils.AlphaTweener2"] = com.funbox.bcp.minigame1.utils.AlphaTweener2;
+com.funbox.bcp.minigame1.utils.AlphaTweener2.__name__ = ["com","funbox","bcp","minigame1","utils","AlphaTweener2"];
+com.funbox.bcp.minigame1.utils.AlphaTweener2.prototype = {
 	update: function(dt) {
 		if(this._isPaused) return;
 		this._obj.alpha = this._value;
 		this._value = Math.sin(this._t);
 		this._t += this._dt;
-		if(this._t >= 3) {
-			this._obj.alpha = 0;
+		if(this._t >= 1.7) {
+			this._obj.alpha = 1;
 			this._isPaused = true;
 			if(this._callback != null) this._callback();
 		}
 	}
-	,__class__: com.funbox.bcp.minigame1.utils.AlphaTweener
+	,__class__: com.funbox.bcp.minigame1.utils.AlphaTweener2
+}
+com.funbox.bcp.minigame1.utils.AlphaTweener3 = function(bitmap,_dt,__callback) {
+	this._value = 0;
+	this._t = 0;
+	this._obj = bitmap;
+	this._callback = __callback;
+	this._dt = _dt;
+	this._t = 0;
+	this._value = 0.25;
+	this._isPaused = false;
+	this.update(0);
+};
+$hxClasses["com.funbox.bcp.minigame1.utils.AlphaTweener3"] = com.funbox.bcp.minigame1.utils.AlphaTweener3;
+com.funbox.bcp.minigame1.utils.AlphaTweener3.__name__ = ["com","funbox","bcp","minigame1","utils","AlphaTweener3"];
+com.funbox.bcp.minigame1.utils.AlphaTweener3.prototype = {
+	update: function(dt) {
+		if(this._isPaused) return;
+		this._obj.alpha = this._value;
+		this._value = 0.25 * (Math.sin(this._t) + 2);
+		this._t += this._dt;
+	}
+	,__class__: com.funbox.bcp.minigame1.utils.AlphaTweener3
 }
 com.funbox.bcp.minigame1.utils.ScaleTweener = function(bitmap,__callback) {
 	this._value = 0;
@@ -6044,8 +6021,25 @@ $hxClasses["com.minigloop.display.Button"] = com.minigloop.display.Button;
 com.minigloop.display.Button.__name__ = ["com","minigloop","display","Button"];
 com.minigloop.display.Button.__super__ = com.minigloop.display.SpriteEntity;
 com.minigloop.display.Button.prototype = $extend(com.minigloop.display.SpriteEntity.prototype,{
-	update: function(dt) {
-		com.minigloop.display.SpriteEntity.prototype.update.call(this,dt);
+	destroy: function() {
+		com.minigloop.display.SpriteEntity.prototype.destroy.call(this);
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMouseMove));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseDown));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this.onMouseUp));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this.onMouseOut));
+	}
+	,onMouseOut: function(e) {
+		this.setState("up");
+	}
+	,onMouseUp: function(e) {
+		this.setState("up");
+		this._callback();
+	}
+	,onMouseDown: function(e) {
+		this.setState("down");
+	}
+	,onMouseMove: function(e) {
+		if(this.state != "down") this.setState("over");
 	}
 	,__class__: com.minigloop.display.Button
 });
@@ -6231,18 +6225,6 @@ com.minigloop.util.SoundManager.play = function(id,loop) {
 	if(loop == null) loop = false;
 	var channel = com.minigloop.util.SoundManager.getSound(id).play(0,loop?9999:0);
 	com.minigloop.util.SoundManager._channels.push(channel);
-}
-com.minigloop.util.SoundManager.stopAll = function() {
-	console.log("stop all");
-	console.log(com.minigloop.util.SoundManager._channels.length);
-	var i;
-	var _g1 = 0, _g = com.minigloop.util.SoundManager._sounds.length - 1;
-	while(_g1 < _g) {
-		var i1 = _g1++;
-		com.minigloop.util.SoundManager._channels[i1].stop();
-		com.minigloop.util.SoundManager._channels[i1] = null;
-	}
-	com.minigloop.util.SoundManager._channels = new Array();
 }
 com.minigloop.util.SoundManager.prototype = {
 	__class__: com.minigloop.util.SoundManager

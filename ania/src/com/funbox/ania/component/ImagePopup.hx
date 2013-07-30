@@ -32,4 +32,9 @@ class ImagePopup extends VisualObject
 		
 		Actuate.tween(_img, 0.8, { y:(y - _img.height / 2) }).delay(delay).ease(Elastic.easeInOut);
 	}
+	
+	public function end(delay:Float):Void
+	{
+		Actuate.tween(_img, 0.3, { y: (Global.stage.stageHeight - 50) }).delay(delay).ease(Elastic.easeInOut);
+	}
 }

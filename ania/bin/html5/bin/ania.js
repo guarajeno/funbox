@@ -1130,7 +1130,7 @@ Main.prototype = $extend(browser.display.Sprite.prototype,{
 	,init: function() {
 		if(this.inited) return;
 		this.inited = true;
-		new com.minigloop.Engine(this.get_stage(),com.funbox.ania.screen.PreloaderScreen);
+		new com.minigloop.Engine(this.get_stage(),com.funbox.ania.screen.HomeScreen);
 	}
 	,resize: function(e) {
 		if(!this.inited) this.init();
@@ -3393,7 +3393,7 @@ browser.display.Stage.prototype = $extend(browser.display.DisplayObjectContainer
 		}
 	}
 	,__class__: browser.display.Stage
-	,__properties__: $extend(browser.display.DisplayObjectContainer.prototype.__properties__,{set_backgroundColor:"set_backgroundColor",get_backgroundColor:"get_backgroundColor",set_displayState:"set_displayState",get_displayState:"get_displayState",set_focus:"set_focus",get_focus:"get_focus",set_frameRate:"set_frameRate",get_frameRate:"get_frameRate",get_fullScreenWidth:"get_fullScreenWidth",set_quality:"set_quality",get_quality:"get_quality",set_showDefaultContextMenu:"set_showDefaultContextMenu",get_showDefaultContextMenu:"get_showDefaultContextMenu",get_stageHeight:"get_stageHeight",get_stageWidth:"get_stageWidth"})
+	,__properties__: $extend(browser.display.DisplayObjectContainer.prototype.__properties__,{set_backgroundColor:"set_backgroundColor",get_backgroundColor:"get_backgroundColor",set_displayState:"set_displayState",get_displayState:"get_displayState",set_focus:"set_focus",get_focus:"get_focus",set_frameRate:"set_frameRate",get_frameRate:"get_frameRate",get_fullScreenHeight:"get_fullScreenHeight",get_fullScreenWidth:"get_fullScreenWidth",set_quality:"set_quality",get_quality:"get_quality",set_showDefaultContextMenu:"set_showDefaultContextMenu",get_showDefaultContextMenu:"get_showDefaultContextMenu",get_stageHeight:"get_stageHeight",get_stageWidth:"get_stageWidth"})
 });
 browser.display._Stage = {}
 browser.display._Stage.TouchInfo = function() {
@@ -3433,29 +3433,6 @@ browser.display.Tilesheet.__name__ = ["browser","display","Tilesheet"];
 browser.display.Tilesheet.prototype = {
 	__class__: browser.display.Tilesheet
 }
-browser.events.TextEvent = function(type,bubbles,cancelable,text) {
-	if(text == null) text = "";
-	if(cancelable == null) cancelable = false;
-	if(bubbles == null) bubbles = false;
-	browser.events.Event.call(this,type,bubbles,cancelable);
-	this.text = text;
-};
-$hxClasses["browser.events.TextEvent"] = browser.events.TextEvent;
-browser.events.TextEvent.__name__ = ["browser","events","TextEvent"];
-browser.events.TextEvent.__super__ = browser.events.Event;
-browser.events.TextEvent.prototype = $extend(browser.events.Event.prototype,{
-	__class__: browser.events.TextEvent
-});
-browser.events.ErrorEvent = function(type,bubbles,cancelable,text) {
-	browser.events.TextEvent.call(this,type,bubbles,cancelable);
-	this.text = text;
-};
-$hxClasses["browser.events.ErrorEvent"] = browser.events.ErrorEvent;
-browser.events.ErrorEvent.__name__ = ["browser","events","ErrorEvent"];
-browser.events.ErrorEvent.__super__ = browser.events.TextEvent;
-browser.events.ErrorEvent.prototype = $extend(browser.events.TextEvent.prototype,{
-	__class__: browser.events.ErrorEvent
-});
 browser.events.Listener = function(inListener,inUseCapture,inPriority) {
 	this.mListner = inListener;
 	this.mUseCapture = inUseCapture;
@@ -4056,13 +4033,7 @@ browser.media.SoundTransform.prototype = {
 	__class__: browser.media.SoundTransform
 }
 browser.net = {}
-browser.net.URLLoader = function(request) {
-	browser.events.EventDispatcher.call(this);
-	this.bytesLoaded = 0;
-	this.bytesTotal = 0;
-	this.dataFormat = browser.net.URLLoaderDataFormat.TEXT;
-	if(request != null) this.load(request);
-};
+browser.net.URLLoader = function() { }
 $hxClasses["browser.net.URLLoader"] = browser.net.URLLoader;
 browser.net.URLLoader.__name__ = ["browser","net","URLLoader"];
 browser.net.URLLoader.__super__ = browser.events.EventDispatcher;
@@ -5096,7 +5067,10 @@ $hxClasses["com.funbox.ania.component.ImagePopup"] = com.funbox.ania.component.I
 com.funbox.ania.component.ImagePopup.__name__ = ["com","funbox","ania","component","ImagePopup"];
 com.funbox.ania.component.ImagePopup.__super__ = com.minigloop.display.VisualObject;
 com.funbox.ania.component.ImagePopup.prototype = $extend(com.minigloop.display.VisualObject.prototype,{
-	__class__: com.funbox.ania.component.ImagePopup
+	end: function(delay) {
+		motion.Actuate.tween(this._img,0.3,{ y : com.funbox.ania.Global.stage.get_stageHeight() - 50}).delay(delay).ease(motion.easing.Elastic.get_easeInOut());
+	}
+	,__class__: com.funbox.ania.component.ImagePopup
 });
 com.funbox.ania.component.MenuBar = function(canvas) {
 	com.minigloop.display.VisualObject.call(this,canvas);
@@ -5167,7 +5141,7 @@ com.funbox.ania.component.MenuBar.prototype = $extend(com.minigloop.display.Visu
 	}
 	,onHome_Click: function() {
 		console.log("HOME");
-		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
+		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.HomeScreen);
 	}
 	,__class__: com.funbox.ania.component.MenuBar
 });
@@ -5179,6 +5153,8 @@ $hxClasses["com.minigloop.ui.Screen"] = com.minigloop.ui.Screen;
 com.minigloop.ui.Screen.__name__ = ["com","minigloop","ui","Screen"];
 com.minigloop.ui.Screen.prototype = {
 	destroy: function() {
+	}
+	,end: function() {
 	}
 	,update: function(dt) {
 		this._canvas.set_x(js.Lib.window.innerWidth / 2 - 800);
@@ -5223,22 +5199,7 @@ com.funbox.ania.popup.VideoPopup.prototype = $extend(com.minigloop.ui.Screen.pro
 	,__class__: com.funbox.ania.popup.VideoPopup
 });
 com.funbox.ania.screen = {}
-com.funbox.ania.screen.Episode01Screen = function(canvas) {
-	com.minigloop.ui.Screen.call(this,canvas);
-	this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_background");
-	this._canvas.addChild(this._background);
-	this._city = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_city",0,570,0.5);
-	this._tree_1 = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_tree01",-480,500,0.7);
-	this._tree_2 = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_tree02",680,500,0.7);
-	this._tree_3 = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_tree03",820,660,0.7);
-	this._floor = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_floor",0,670,0);
-	this._meshi = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_meshi",190,285,0.7);
-	this._previous = new com.funbox.ania.component.ButtonPopup(canvas,-450,500,"web_epidose01_video_previous","web_epidose01_video_previous","web_epidose01_video_previous",1,$bind(this,this.onPrevious_Click));
-	this._previous.setCollision(40,20,420,250);
-	this._activities = new com.funbox.ania.component.ImagePopup(canvas,"web_epidose01_activities",-670,570,1);
-	this._data = new com.funbox.ania.component.ImagePopup(canvas,"web_common_tadata",0,620,1);
-	this._menuBar = new com.funbox.ania.component.MenuBar(canvas);
-};
+com.funbox.ania.screen.Episode01Screen = function() { }
 $hxClasses["com.funbox.ania.screen.Episode01Screen"] = com.funbox.ania.screen.Episode01Screen;
 com.funbox.ania.screen.Episode01Screen.__name__ = ["com","funbox","ania","screen","Episode01Screen"];
 com.funbox.ania.screen.Episode01Screen.__super__ = com.minigloop.ui.Screen;
@@ -5247,10 +5208,6 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._previous.update(dt);
 		this._menuBar.update(dt);
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
-	}
-	,onPrevious_Click: function() {
-		console.log("click en previous");
-		com.minigloop.ui.ScreenManager.showPopup(com.funbox.ania.popup.VideoPopup);
 	}
 	,__class__: com.funbox.ania.screen.Episode01Screen
 });
@@ -5284,6 +5241,133 @@ com.funbox.ania.screen.Episode02Screen.prototype = $extend(com.minigloop.ui.Scre
 		com.minigloop.ui.ScreenManager.showPopup(com.funbox.ania.popup.VideoPopup);
 	}
 	,__class__: com.funbox.ania.screen.Episode02Screen
+});
+com.funbox.ania.screen.HomeScreen = function(canvas) {
+	com.minigloop.ui.Screen.call(this,canvas);
+	this._loaderScreen = new com.funbox.ania.screen.LoaderScreen(canvas,$bind(this,this.onLoaderScreenLoaded));
+	this._isPaused = true;
+};
+$hxClasses["com.funbox.ania.screen.HomeScreen"] = com.funbox.ania.screen.HomeScreen;
+com.funbox.ania.screen.HomeScreen.__name__ = ["com","funbox","ania","screen","HomeScreen"];
+com.funbox.ania.screen.HomeScreen.__super__ = com.minigloop.ui.Screen;
+com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
+	update: function(dt) {
+		if(this._isPaused) return;
+		this._enter.update(dt);
+		this._menuBar.update(dt);
+		com.minigloop.ui.Screen.prototype.update.call(this,dt);
+	}
+	,onEnter_Click: function() {
+	}
+	,end: function() {
+		console.log("ENDING");
+		this._city.end(1.2);
+		this._floor.end(1.2);
+		this._tree_1.end(1);
+		this._tree_2.end(1);
+		this._meshi.end(1);
+		this._house.end(0.7);
+		this._doit.end(0.5);
+		this._video.end(0);
+	}
+	,init: function() {
+		this._loaderScreen.destroy();
+		this._isPaused = false;
+		this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_background");
+		this._canvas.addChild(this._background);
+		this._city = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_city",0,480,0.5);
+		this._tree_1 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_tree01",-350,500,0.7);
+		this._floor = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_floor",0,670,0);
+		this._tree_2 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_tree02",610,650,0.7);
+		this._house = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_house",-500,580,0.9);
+		this._doit = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_doityourself",-300,580,1.0);
+		this._meshi = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_meshi",490,500,0.7);
+		this._video = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_video",-50,550,1.2);
+		this._enter = new com.funbox.ania.component.ButtonPopup(this._canvas,210,660,"web_home_tadata_enter","web_home_tadata_enter","web_home_tadata_enter",1.5,$bind(this,this.onEnter_Click));
+		this._data = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_tadata",300,650,1.5);
+		this._menuBar = new com.funbox.ania.component.MenuBar(this._canvas);
+	}
+	,preInit: function() {
+		this._loaderScreen.animate($bind(this,this.init));
+	}
+	,onLoaderScreenLoaded: function() {
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_floor.png","web_home_floor");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_city.png","web_home_city");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_tree01.png","web_home_tree01");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_tree02.png","web_home_tree02");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_house.png","web_home_house");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_doityourself.png","web_home_doityourself");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_video.png","web_home_video");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_tadata.png","web_home_tadata");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_tadata_enter.png","web_home_tadata_enter");
+		com.minigloop.util.AssetsLoader.addAsset("img/home/web_home_meshi.png","web_home_meshi");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_videosupport.png","web_common_videosupport");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_home_normal.png","web_common_button_home_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_home_over.png","web_common_button_home_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_close_normal.png","web_common_button_close_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_close_over.png","web_common_button_close_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_episodes_normal.png","web_common_button_episodes_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_episodes_over.png","web_common_button_episodes_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_normal.png","web_common_button_parentsandteachers_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_over.png","web_common_button_parentsandteachers_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_characters_normal.png","web_common_button_characters_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_characters_over.png","web_common_button_characters_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_doityourself_normal.png","web_common_button_doityourself_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_doityourself_over.png","web_common_button_doityourself_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_store_normal.png","web_common_buttonstore_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_store_over.png","web_common_button_store_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_news_normal.png","web_common_button_news_normal");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_news_over.png","web_common_button_news_over");
+		com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_tadata.png","web_common_tadata");
+		com.minigloop.util.AssetsLoader.load($bind(this,this.preInit));
+		this.update(0);
+	}
+	,__class__: com.funbox.ania.screen.HomeScreen
+});
+com.funbox.ania.screen.LoaderScreen = function(canvas,onEndLoad) {
+	com.minigloop.ui.Screen.call(this,canvas);
+	this._onEndLoad = onEndLoad;
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_logo.png","web_common_logo");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_background.jpg","web_common_background");
+	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_suport.png","web_common_button_suport");
+	com.minigloop.util.AssetsLoader.load($bind(this,this.init));
+};
+$hxClasses["com.funbox.ania.screen.LoaderScreen"] = com.funbox.ania.screen.LoaderScreen;
+com.funbox.ania.screen.LoaderScreen.__name__ = ["com","funbox","ania","screen","LoaderScreen"];
+com.funbox.ania.screen.LoaderScreen.__super__ = com.minigloop.ui.Screen;
+com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
+	onAnimating: function() {
+		this._menuSupport.set_x(com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._menuSupport.get_width() / 2);
+	}
+	,animate: function(onEndAnimation) {
+		this._onEndAnimation = onEndAnimation;
+		motion.Actuate.tween(this._logo,0.5,{ y : 0}).ease(motion.easing.Elastic.get_easeInOut());
+		motion.Actuate.tween(this._menuSupport,0.1,{ scaleX : 0.95}).delay(0.5).ease(motion.easing.Linear.get_easeNone()).onUpdate($bind(this,this.onAnimating)).onComplete(this._onEndAnimation);
+	}
+	,destroy: function() {
+		this._canvas.removeChild(this._background);
+		this._canvas.removeChild(this._logo);
+		this._canvas.removeChild(this._menuSupport);
+		this._background = null;
+		this._logo = null;
+	}
+	,update: function(dt) {
+		com.minigloop.ui.Screen.prototype.update.call(this,dt);
+	}
+	,init: function() {
+		this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_background");
+		this._canvas.addChild(this._background);
+		this._menuSupport = com.minigloop.util.AssetsLoader.getAsset("web_common_button_suport");
+		this._menuSupport.set_x(js.Lib.window.innerWidth / 2);
+		this._menuSupport.set_scaleX(0);
+		this._canvas.addChild(this._menuSupport);
+		this._logo = com.minigloop.util.AssetsLoader.getAsset("web_common_logo");
+		this._logo.set_x(js.Lib.window.innerWidth / 2 - this._logo.get_width() / 2);
+		this._logo.set_y(js.Lib.window.innerHeight / 2 - this._logo.get_height() / 2);
+		this._canvas.addChild(this._logo);
+		this._onEndLoad();
+	}
+	,__class__: com.funbox.ania.screen.LoaderScreen
 });
 com.funbox.ania.screen.MyGardenScreen = function(canvas) {
 	com.minigloop.ui.Screen.call(this,canvas);
@@ -5387,121 +5471,17 @@ com.funbox.ania.screen.MyGardenScreen.prototype = $extend(com.minigloop.ui.Scree
 	}
 	,__class__: com.funbox.ania.screen.MyGardenScreen
 });
-com.funbox.ania.screen.PreloaderScreen = function(canvas) {
+com.funbox.ania.screen.PreloaderScreen = function() {
 	this._isSoundsDownloaded = true;
 	this._isDataDownloaded = true;
-	com.minigloop.ui.Screen.call(this,canvas);
-	com.minigloop.util.AssetsLoader.init();
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_logo.png","web_common_logo");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_background.jpg","web_common_background");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_videosupport.png","web_common_videosupport");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_home_normal.png","web_common_button_home_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_home_over.png","web_common_button_home_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_close_normal.png","web_common_button_close_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_close_over.png","web_common_button_close_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_suport.png","web_common_button_suport");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_episodes_normal.png","web_common_button_episodes_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_episodes_over.png","web_common_button_episodes_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_normal.png","web_common_button_parentsandteachers_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_parentsandteachers_over.png","web_common_button_parentsandteachers_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_characters_normal.png","web_common_button_characters_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_characters_over.png","web_common_button_characters_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_doityourself_normal.png","web_common_button_doityourself_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_doityourself_over.png","web_common_button_doityourself_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_store_normal.png","web_common_buttonstore_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_store_over.png","web_common_button_store_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_news_normal.png","web_common_button_news_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_button_news_over.png","web_common_button_news_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_tadata.png","web_common_tadata");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_floor.png","web_epidose01_floor");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_city.png","web_epidose01_city");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_meshi.png","web_epidose01_meshi");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_tree01.png","web_epidose01_tree01");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_tree02.png","web_epidose01_tree02");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_tree03.png","web_epidose01_tree03");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_activities.png","web_epidose01_activities");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode01/web_epidose01_video_previous.png","web_epidose01_video_previous");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_background.jpg","web_epidose02_background");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_floor.png","web_epidose02_floor");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_video_previous.png","web_epidose02_video_previous");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_activities.png","web_epidose02_activities");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_tree01.png","web_epidose02_tree01");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_tree02.png","web_epidose02_tree02");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_floor_front.png","web_epidose02_floor_front");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_flowers.png","web_epidose02_flowers");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_bea_flower.png","web_epidose02_bea_flower");
-	com.minigloop.util.AssetsLoader.addAsset("img/episode02/web_epidose02_title.png","web_epidose02_title");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_floor01.png","web_mygarden_floor01");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_city.png","web_mygarden_city");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_tree_01.png","web_mygarden_tree_01");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_tree_02.png","web_mygarden_tree_02");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_tree_03.png","web_mygarden_tree_03");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_house.png","web_mygarden_house");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_buttonback_normal.png","web_mygarden_buttonback_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_buttonback_over.png","web_mygarden_buttonback_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_buttonnext_normal.png","web_mygarden_buttonnext_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_buttonnext_over.png","web_mygarden_buttonnext_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_textsuport.png","web_mygarden_textsuport");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_1_normal.png","web_mygarden_button_1_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_2_normal.png","web_mygarden_button_2_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_3_normal.png","web_mygarden_button_3_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_4_normal.png","web_mygarden_button_4_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_5_normal.png","web_mygarden_button_5_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_6_normal.png","web_mygarden_button_6_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_7_normal.png","web_mygarden_button_7_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_8_normal.png","web_mygarden_button_8_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_9_normal.png","web_mygarden_button_9_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_10_normal.png","web_mygarden_button_10_normal");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_1_over.png","web_mygarden_button_1_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_2_over.png","web_mygarden_button_2_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_3_over.png","web_mygarden_button_3_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_4_over.png","web_mygarden_button_4_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_5_over.png","web_mygarden_button_5_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_6_over.png","web_mygarden_button_6_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_7_over.png","web_mygarden_button_7_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_8_over.png","web_mygarden_button_8_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_9_over.png","web_mygarden_button_9_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_button_10_over.png","web_mygarden_button_10_over");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_1.png","web_mygarden_characters_1");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_2.png","web_mygarden_characters_2");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_3.png","web_mygarden_characters_3");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_4.png","web_mygarden_characters_4");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_5.png","web_mygarden_characters_5");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_6.png","web_mygarden_characters_6");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_7.png","web_mygarden_characters_7");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_8.png","web_mygarden_characters_8");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_9.png","web_mygarden_characters_9");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_10.png","web_mygarden_characters_10");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_1_name.png","web_mygarden_characters_1_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_2_name.png","web_mygarden_characters_2_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_3_name.png","web_mygarden_characters_3_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_4_name.png","web_mygarden_characters_4_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_5_name.png","web_mygarden_characters_5_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_6_name.png","web_mygarden_characters_6_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_7_name.png","web_mygarden_characters_7_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_8_name.png","web_mygarden_characters_8_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_9_name.png","web_mygarden_characters_9_name");
-	com.minigloop.util.AssetsLoader.addAsset("img/mygarden/web_mygarden_characters_10_name.png","web_mygarden_characters_10_name");
-	com.minigloop.util.DataLoader.init();
-	com.minigloop.util.AssetsLoader.load($bind(this,this.onAssetsLoaded));
-	com.minigloop.util.DataLoader.load($bind(this,this.onDataLoaded));
-	js.Lib.document.getElementsByTagName("body")[0].style.overflowX = "hidden";
 };
 $hxClasses["com.funbox.ania.screen.PreloaderScreen"] = com.funbox.ania.screen.PreloaderScreen;
 com.funbox.ania.screen.PreloaderScreen.__name__ = ["com","funbox","ania","screen","PreloaderScreen"];
 com.funbox.ania.screen.PreloaderScreen.__super__ = com.minigloop.ui.Screen;
 com.funbox.ania.screen.PreloaderScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	update: function(dt) {
-		if(this._isAssetsDownloaded && this._isDataDownloaded && this._isSoundsDownloaded) com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
+		if(this._isAssetsDownloaded && this._isDataDownloaded && this._isSoundsDownloaded) com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.HomeScreen);
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
-	}
-	,onDataLoaded: function() {
-		this._isDataDownloaded = true;
-		console.log("DATA LOADED");
-	}
-	,onAssetsLoaded: function() {
-		this._isAssetsDownloaded = true;
-		console.log("ASSETS LOADED");
 	}
 	,__class__: com.funbox.ania.screen.PreloaderScreen
 });
@@ -5530,9 +5510,11 @@ com.minigloop.Engine.prototype = {
 		this._stage.addChild(this._bufferCanvas);
 		this._stage.addChild(this._statsCanvas);
 		com.funbox.ania.Global.stage = this._stage;
+		com.minigloop.util.AssetsLoader.init();
 		com.minigloop.input.Mouse.init(this._stage);
 		com.minigloop.ui.ScreenManager.init(this._bufferCanvas);
 		com.minigloop.ui.ScreenManager.gotoScreen(this._gameClass);
+		js.Lib.document.getElementsByTagName("body")[0].style.overflowX = "hidden";
 		this._stage.addEventListener(browser.events.Event.ENTER_FRAME,$bind(this,this.loop));
 	}
 	,__class__: com.minigloop.Engine
@@ -5604,8 +5586,13 @@ com.minigloop.ui.ScreenManager.init = function(canvas) {
 	com.minigloop.ui.ScreenManager._currentScreen = null;
 }
 com.minigloop.ui.ScreenManager.gotoScreen = function(screenClass) {
+	if(com.minigloop.ui.ScreenManager._currentScreen != null) com.minigloop.ui.ScreenManager._currentScreen.end();
+	com.minigloop.ui.ScreenManager._screenClass = screenClass;
+	motion.Actuate.timer(1.5).onComplete(com.minigloop.ui.ScreenManager.createScreen);
+}
+com.minigloop.ui.ScreenManager.createScreen = function() {
 	if(com.minigloop.ui.ScreenManager._currentScreen != null) com.minigloop.ui.ScreenManager._currentScreen.destroy();
-	com.minigloop.ui.ScreenManager._currentScreen = Type.createInstance(screenClass,[com.minigloop.ui.ScreenManager._canvas]);
+	com.minigloop.ui.ScreenManager._currentScreen = Type.createInstance(com.minigloop.ui.ScreenManager._screenClass,[com.minigloop.ui.ScreenManager._canvas]);
 }
 com.minigloop.ui.ScreenManager.showPopup = function(popupClass) {
 	com.minigloop.ui.ScreenManager.closePopup();
@@ -5630,32 +5617,37 @@ $hxClasses["com.minigloop.util.AssetsLoader"] = com.minigloop.util.AssetsLoader;
 com.minigloop.util.AssetsLoader.__name__ = ["com","minigloop","util","AssetsLoader"];
 com.minigloop.util.AssetsLoader.init = function() {
 	com.minigloop.util.AssetsLoader._urls = new Array();
+	com.minigloop.util.AssetsLoader._tempUrls = new Array();
 	com.minigloop.util.AssetsLoader._ids = new Array();
 	com.minigloop.util.AssetsLoader._loaders = new Array();
-	com.minigloop.util.AssetsLoader._index = 0;
 }
 com.minigloop.util.AssetsLoader.addAsset = function(url,id) {
-	com.minigloop.util.AssetsLoader._urls.push(url);
+	com.minigloop.util.AssetsLoader._tempUrls.push(url);
 	com.minigloop.util.AssetsLoader._ids.push(id);
 }
 com.minigloop.util.AssetsLoader.load = function(__callback) {
+	console.log("--- INIT LOAD ---");
+	com.minigloop.util.AssetsLoader._index = 0;
 	com.minigloop.util.AssetsLoader._callback = __callback;
 	com.minigloop.util.AssetsLoader.loadAsset();
 }
 com.minigloop.util.AssetsLoader.loadAsset = function(e) {
-	if(com.minigloop.util.AssetsLoader._index < com.minigloop.util.AssetsLoader._urls.length) {
-		var request = new browser.net.URLRequest(com.minigloop.util.AssetsLoader._urls[com.minigloop.util.AssetsLoader._index]);
+	if(com.minigloop.util.AssetsLoader._index < com.minigloop.util.AssetsLoader._tempUrls.length) {
+		var request = new browser.net.URLRequest(com.minigloop.util.AssetsLoader._tempUrls[com.minigloop.util.AssetsLoader._index]);
 		com.minigloop.util.AssetsLoader._loader = new browser.display.Loader();
 		com.minigloop.util.AssetsLoader._loader.load(request);
 		com.minigloop.util.AssetsLoader._loader.contentLoaderInfo.addEventListener(browser.events.Event.COMPLETE,com.minigloop.util.AssetsLoader.loadAsset);
 		com.minigloop.util.AssetsLoader._loaders.push(com.minigloop.util.AssetsLoader._loader);
-		console.log("asset loaded: [" + com.minigloop.util.AssetsLoader._ids[com.minigloop.util.AssetsLoader._index] + "]");
+		console.log("asset loaded: [" + com.minigloop.util.AssetsLoader._tempUrls[com.minigloop.util.AssetsLoader._index] + "]");
 		com.minigloop.util.AssetsLoader._index++;
-	} else com.minigloop.util.AssetsLoader._callback();
+	} else {
+		com.minigloop.util.AssetsLoader._tempUrls = new Array();
+		com.minigloop.util.AssetsLoader._callback();
+	}
 }
 com.minigloop.util.AssetsLoader.getAsset = function(id) {
 	var i;
-	var _g1 = 0, _g = com.minigloop.util.AssetsLoader._urls.length;
+	var _g1 = 0, _g = com.minigloop.util.AssetsLoader._ids.length;
 	while(_g1 < _g) {
 		var i1 = _g1++;
 		if(com.minigloop.util.AssetsLoader._ids[i1] == id) {
@@ -5674,31 +5666,6 @@ com.minigloop.util.DataLoader = function() {
 };
 $hxClasses["com.minigloop.util.DataLoader"] = com.minigloop.util.DataLoader;
 com.minigloop.util.DataLoader.__name__ = ["com","minigloop","util","DataLoader"];
-com.minigloop.util.DataLoader.init = function() {
-	com.minigloop.util.DataLoader._urls = new Array();
-	com.minigloop.util.DataLoader._ids = new Array();
-	com.minigloop.util.DataLoader._loaders = new Array();
-	com.minigloop.util.DataLoader._index = 0;
-}
-com.minigloop.util.DataLoader.load = function(__callback) {
-	com.minigloop.util.DataLoader._callback = __callback;
-	com.minigloop.util.DataLoader.loadData();
-}
-com.minigloop.util.DataLoader.loadData = function(e) {
-	if(com.minigloop.util.DataLoader._index < com.minigloop.util.DataLoader._urls.length) {
-		var request = new browser.net.URLRequest(com.minigloop.util.DataLoader._urls[com.minigloop.util.DataLoader._index]);
-		com.minigloop.util.DataLoader._loader = new browser.net.URLLoader();
-		com.minigloop.util.DataLoader._loader.load(request);
-		com.minigloop.util.DataLoader._loader.addEventListener(browser.events.Event.COMPLETE,com.minigloop.util.DataLoader.loadData);
-		com.minigloop.util.DataLoader._loader.addEventListener(browser.events.ErrorEvent.ERROR,com.minigloop.util.DataLoader.onError);
-		com.minigloop.util.DataLoader._loaders.push(com.minigloop.util.DataLoader._loader);
-		console.log("data loaded: [" + com.minigloop.util.DataLoader._ids[com.minigloop.util.DataLoader._index] + "]");
-		com.minigloop.util.DataLoader._index++;
-	} else com.minigloop.util.DataLoader._callback();
-}
-com.minigloop.util.DataLoader.onError = function(e) {
-	console.log("Error loading file: " + com.minigloop.util.DataLoader._urls[com.minigloop.util.DataLoader._index]);
-}
 com.minigloop.util.DataLoader.getData = function(id) {
 	var i;
 	var _g1 = 0, _g = com.minigloop.util.DataLoader._urls.length;
@@ -7278,6 +7245,27 @@ motion.easing.ExpoEaseInOut.prototype = {
 	}
 	,__class__: motion.easing.ExpoEaseInOut
 }
+motion.easing.Linear = function() { }
+$hxClasses["motion.easing.Linear"] = motion.easing.Linear;
+motion.easing.Linear.__name__ = ["motion","easing","Linear"];
+motion.easing.Linear.__properties__ = {get_easeNone:"get_easeNone"}
+motion.easing.Linear.get_easeNone = function() {
+	return new motion.easing.LinearEaseNone();
+}
+motion.easing.LinearEaseNone = function() {
+};
+$hxClasses["motion.easing.LinearEaseNone"] = motion.easing.LinearEaseNone;
+motion.easing.LinearEaseNone.__name__ = ["motion","easing","LinearEaseNone"];
+motion.easing.LinearEaseNone.__interfaces__ = [motion.easing.IEasing];
+motion.easing.LinearEaseNone.prototype = {
+	ease: function(t,b,c,d) {
+		return c * t / d + b;
+	}
+	,calculate: function(k) {
+		return k;
+	}
+	,__class__: motion.easing.LinearEaseNone
+}
 motion.easing.Quad = function() { }
 $hxClasses["motion.easing.Quad"] = motion.easing.Quad;
 motion.easing.Quad.__name__ = ["motion","easing","Quad"];
@@ -7496,7 +7484,6 @@ browser.display.Stage.nmeAcceleration = { x : 0.0, y : 1.0, z : 0.0};
 browser.display.Stage.nmeMouseChanges = [browser.events.MouseEvent.MOUSE_OUT,browser.events.MouseEvent.MOUSE_OVER,browser.events.MouseEvent.ROLL_OUT,browser.events.MouseEvent.ROLL_OVER];
 browser.display.Stage.nmeTouchChanges = ["touchOut","touchOver","touchRollOut","touchRollOver"];
 browser.display.StageQuality.BEST = "best";
-browser.events.ErrorEvent.ERROR = "error";
 browser.events.Listener.sIDs = 1;
 browser.events.EventPhase.CAPTURING_PHASE = 0;
 browser.events.EventPhase.AT_TARGET = 1;

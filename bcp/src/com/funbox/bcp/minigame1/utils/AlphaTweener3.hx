@@ -1,0 +1,43 @@
+package com.funbox.bcp.minigame1.utils;
+import nme.display.Bitmap;
+
+/**
+ * ...
+ * @author 
+ */
+
+class AlphaTweener3
+{
+	private var _obj:Bitmap;
+	private var _callback:Dynamic;
+	
+	private var _t:Float = 0;
+	private var _dt:Float;
+	private var _value:Float = 0;
+	
+	private var _isPaused:Bool;
+	
+	public function new(bitmap:Bitmap, _dt:Float, __callback:Dynamic) 
+	{
+		_obj = bitmap;
+		_callback = __callback;
+		this._dt = _dt;
+		
+		_t = 0;
+		_value = 0.25;
+		_isPaused = false;
+		
+		update(0);
+	}
+	
+	public function update(dt):Void
+	{
+		if (_isPaused) return;
+		
+		_obj.alpha = _value;
+		
+		_value = 0.25 * (Math.sin(_t) + 2);
+		_t += _dt;
+
+	}
+}

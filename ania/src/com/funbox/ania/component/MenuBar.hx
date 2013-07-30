@@ -3,6 +3,7 @@ package com.funbox.ania.component;
 import com.funbox.ania.Global;
 import com.funbox.ania.screen.Episode01Screen;
 import com.funbox.ania.screen.Episode02Screen;
+import com.funbox.ania.screen.HomeScreen;
 import com.funbox.ania.screen.MyGardenScreen;
 import com.minigloop.display.Button;
 import com.minigloop.display.VisualObject;
@@ -85,7 +86,7 @@ class MenuBar extends VisualObject
 	private function onHome_Click() 
 	{
 		trace("HOME");
-		ScreenManager.gotoScreen(Episode01Screen);
+		ScreenManager.gotoScreen(HomeScreen);
 	}
 	
 	private function onLogo_Click() 

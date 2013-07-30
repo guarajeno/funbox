@@ -1,4 +1,5 @@
 package com.minigloop.ui;
+import com.eclecticdesignstudio.motion.Actuate;
 import nme.display.Sprite;
 
 /**
@@ -11,6 +12,7 @@ class ScreenManager
 	private static var _currentScreen:Screen;
 	private static var _currentPopup:Screen;
 	private static var _canvas:Sprite;
+	static private var _screenClass:Class<Screen>;
 	
 	public function new()
 	{
@@ -22,14 +24,26 @@ class ScreenManager
 		_currentScreen = null;
 	}
 	
-	static public function gotoScreen(screenClass)
+	static public function gotoScreen(screenClass:Class<Screen>)
+	{
+		if (_currentScreen != null)
+		{
+			_currentScreen.end();
+		}
+		
+		_screenClass = screenClass;
+		
+		Actuate.timer(1.5).onComplete(createScreen);
+	}
+	
+	static private function createScreen() 
 	{
 		if (_currentScreen != null)
 		{
 			_currentScreen.destroy();
 		}
 		
-		_currentScreen = Type.createInstance(screenClass, [_canvas]);
+		_currentScreen = Type.createInstance(_screenClass, [_canvas]);
 	}
 	
 	static public function showPopup(popupClass)
