@@ -38,10 +38,43 @@ class Episode01Screen extends Screen
 	private var _activities:ImagePopup;
 	private var _data:ImagePopup;
 	
+	private var _loaderScreen:LoaderScreen;
+	private var _isPaused:Bool;
+	
 	public function new(canvas:Sprite) 
 	{
 		super(canvas);
 		
+		_loaderScreen = new LoaderScreen(canvas, onLoaderScreenLoaded);
+		_isPaused = true;
+		
+		init();
+	}
+	
+	private function onLoaderScreenLoaded() 
+	{
+		// episode 01
+		AssetsLoader.addAsset("img/episode01/web_epidose01_floor.png", "web_epidose01_floor");
+		AssetsLoader.addAsset("img/episode01/web_epidose01_city.png", "web_epidose01_city");
+		AssetsLoader.addAsset("img/episode01/web_epidose01_meshi.png", "web_epidose01_meshi");
+		AssetsLoader.addAsset("img/episode01/web_epidose01_tree01.png", "web_epidose01_tree01");
+		AssetsLoader.addAsset("img/episode01/web_epidose01_tree02.png", "web_epidose01_tree02");
+		AssetsLoader.addAsset("img/episode01/web_epidose01_tree03.png", "web_epidose01_tree03");
+		AssetsLoader.addAsset("img/episode01/web_epidose01_activities.png", "web_epidose01_activities");
+		AssetsLoader.addAsset("img/episode01/web_epidose01_video_previous.png", "web_epidose01_video_previous");
+		
+		AssetsLoader.load(preInit);
+		
+		update(0);
+	}
+	
+	private function preInit() 
+	{
+		_loaderScreen.animate(init);
+	}
+	
+	private function init() 
+	{
 		// background
 		_background = AssetsLoader.getAsset("web_common_background");
 		_canvas.addChild(_background);
@@ -68,7 +101,7 @@ class Episode01Screen extends Screen
 		_previous.setCollision(40, 20, 420, 250);
 		
 		_activities = new ImagePopup(canvas, "web_epidose01_activities", -670, 570, 1);
-		_data = new ImagePopup(canvas, "web_common_tadata", 620, 620, 1);
+		_data = new ImagePopup(canvas, "web_common_tadata", 0, 620, 1);
 		
 		_menuBar = new MenuBar(canvas);
 	}

@@ -1,5 +1,6 @@
 package ;
 
+import com.funbox.ania.screen.HomeScreen;
 import com.funbox.ania.screen.PreloaderScreen;
 import com.minigloop.Engine;
 import nme.display.Sprite;
@@ -25,7 +26,7 @@ class Main extends Sprite
 		if (inited) return;
 		inited = true;
 		
-		new Engine(stage, PreloaderScreen);
+		new Engine(stage, HomeScreen);
 	}
 
 	public function new() 

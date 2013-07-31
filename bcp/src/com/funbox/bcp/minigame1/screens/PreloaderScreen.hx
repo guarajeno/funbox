@@ -26,8 +26,6 @@ class PreloaderScreen extends Screen
 	private var _isDataDownloaded:Bool;
 	private var _isSoundsDownloaded:Bool;
 	
-	//private var _loader:Bitmap;
-		
 	private var bg:Sprite;
 	private var loadas:AtlasSprite;
 	
@@ -81,6 +79,7 @@ class PreloaderScreen extends Screen
 		AssetsLoader.addAsset("images/minigame1_background_1.jpg", "background_1");
 		AssetsLoader.addAsset("images/minigame1_background_2.png", "background_2");
 		AssetsLoader.addAsset("images/minigame1_background_score.png", "background_score");
+		AssetsLoader.addAsset("images/gui_text_tutorial_generic.png", "gui_text_tutorial_generic");
 		
 		AssetsLoader.addAsset("images/minigame1_background_tutorial_1.png", "background_tutorial_1");
 		AssetsLoader.addAsset("images/minigame1_background_tutorial_2.png", "background_tutorial_2");

@@ -4,6 +4,7 @@ import com.funbox.ania.Global;
 import com.minigloop.input.Mouse;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
+import com.minigloop.util.AssetsLoader;
 import com.minigloop.util.Stats;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
@@ -50,11 +51,16 @@ class Engine
 		Global.stage = _stage;
 		
 		//_statsCanvas.addChild(new Stats(false, true));
+		AssetsLoader.init();
 		
 		Mouse.init(_stage);
 		
 		ScreenManager.init(_bufferCanvas);
 		ScreenManager.gotoScreen(_gameClass);
+		
+		#if js
+		js.Lib.document.getElementsByTagName("body")[0].style.overflowX = "hidden";
+		#end
 		
 		_stage.addEventListener(Event.ENTER_FRAME, loop);
 	}

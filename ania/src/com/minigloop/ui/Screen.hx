@@ -21,6 +21,11 @@ class Screen
 		_canvas.x = Global.stage.fullScreenWidth / 2 - 800;
 	}
 	
+	public function end()
+	{
+		
+	}
+	
 	public function destroy()
 	{
 		
