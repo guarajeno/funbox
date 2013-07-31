@@ -6353,11 +6353,11 @@ com.funbox.bcp.minigame4.screens.PreloaderScreen.prototype = $extend(com.miniglo
 			this._isLoadingReady = true;
 			this.onLoadingLoaded();
 		}
-		if(this._isLoadingReady) {
+		if(this._isLoadingReady && this.loadas != null) {
 			console.log("_isLoadingReady");
 			this.loadas.update(dt);
 		}
-		if(this._isAssetsDownloaded && this._isDataDownloaded && this._isSoundsDownloaded) {
+		if(this._isAssetsDownloaded && this._isDataDownloaded && this._isSoundsDownloaded && this.loadas != null) {
 			console.log("_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded");
 			this._isLoadingReady = false;
 			this.loadas.destroy();

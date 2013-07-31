@@ -222,12 +222,12 @@ class PreloaderScreen extends Screen
 			_isLoadingReady = true;
 			onLoadingLoaded();
 		}
-		if (_isLoadingReady)
+		if (_isLoadingReady && loadas != null)
 		{
 			trace("_isLoadingReady");
 			loadas.update(dt);
 		}
-		if (_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded)
+		if (_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded && loadas != null)
 		{
 			trace("_isAssetsDownloaded && _isDataDownloaded && _isSoundsDownloaded");
 			_isLoadingReady = false;
