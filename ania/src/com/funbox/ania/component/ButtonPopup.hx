@@ -33,4 +33,9 @@ class ButtonPopup extends Button
 	{
 		super.update(dt);
 	}
+	
+	public function end(delay:Float) 
+	{
+		Actuate.tween(this.position, 0.3, { y: Global.stage.stageWidth + 50 }).delay(delay).ease(Elastic.easeInOut);
+	}
 }

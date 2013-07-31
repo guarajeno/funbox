@@ -5,6 +5,7 @@ import com.minigloop.input.Mouse;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
+import com.minigloop.util.DataLoader;
 import com.minigloop.util.Stats;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
@@ -52,6 +53,7 @@ class Engine
 		
 		//_statsCanvas.addChild(new Stats(false, true));
 		AssetsLoader.init();
+		DataLoader.init();
 		
 		Mouse.init(_stage);
 		
@@ -71,6 +73,8 @@ class Engine
 		_dt = _now - _last;
 		_last = _now;
 		
+		_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenHeight / 800;
+		_bufferCanvas.x = Global.stage.fullScreenWidth / 2 - _bufferCanvas.width / 2;//- (2000 - _bufferCanvas.width) / 2;//Global.stage.fullScreenWidth / 2 - 1000;
 		update(_dt);
 	}
 	

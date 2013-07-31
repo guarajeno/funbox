@@ -18,7 +18,7 @@ class Screen
 	
 	public function update(dt:Int)
 	{
-		_canvas.x = Global.stage.fullScreenWidth / 2 - 800;
+		
 	}
 	
 	public function end()

@@ -25,16 +25,16 @@ class ImagePopup extends VisualObject
 		super(canvas);
 		
 		_img = AssetsLoader.getAsset(idImg);
+		_canvas.addChild(_img);
+		
 		_img.x = Global.stage.stageWidth / 2 - _img.width / 2 + x;
 		_img.y = Global.stage.stageHeight;
 		
-		_canvas.addChild(_img);
-		
-		Actuate.tween(_img, 0.8, { y:(y - _img.height / 2) }).delay(delay).ease(Elastic.easeInOut);
+		Actuate.tween(_img, 1.0, { y:(y - _img.height / 2) }).delay(delay).ease(Elastic.easeInOut);
 	}
 	
 	public function end(delay:Float):Void
 	{
-		Actuate.tween(_img, 0.3, { y: (Global.stage.stageHeight - 50) }).delay(delay).ease(Elastic.easeInOut);
+		Actuate.tween(_img, 0.3, { y: (Global.stage.stageHeight + 50) }).delay(delay).ease(Elastic.easeInOut);
 	}
 }

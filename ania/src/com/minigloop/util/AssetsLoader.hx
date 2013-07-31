@@ -43,7 +43,7 @@ class AssetsLoader
 	
 	static public function load(__callback:Dynamic):Void
 	{
-		trace("--- INIT LOAD ---");
+		trace("--- INIT LOAD ASSETS ---");
 		_index = 0;
 		_callback = __callback;
 		loadAsset();

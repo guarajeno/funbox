@@ -15,6 +15,7 @@ class DataLoader
 {
 	static private var _loader:URLLoader;
 	static private var _urls:Array<String>;
+	static private var _tempUrls:Array<String>;
 	static private var _ids:Array<String>;
 	static private var _loaders:Array<URLLoader>;
 	static private var _index:Int;
@@ -28,29 +29,32 @@ class DataLoader
 	static public function init():Void
 	{
 		_urls = new Array<String>();
+		_tempUrls = new Array<String>();
 		_ids = new Array<String>();
 		_loaders = new Array<URLLoader>();
 		
-		_index = 0;
+		//_index = 0;
 	}
 	
 	static public function addData(url:String, id:String):Void
 	{
-		_urls.push(url);
+		_tempUrls.push(url);
 		_ids.push(id);
 	}
 	
 	static public function load(__callback:Dynamic):Void
 	{
+		trace("--- INIT LOAD DATA ---");
+		_index = 0;
 		_callback = __callback;
 		loadData();
 	}
 	
 	static public function loadData(e:Event = null):Void
 	{
-		if (_index < _urls.length)
+		if (_index < _tempUrls.length)
 		{
-			var request:URLRequest = new URLRequest(_urls[_index]);
+			var request:URLRequest = new URLRequest(_tempUrls[_index]);
 			_loader = new URLLoader();
 			_loader.load(request);
 			_loader.addEventListener(Event.COMPLETE, loadData);
@@ -58,12 +62,13 @@ class DataLoader
 			
 			_loaders.push(_loader);
 			
-			trace("data loaded: [" + _ids[_index] + "]");
+			trace("data loaded: [" + _tempUrls[_index] + "]");
 			
 			_index++;
 		}
 		else
 		{
+			_tempUrls = new Array<String>();
 			_callback();
 		}
 	}
@@ -77,7 +82,7 @@ class DataLoader
 	{
 		var i:Int;
 			
-		for (i in 0...(_urls.length))
+		for (i in 0...(_ids.length))
 		{
 			if (_ids[i] == id)
 			{

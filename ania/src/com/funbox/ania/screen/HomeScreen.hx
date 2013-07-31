@@ -1,6 +1,7 @@
 package com.funbox.ania.screen;
 
 import com.eclecticdesignstudio.motion.Actuate;
+import com.eclecticdesignstudio.motion.easing.Linear;
 import com.eclecticdesignstudio.motion.easing.Quad;
 import com.funbox.ania.component.ButtonPopup;
 import com.funbox.ania.component.ImagePopup;
@@ -9,9 +10,11 @@ import com.funbox.ania.component.ImagePopup;
 import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
 import com.funbox.ania.screen.LoaderScreen;
+import com.minigloop.display.AtlasSprite;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
+import com.minigloop.util.DataLoader;
 import nme.display.Bitmap;
 import nme.display.Sprite;
 
@@ -40,8 +43,14 @@ class HomeScreen extends Screen
 	private var _data:ImagePopup;
 	private var _enter:ButtonPopup;
 	
+	private var _semicoptero:AtlasSprite;
+	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
+	private var _isAssetsLoaded:Bool;
+	private var _isDataLoaded:Bool;
+	private var _news:Bitmap;
+	private var _t:Float = 0;
 	
 	public function new(canvas:Sprite) 
 	{
@@ -85,10 +94,25 @@ class HomeScreen extends Screen
 		AssetsLoader.addAsset("img/common/web_common_button_news_normal.png", "web_common_button_news_normal");
 		AssetsLoader.addAsset("img/common/web_common_button_news_over.png", "web_common_button_news_over");
 		AssetsLoader.addAsset("img/common/web_common_tadata.png", "web_common_tadata");
+		AssetsLoader.addAsset("img/common/animations/web_common_animations_loader.png", "web_common_animations_loader");
+		AssetsLoader.addAsset("img/home/web_home_news_support.png", "web_home_news_support");
 		
-		AssetsLoader.load(preInit);
+		AssetsLoader.load(onAssetsLoaded);
+		
+		DataLoader.addData("img/common/animations/web_common_animations_loader.json", "web_common_animations_loader");
+		DataLoader.load(onDataLoaded);
 		
 		update(0);
+	}
+	
+	private function onAssetsLoaded() 
+	{
+		_isAssetsLoaded = true;
+	}
+	
+	private function onDataLoaded() 
+	{
+		_isDataLoaded = true;
 	}
 	
 	private function preInit() 
@@ -108,26 +132,39 @@ class HomeScreen extends Screen
 		
 		// popups
 		_city = new ImagePopup(_canvas, "web_home_city", 0, 480, 0.5);
-		_tree_1 = new ImagePopup(_canvas, "web_home_tree01", -350, 500, 0.7);
+		_tree_1 = new ImagePopup(_canvas, "web_home_tree01", -350, 500, 0.5);
 		_floor = new ImagePopup(_canvas, "web_home_floor", 0, 670, 0);
-		_tree_2 = new ImagePopup(_canvas, "web_home_tree02", 610, 650, 0.7);
-		_house = new ImagePopup(_canvas, "web_home_house", -500, 580, 0.9);
-		_doit = new ImagePopup(_canvas, "web_home_doityourself", -300, 580, 1.0);
-		_meshi = new ImagePopup(_canvas, "web_home_meshi", 490, 500, 0.7);
-		_video = new ImagePopup(_canvas, "web_home_video", -50, 550, 1.2);
+		_tree_2 = new ImagePopup(_canvas, "web_home_tree02", 610, 650, 0.5);
+		_house = new ImagePopup(_canvas, "web_home_house", -500, 580, 1.2);
+		_doit = new ImagePopup(_canvas, "web_home_doityourself", -300, 580, 1.2);
+		_meshi = new ImagePopup(_canvas, "web_home_meshi", 490, 500, 1.0);
+		_video = new ImagePopup(_canvas, "web_home_video", -50, 520, 1.2);
 		
 		_enter = new ButtonPopup(
 			_canvas,
-			210,
-			660,
+			240,
+			690,
 			"web_home_tadata_enter",
 			"web_home_tadata_enter",
 			"web_home_tadata_enter",
-			1.5,
+			0,
 			onEnter_Click
 		);
 		
-		_data = new ImagePopup(_canvas, "web_home_tadata", 300, 650, 1.5);
+		_data = new ImagePopup(_canvas, "web_home_tadata", 330, 680, 0);
+		
+		_semicoptero = new AtlasSprite(_canvas, "web_common_animations_loader", "web_common_animations_loader");
+		_semicoptero.position.x = 0;
+		_semicoptero.position.y = 150;
+		
+		Actuate.tween(_semicoptero.position, 1, { x: 180 } ).ease(Linear.easeNone).delay(0);
+		
+		_news = AssetsLoader.getAsset("web_home_news_support");
+		_news.x = 1600;
+		_news.y = 180;
+		_canvas.addChild(_news);
+		
+		Actuate.tween(_news, 1, { x: 1400 } ).ease(Linear.easeNone).delay(0);
 		
 		_menuBar = new MenuBar(_canvas);
 	}
@@ -140,17 +177,20 @@ class HomeScreen extends Screen
 		//_canvas.addChild(_background);
 		
 		// popups
-		_city.end(1.2);
-		_floor.end(1.2);
-		_tree_1.end(1);
-		_tree_2.end(1);
-		_meshi.end(1);
-		_house.end(0.7);
-		_doit.end(0.5);
+		_city.end(0.3);
+		_floor.end(0.3);
+		_tree_1.end(0.3);
+		_tree_2.end(0.3);
+		_meshi.end(0.3);
+		_house.end(0);
+		_doit.end(0);
 		_video.end(0);
 		
-		//_enter.end(0);
-		//_data.end(0);
+		_enter.end(0);
+		_data.end(0);
+		
+		_canvas.removeChild(_news);
+		_semicoptero.destroy();
 		
 		//_menuBar.end();
 	}
@@ -168,9 +208,22 @@ class HomeScreen extends Screen
 	
 	override public function update(dt:Int):Dynamic 
 	{
+		if (_isAssetsLoaded && _isDataLoaded && _isPaused)
+		{
+			preInit();
+			_isPaused = false;
+		}
+		
 		if (_isPaused) return;
+		
 		_enter.update(dt);
 		_menuBar.update(dt);
+		_semicoptero.update(dt);
+		
+		_news.y = 150 + 10 * Math.sin(_t);
+		
+		_t += 0.06;
+		if (_t >= 3.14) _t = 0;
 		
 		super.update(dt);
 	}

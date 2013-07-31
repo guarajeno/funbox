@@ -48,12 +48,12 @@ class LoaderScreen extends Screen
 		_canvas.addChild(_background);
 		
 		_menuSupport = AssetsLoader.getAsset("web_common_button_suport");
-		_menuSupport.x = Global.stage.fullScreenWidth / 2;// - _menuSupport.width / 2;
+		_menuSupport.x = 500;//Global.stage.fullScreenWidth / 2 + _menuSupport.width / 2;
 		_menuSupport.scaleX = 0;
 		_canvas.addChild(_menuSupport);
 		
 		_logo = AssetsLoader.getAsset("web_common_logo");
-		_logo.x = Global.stage.fullScreenWidth / 2 - _logo.width / 2;
+		_logo.x = Global.stage.stageWidth / 2 - _logo.width / 2;
 		_logo.y = Global.stage.fullScreenHeight / 2 - _logo.height / 2;
 		_canvas.addChild(_logo);
 		
@@ -81,7 +81,6 @@ class LoaderScreen extends Screen
 		
 		Actuate.tween(_logo, 0.5, { y: 0 } ).ease(Elastic.easeInOut);
 		Actuate.tween(_menuSupport, 0.1, { scaleX: 0.95 } ).delay(0.5).ease(Linear.easeNone).onUpdate(onAnimating).onComplete(_onEndAnimation);
-		//Actuate.tween(_menuSupport, 0.5, { x: 0 } ).delay(0.5).ease(Linear.easeNone);
 	}
 	
 	private function onAnimating() 
