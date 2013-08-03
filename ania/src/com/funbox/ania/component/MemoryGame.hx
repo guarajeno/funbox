@@ -42,8 +42,6 @@ class MemoryGame extends VisualObject
 	private var _state:String;
 	
 	private var _time:TextField;
-	private var _minutes:Int;
-	private var _seconds:Int;
 	
 	public function new(canvas:Sprite) 
 	{
@@ -116,8 +114,8 @@ class MemoryGame extends VisualObject
 				//_selectedCover_1.visible = false;
 				_selectedCover_1X = button.position.x;
 				_selectedCover_1Y = button.position.y;
-				_selectedCover_1.position.x = -300;
-				_selectedCover_1.position.y = -300;
+				_selectedCover_1.position.x = 0;
+				_selectedCover_1.position.y = -100;
 			}
 			
 			case STATE_ONE:

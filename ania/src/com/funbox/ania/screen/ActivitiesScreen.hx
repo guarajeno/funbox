@@ -12,7 +12,6 @@ import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
 import com.funbox.ania.screen.LoaderScreen;
 import com.minigloop.display.AtlasSprite;
-import com.minigloop.display.Button;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
@@ -37,8 +36,6 @@ class ActivitiesScreen extends Screen
 	private var _activities:ButtonPopup;
 	private var _back:ButtonPopup;
 	private var _game:MemoryGame;
-	private var _play:Button;
-	private var _playAgain:Button;
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
@@ -88,8 +85,6 @@ class ActivitiesScreen extends Screen
 		_loaderScreen.addAsset("img/activity/web_activity_card05.png", "web_activity_card05");
 		_loaderScreen.addAsset("img/activity/web_activity_card06.png", "web_activity_card06");
 		_loaderScreen.addAsset("img/activity/web_activity_cardclose.png", "web_activity_cardclose");
-		_loaderScreen.addAsset("img/activity/web_activity_play_normal.png", "web_activity_play_normal");
-		_loaderScreen.addAsset("img/activity/web_activity_play_over.png", "web_activity_play_over");
 		
 		_loaderScreen.load(init);
 		
@@ -117,17 +112,8 @@ class ActivitiesScreen extends Screen
 		_back.setCollision(0, 35, 110, 40);
 		
 		_game = new MemoryGame(_canvas);
-		_play = new Button(_canvas, "web_activity_play_normal", "web_activity_play_normal", "web_activity_play_over", onPlayClick);
-		_play.position.x = 1300;
-		_play.position.y = 800;
-		_play.setCollision(0, 10, 110, 40);
 		
 		_menuBar = new MenuBar(_canvas);
-	}
-	
-	private function onPlayClick() 
-	{
-		
 	}
 	
 	private function onBackClick() 
@@ -157,6 +143,5 @@ class ActivitiesScreen extends Screen
 		_activities.update(dt);
 		_back.update(dt);
 		_game.update(dt);
-		_play.update(dt);
 	}
 }

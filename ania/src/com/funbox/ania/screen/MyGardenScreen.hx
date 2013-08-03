@@ -17,8 +17,6 @@ import nme.display.Bitmap;
 import nme.display.Sprite;
 import nme.errors.Error;
 import nme.text.TextField;
-import nme.text.TextFormat;
-import nme.text.TextFormatAlign;
 
 /**
  * ...
@@ -60,7 +58,6 @@ class MyGardenScreen extends Screen
 	private var _isEnd:Bool;
 	
 	private var _descriptions:Array<String>;
-	private var _description:TextField;
 
 	public function new(canvas:Sprite) 
 	{
@@ -159,16 +156,7 @@ class MyGardenScreen extends Screen
 		
 		// descriptions
 		_descriptions = [
-			"Es una niña juguetona y aventurera que ama la naturaleza. Representa el amor y nos recuerda la fuerza que llevamos en nuestro corazón para mejorar el mundo.",
-			"Hermano mayor de Ania, es un niño genio que ama la tecnología. Representa la inteligencia y nos recuerda que hay que innovar para mejorar el mundo.",
-			"Guardián de Meshi, y abuelo de Ania y Kin. Es un shaman amazónico que conoce mucho sobre plantas. Representa la sabiduría y nos recuerda el valor que tienen los adultos mayores y las culturas originarias para mejorar el mundo.",
-			"Es el único árbol que produce semillas y flores de todas las plantas del mundo. Ella representa la vida y nos recuerda que somos hermanos con la naturaleza y hay que protegerla.",
-			"Curhui representa el trabajo en equipo y nos recuerda de mantener sano nuestros cuerpos para mejorar el mundo. Huinsi, hermano de Curhui, es una hormiga “zen” y representa el trabajo en equipo y nos recuerda de mantener sano nuestra mente y espíritu para mejorar el mundo.",
-			"Es una mariposa con una alita diferente. Representa la aceptación. Nos recuerda que todos tenemos algo especial para hacer la diferencia.",
-			"Es una flor sensible y mejor amiga de Ania. Representa la compasión. Nos recuerda que con valor y determinación podemos lograr nuestros objetivos.",
-			"Es un guacamayo amigo de Tawa que vive en las ramas de Meshi. Representa la buena comunicación y nos recuerda que hay que compartir con otros para mejorar el mundo.",
-			"Es un pescadito que vive en el estanque del jardín. Representa la inclusión y nos recuerda que hay que ahorrar agua, y cuidar nuestros ríos, lagos y mares.",
-			"Es el monstruo de la compostera del jardín. Representa el reciclaje de desechos orgánicos y nos recuerda que todos podemos vivir generando un impacto positivo en nuestro entorno."
+			
 		];
 		
 		_elementsCanvas = new Sprite();
@@ -285,16 +273,6 @@ class MyGardenScreen extends Screen
 		_support.y = -_support.height;
 		_buttonsCanvas.addChild(_support);
 		
-		_description = new TextField();
-		_description.width = 200;
-		_description.height = 200;
-		_description.multiline = true;
-		_description.wordWrap = true;
-		_description.x = 1350;
-		_description.y = -100;
-		_description.defaultTextFormat = new TextFormat("Arial", 13, 0x000000, true, false, false, "", "", TextFormatAlign.CENTER);
-		_canvas.addChild(_description);
-		
 		_menuBar = new MenuBar(_menuCanvas);
 		
 		_index = 0;
@@ -315,9 +293,6 @@ class MyGardenScreen extends Screen
 		_character.y = 650 - _character.height;
 		_character.scaleY = 0;
 		
-		_description.y = -100;
-		_description.text = _descriptions[index];
-		
 		_support.y = -_support.height;
 		
 		if (_title != null && _buttonsCanvas.contains(_title))
@@ -335,7 +310,6 @@ class MyGardenScreen extends Screen
 		Actuate.tween(_character, 0.8, { scaleY: 0.98 } ).ease(Elastic.easeOut).onUpdate(repositionCharacter);
 		Actuate.tween(_support, 0.8, { y: -120 } ).ease(Elastic.easeOut);
 		Actuate.tween(_title, 0.8, { y: 200 } ).ease(Elastic.easeOut);
-		Actuate.tween(_description, 0.8, { y: 280 } ).ease(Elastic.easeOut);
 		
 		_charactersCanvas.addChild(_character);
 	}

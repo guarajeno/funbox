@@ -5036,7 +5036,7 @@ com.minigloop.display.SpriteEntity.prototype = $extend(com.minigloop.display.Vis
 	}
 	,setCollision: function(x,y,width,height) {
 		this.collision.get_graphics().clear();
-		this.collision.get_graphics().beginFill(16711680,0.2);
+		this.collision.get_graphics().beginFill(16711680,0.02);
 		this.collision.get_graphics().drawRect(0,0,width,height);
 		this.collision.get_graphics().endFill();
 		this._collisionOffsetX = x;
@@ -5228,8 +5228,8 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 			this._selectedCover_1 = button;
 			this._selectedCover_1X = button.position.x;
 			this._selectedCover_1Y = button.position.y;
-			this._selectedCover_1.position.x = -300;
-			this._selectedCover_1.position.y = -300;
+			this._selectedCover_1.position.x = 0;
+			this._selectedCover_1.position.y = -100;
 			break;
 		case this.STATE_ONE:
 			console.log("one to two");
@@ -5375,7 +5375,6 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 		this._activities.update(dt);
 		this._back.update(dt);
 		this._game.update(dt);
-		this._play.update(dt);
 	}
 	,end: function() {
 		console.log("ENDING");
@@ -5387,8 +5386,6 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 	}
 	,onBackClick: function() {
 		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
-	}
-	,onPlayClick: function() {
 	}
 	,init: function() {
 		this._loaderScreen.destroy();
@@ -5402,10 +5399,6 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 		this._back = new com.funbox.ania.component.ButtonPopup(this._canvas,400,150,"web_activity_button_back_over","web_activity_button_back_over","web_activity_button_back_over",0,$bind(this,this.onBackClick));
 		this._back.setCollision(0,35,110,40);
 		this._game = new com.funbox.ania.component.MemoryGame(this._canvas);
-		this._play = new com.minigloop.display.Button(this._canvas,"web_activity_play_normal","web_activity_play_normal","web_activity_play_over",$bind(this,this.onPlayClick));
-		this._play.position.x = 1300;
-		this._play.position.y = 800;
-		this._play.setCollision(0,10,110,40);
 		this._menuBar = new com.funbox.ania.component.MenuBar(this._canvas);
 	}
 	,onLoaderScreenLoaded: function() {
@@ -5438,8 +5431,6 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 		this._loaderScreen.addAsset("img/activity/web_activity_card05.png","web_activity_card05");
 		this._loaderScreen.addAsset("img/activity/web_activity_card06.png","web_activity_card06");
 		this._loaderScreen.addAsset("img/activity/web_activity_cardclose.png","web_activity_cardclose");
-		this._loaderScreen.addAsset("img/activity/web_activity_play_normal.png","web_activity_play_normal");
-		this._loaderScreen.addAsset("img/activity/web_activity_play_over.png","web_activity_play_over");
 		this._loaderScreen.load($bind(this,this.init));
 	}
 	,__class__: com.funbox.ania.screen.ActivitiesScreen
@@ -5774,8 +5765,6 @@ com.funbox.ania.screen.MyGardenScreen.prototype = $extend(com.minigloop.ui.Scree
 		this._character.set_x(com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._character.get_width() / 2 - 70);
 		this._character.set_y(650 - this._character.get_height());
 		this._character.set_scaleY(0);
-		this._description.set_y(-100);
-		this._description.set_text(this._descriptions[index]);
 		this._support.set_y(-this._support.get_height());
 		if(this._title != null && this._buttonsCanvas.contains(this._title)) {
 			this._buttonsCanvas.removeChild(this._title);
@@ -5788,14 +5777,13 @@ com.funbox.ania.screen.MyGardenScreen.prototype = $extend(com.minigloop.ui.Scree
 		motion.Actuate.tween(this._character,0.8,{ scaleY : 0.98}).ease(motion.easing.Elastic.get_easeOut()).onUpdate($bind(this,this.repositionCharacter));
 		motion.Actuate.tween(this._support,0.8,{ y : -120}).ease(motion.easing.Elastic.get_easeOut());
 		motion.Actuate.tween(this._title,0.8,{ y : 200}).ease(motion.easing.Elastic.get_easeOut());
-		motion.Actuate.tween(this._description,0.8,{ y : 280}).ease(motion.easing.Elastic.get_easeOut());
 		this._charactersCanvas.addChild(this._character);
 	}
 	,init: function() {
 		this._loaderScreen.destroy();
 		this._isPaused = false;
 		console.log("is paused true");
-		this._descriptions = ["Es una niña juguetona y aventurera que ama la naturaleza. Representa el amor y nos recuerda la fuerza que llevamos en nuestro corazón para mejorar el mundo.","Hermano mayor de Ania, es un niño genio que ama la tecnología. Representa la inteligencia y nos recuerda que hay que innovar para mejorar el mundo.","Guardián de Meshi, y abuelo de Ania y Kin. Es un shaman amazónico que conoce mucho sobre plantas. Representa la sabiduría y nos recuerda el valor que tienen los adultos mayores y las culturas originarias para mejorar el mundo.","Es el único árbol que produce semillas y flores de todas las plantas del mundo. Ella representa la vida y nos recuerda que somos hermanos con la naturaleza y hay que protegerla.","Curhui representa el trabajo en equipo y nos recuerda de mantener sano nuestros cuerpos para mejorar el mundo. Huinsi, hermano de Curhui, es una hormiga “zen” y representa el trabajo en equipo y nos recuerda de mantener sano nuestra mente y espíritu para mejorar el mundo.","Es una mariposa con una alita diferente. Representa la aceptación. Nos recuerda que todos tenemos algo especial para hacer la diferencia.","Es una flor sensible y mejor amiga de Ania. Representa la compasión. Nos recuerda que con valor y determinación podemos lograr nuestros objetivos.","Es un guacamayo amigo de Tawa que vive en las ramas de Meshi. Representa la buena comunicación y nos recuerda que hay que compartir con otros para mejorar el mundo.","Es un pescadito que vive en el estanque del jardín. Representa la inclusión y nos recuerda que hay que ahorrar agua, y cuidar nuestros ríos, lagos y mares.","Es el monstruo de la compostera del jardín. Representa el reciclaje de desechos orgánicos y nos recuerda que todos podemos vivir generando un impacto positivo en nuestro entorno."];
+		this._descriptions = [];
 		this._elementsCanvas = new browser.display.Sprite();
 		this._charactersCanvas = new browser.display.Sprite();
 		this._buttonsCanvas = new browser.display.Sprite();
@@ -5838,15 +5826,6 @@ com.funbox.ania.screen.MyGardenScreen.prototype = $extend(com.minigloop.ui.Scree
 		this._support.set_x(1300);
 		this._support.set_y(-this._support.get_height());
 		this._buttonsCanvas.addChild(this._support);
-		this._description = new browser.text.TextField();
-		this._description.set_width(200);
-		this._description.set_height(200);
-		this._description.multiline = true;
-		this._description.set_wordWrap(true);
-		this._description.set_x(1350);
-		this._description.set_y(-100);
-		this._description.set_defaultTextFormat(new browser.text.TextFormat("Arial",13,0,true,false,false,"","",browser.text.TextFormatAlign.CENTER));
-		this._canvas.addChild(this._description);
 		this._menuBar = new com.funbox.ania.component.MenuBar(this._menuCanvas);
 		this._index = 0;
 		motion.Actuate.timer(1.5).onComplete($bind(this,this.showCharacter),[0]);
