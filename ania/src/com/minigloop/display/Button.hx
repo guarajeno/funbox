@@ -18,6 +18,9 @@ import nme.geom.Rectangle;
 
 class Button extends SpriteEntity
 {
+	public var visible:Bool = true;
+	public var index:Int;
+	
 	private var _callback:Dynamic;
 	private var _button:Button;
 	//private var _over:Bool;
@@ -67,7 +70,7 @@ class Button extends SpriteEntity
 	private function onMouseUp(e:MouseEvent):Void 
 	{
 		setState("up");
-		_callback();
+		_callback(this);
 	}
 	
 	private function onMouseOut(e:MouseEvent):Void 
@@ -89,5 +92,12 @@ class Button extends SpriteEntity
 		_canvas.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		_canvas.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		_canvas.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+	}
+	
+	override public function update(dt:Int):Void 
+	{
+		super.update(dt);
+		
+		skin.visible = visible;
 	}
 }

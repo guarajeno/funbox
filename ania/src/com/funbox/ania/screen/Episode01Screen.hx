@@ -1,6 +1,7 @@
 package com.funbox.ania.screen;
 
 import com.eclecticdesignstudio.motion.Actuate;
+import com.eclecticdesignstudio.motion.easing.Elastic;
 import com.eclecticdesignstudio.motion.easing.Quad;
 import com.funbox.ania.component.ButtonPopup;
 import com.funbox.ania.component.ImagePopup;
@@ -8,6 +9,7 @@ import com.funbox.ania.component.MenuBar;
 import com.funbox.ania.component.ImagePopup;
 import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
+import com.minigloop.display.AtlasSprite;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
@@ -35,8 +37,10 @@ class Episode01Screen extends Screen
 	private var _tree_2:ImagePopup;
 	private var _tree_3:ImagePopup;
 	private var _previous:ButtonPopup;
-	private var _activities:ImagePopup;
+	private var _activities:ButtonPopup;
 	private var _data:ImagePopup;
+	private var _support:ButtonPopup;
+	private var _face:AtlasSprite;
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
@@ -47,76 +51,165 @@ class Episode01Screen extends Screen
 		
 		_loaderScreen = new LoaderScreen(canvas, onLoaderScreenLoaded);
 		_isPaused = true;
-		
-		init();
 	}
 	
 	private function onLoaderScreenLoaded() 
 	{
+		// common
+		_loaderScreen.addAsset("img/common/web_common_button_home_normal.png", "web_common_button_home_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_home_over.png", "web_common_button_home_over");
+		_loaderScreen.addAsset("img/common/web_common_button_close_normal.png", "web_common_button_close_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_close_over.png", "web_common_button_close_over");
+		_loaderScreen.addAsset("img/common/web_common_button_episodes_normal.png", "web_common_button_episodes_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_episodes_over.png", "web_common_button_episodes_over");
+		_loaderScreen.addAsset("img/common/web_common_button_parentsandteachers_normal.png", "web_common_button_parentsandteachers_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_parentsandteachers_over.png", "web_common_button_parentsandteachers_over");
+		_loaderScreen.addAsset("img/common/web_common_button_characters_normal.png", "web_common_button_characters_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_characters_over.png", "web_common_button_characters_over");
+		_loaderScreen.addAsset("img/common/web_common_button_doityourself_normal.png", "web_common_button_doityourself_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_doityourself_over.png", "web_common_button_doityourself_over");
+		_loaderScreen.addAsset("img/common/web_common_button_store_normal.png", "web_common_buttonstore_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_store_over.png", "web_common_button_store_over");
+		_loaderScreen.addAsset("img/common/web_common_button_news_normal.png", "web_common_button_news_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_news_over.png", "web_common_button_news_over");
+		_loaderScreen.addAsset("img/common/web_common_play.png", "web_common_play");
+		
 		// episode 01
-		AssetsLoader.addAsset("img/episode01/web_epidose01_floor.png", "web_epidose01_floor");
-		AssetsLoader.addAsset("img/episode01/web_epidose01_city.png", "web_epidose01_city");
-		AssetsLoader.addAsset("img/episode01/web_epidose01_meshi.png", "web_epidose01_meshi");
-		AssetsLoader.addAsset("img/episode01/web_epidose01_tree01.png", "web_epidose01_tree01");
-		AssetsLoader.addAsset("img/episode01/web_epidose01_tree02.png", "web_epidose01_tree02");
-		AssetsLoader.addAsset("img/episode01/web_epidose01_tree03.png", "web_epidose01_tree03");
-		AssetsLoader.addAsset("img/episode01/web_epidose01_activities.png", "web_epidose01_activities");
-		AssetsLoader.addAsset("img/episode01/web_epidose01_video_previous.png", "web_epidose01_video_previous");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_floor.png", "web_epidose01_floor");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_city.png", "web_epidose01_city");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_meshi.png", "web_epidose01_meshi");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_tree01.png", "web_epidose01_tree01");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_tree02.png", "web_epidose01_tree02");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_tree03.png", "web_epidose01_tree03");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_activities.png", "web_epidose01_activities");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_video_previous.png", "web_epidose01_video_previous");
 		
-		AssetsLoader.load(preInit);
+		_loaderScreen.addAsset("img/episode01/animations/web_epidose01_meshi_face.png", "web_epidose01_meshi_face");
+		_loaderScreen.addAsset("img/episode01/animations/web_epidose01_bird01.png", "web_epidose01_bird01");
+		_loaderScreen.addAsset("img/episode01/animations/web_epidose01_bird02.png", "web_epidose01_bird02");
+		_loaderScreen.addAsset("img/episode01/animations/web_epidose01_bird03.png", "web_epidose01_bird03");
 		
-		update(0);
+		_loaderScreen.addData("img/episode01/animations/web_epidose01_meshi_face.json", "web_epidose01_meshi_face");
+		_loaderScreen.addData("img/episode01/animations/web_epidose01_bird01.json", "web_epidose01_bird01");
+		_loaderScreen.addData("img/episode01/animations/web_epidose01_bird02.json", "web_epidose01_bird02");
+		_loaderScreen.addData("img/episode01/animations/web_epidose01_bird03.json", "web_epidose01_bird03");
+		
+		_loaderScreen.load(init);
 	}
-	
-	private function preInit() 
-	{
-		_loaderScreen.animate(init);
-	}
-	
+
 	private function init() 
 	{
+		_loaderScreen.destroy();
+		
 		// background
 		_background = AssetsLoader.getAsset("web_common_background");
 		_canvas.addChild(_background);
 		
 		// popups
-		_city = new ImagePopup(canvas, "web_epidose01_city", 0, 570, 0.5);
-		_tree_1 = new ImagePopup(canvas, "web_epidose01_tree01", -480, 500, 0.7);
-		_tree_2 = new ImagePopup(canvas, "web_epidose01_tree02", 680, 500, 0.7);
-		_tree_3 = new ImagePopup(canvas, "web_epidose01_tree03", 820, 660, 0.7);
-		_floor = new ImagePopup(canvas, "web_epidose01_floor", 0, 670, 0);
-		_meshi = new ImagePopup(canvas, "web_epidose01_meshi", 190, 285, 0.7);
+		_city = new ImagePopup(_canvas, "web_epidose01_city", 0, 570, 1);
+		_tree_1 = new ImagePopup(_canvas, "web_epidose01_tree01", -480, 500, 1.5);
+		_tree_2 = new ImagePopup(_canvas, "web_epidose01_tree02", 680, 500, 1.5);
+		_tree_3 = new ImagePopup(_canvas, "web_epidose01_tree03", 820, 660, 1.5);
+		_floor = new ImagePopup(_canvas, "web_epidose01_floor", 0, 670, 0);
+		_meshi = new ImagePopup(_canvas, "web_epidose01_meshi", 190, 285, 2);
+		
+		//_face = new AtlasSprite(_canvas, "web_epidose01_meshi_face", "web_epidose01_meshi_face");
+		//_face.position.x = 990;
+		//_face.position.y = 800;
+		//Actuate.tween(_face.position, 2, { y: 300 } ).delay(2).ease(Elastic.easeOut).onUpdate(onFaseUpdate);
+		
+		_support = new ButtonPopup(
+			_canvas,
+			450,
+			200,
+			"web_common_play",
+			"web_common_play",
+			"web_common_play",
+			2,
+			onActivitiesClick
+		);
+		
+		_support.setCollision(0, 240, 220, 220);
 		
 		_previous = new ButtonPopup(
-			canvas,
-			-450,
+			_canvas,
+			-350,
 			500,
 			"web_epidose01_video_previous",
 			"web_epidose01_video_previous",
 			"web_epidose01_video_previous",
-			1,
+			2.5,
 			onPrevious_Click
 		);
 		
-		_previous.setCollision(40, 20, 420, 250);
+		_previous.setCollision(90, 20, 420, 250);
 		
-		_activities = new ImagePopup(canvas, "web_epidose01_activities", -670, 570, 1);
-		_data = new ImagePopup(canvas, "web_common_tadata", 0, 620, 1);
+		_activities = new ButtonPopup(
+			_canvas,
+			-670,
+			570,
+			"web_epidose01_activities",
+			"web_epidose01_activities",
+			"web_epidose01_activities",
+			2.5,
+			onActivitiesClick
+		);
 		
-		_menuBar = new MenuBar(canvas);
+		//_activities.setCollision(0, 0, 100, 80);
+		
+		_data = new ImagePopup(_canvas, "web_common_tadata", 550, 620, 2);
+		
+		_menuBar = new MenuBar(_canvas);
+		
+		_isPaused = false;
 	}
 	
 	private function onPrevious_Click() 
 	{
-		trace("click en previous");
-		ScreenManager.showPopup(VideoPopup);
+		trace("previous");
+	}
+	
+	private function onActivitiesClick() 
+	{
+		ScreenManager.gotoScreen(ActivitiesScreen);
+	}
+	//
+	//private function onFaseUpdate() 
+	//{
+		//trace("entro");
+		//_face.update(0);
+	//}
+	
+	override public function end():Dynamic 
+	{
+		trace("ENDING");
+		
+		_menuBar.destroy();
+		
+		_city.end(0);
+		_tree_1.end(0.5);
+		_tree_2.end(0.5);
+		_tree_3.end(0.5);
+		_floor.end(0.3);
+		_meshi.end(0);
+		_activities.end(0);
+		_data.end(0);
+		
+		_previous.destroy();
+		_support.destroy();
 	}
 	
 	override public function update(dt:Int):Dynamic 
 	{
-		_previous.update(dt);
-		_menuBar.update(dt);
+		if (_loaderScreen != null) _loaderScreen.update(dt);
 		
-		super.update(dt);
+		if (_isPaused) return;
+		
+		_activities.update(dt);
+		_support.update(dt);
+		//_face.update(dt);
+		
+		if (_previous != null) _previous.update(dt);
+		if (_menuBar != null) _menuBar.update(dt);
 	}
 }

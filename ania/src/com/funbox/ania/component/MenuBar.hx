@@ -48,7 +48,7 @@ class MenuBar extends VisualObject
 		
 		// home
 		_btnHome = new Button(canvas, "web_common_button_home_normal", "web_common_button_home_over", "web_common_button_home_normal", onHome_Click);
-		_btnHome.setCollision(-0, -0, 90, 40);
+		_btnHome.setCollision(0, 0, 90, 40);
 		_btnHome.position.x = Global.stage.stageWidth / 2 - _btnHome.collision.width / 2 - 430;
 		_btnHome.position.y = 80;
 		
@@ -61,25 +61,25 @@ class MenuBar extends VisualObject
 		// characters
 		_btnMyWorld = new Button(canvas, "web_common_button_characters_normal", "web_common_button_characters_over", "web_common_button_characters_normal", onMyWorld_Click);
 		_btnMyWorld.setCollision(0, 0, 110, 40);
-		_btnMyWorld.position.x = Global.stage.stageWidth / 2 - _btnEpisodes.collision.width / 2 - 190;
-		_btnMyWorld.position.y = 80;
+		_btnMyWorld.position.x = Global.stage.stageWidth / 2 - _btnMyWorld.collision.width / 2 + 160;
+		_btnMyWorld.position.y = 75;
 		
 		// fathers and teachers
 		_btnTeachers = new Button(canvas, "web_common_button_parentsandteachers_normal", "web_common_button_parentsandteachers_over", "web_common_button_parentsandteachers_normal", onTeachers_Click);
 		_btnTeachers.setCollision(0, 0, 170, 40);
-		_btnTeachers.position.x = Global.stage.stageWidth / 2 - _btnEpisodes.collision.width / 2 + 400;
+		_btnTeachers.position.x = Global.stage.stageWidth / 2 - _btnTeachers.collision.width / 2 + 400;
 		_btnTeachers.position.y = 75;
 		
 		// do it yourself
 		_btnMyGarden = new Button(canvas, "web_common_button_doityourself_normal", "web_common_button_doityourself_over", "web_common_button_doityourself_normal", onMyGarden_Click);
 		_btnMyGarden.setCollision(0, 0, 140, 40);
-		_btnMyGarden.position.x = Global.stage.stageWidth / 2 - _btnEpisodes.collision.width / 2 + 150;
-		_btnMyGarden.position.y = 75;
+		_btnMyGarden.position.x = Global.stage.stageWidth / 2 - _btnMyGarden.collision.width / 2 - 190;
+		_btnMyGarden.position.y = 80;
 		
 		// news
 		_btnMyProjects = new Button(canvas, "web_common_button_news_normal", "web_common_button_news_over", "web_common_button_news_normal", onMyProyects_Click);
-		_btnMyProjects.setCollision(0, 0, 100, 40);
-		_btnMyProjects.position.x = Global.stage.stageWidth / 2 - _btnEpisodes.collision.width / 2 + 295;
+		_btnMyProjects.setCollision(0, 0, 60, 40);
+		_btnMyProjects.position.x = Global.stage.stageWidth / 2 - _btnEpisodes.collision.width / 2 + 280;
 		_btnMyProjects.position.y = 75;
 	}
 	
@@ -101,7 +101,7 @@ class MenuBar extends VisualObject
 	
 	private function onMyGarden_Click() 
 	{
-		ScreenManager.gotoScreen(Episode02Screen);
+		//ScreenManager.gotoScreen(MyGardenScreen);
 		trace("MY GARDEN");
 	}
 	
@@ -118,6 +118,7 @@ class MenuBar extends VisualObject
 	
 	private function onEpisodes_Click() 
 	{
+		ScreenManager.gotoScreen(Episode01Screen);
 		trace("ON EPISODES");
 	}
 	
@@ -130,5 +131,17 @@ class MenuBar extends VisualObject
 		_btnMyWorld.update(dt);
 		_btnMyGarden.update(dt);
 		_btnMyProjects.update(dt);
+	}
+	
+	public function destroy():Void
+	{
+		_canvas.removeChild(_background);
+		_btnHome.destroy();
+		_btnLogo.destroy();
+		_btnEpisodes.destroy();
+		_btnTeachers.destroy();
+		_btnMyWorld.destroy();
+		_btnMyGarden.destroy();
+		_btnMyProjects.destroy();
 	}
 }

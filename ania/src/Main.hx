@@ -1,5 +1,6 @@
 package ;
 
+import com.funbox.ania.screen.ActivitiesScreen;
 import com.funbox.ania.screen.HomeScreen;
 import com.funbox.ania.screen.PreloaderScreen;
 import com.minigloop.Engine;

@@ -62,9 +62,21 @@ class Engine
 		
 		#if js
 		js.Lib.document.getElementsByTagName("body")[0].style.overflowX = "hidden";
+		js.Lib.document.getElementsByTagName("body")[0].style.overflowY = "hidden";
 		#end
 		
 		_stage.addEventListener(Event.ENTER_FRAME, loop);
+		_stage.addEventListener(Event.RESIZE, resize);
+	}
+	
+	private function resize(e:Event):Void 
+	{
+		//if (Global.stage.fullScreenWidth / Global.stage.fullScreenHeight > 2000 / 850)
+		//{
+			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenWidth / Global.widthReference;
+		//}
+		
+		_bufferCanvas.x = Global.stage.fullScreenWidth / 2 - _bufferCanvas.width / 2;
 	}
 	
 	public function loop(e:Event)
@@ -73,8 +85,7 @@ class Engine
 		_dt = _now - _last;
 		_last = _now;
 		
-		_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenHeight / 800;
-		_bufferCanvas.x = Global.stage.fullScreenWidth / 2 - _bufferCanvas.width / 2;//- (2000 - _bufferCanvas.width) / 2;//Global.stage.fullScreenWidth / 2 - 1000;
+		resize(e);
 		update(_dt);
 	}
 	

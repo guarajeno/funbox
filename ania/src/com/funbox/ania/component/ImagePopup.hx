@@ -1,6 +1,7 @@
 package com.funbox.ania.component;
 import com.eclecticdesignstudio.motion.Actuate;
 import com.eclecticdesignstudio.motion.easing.Elastic;
+import com.eclecticdesignstudio.motion.easing.Quad;
 import com.eclecticdesignstudio.motion.easing.Sine;
 import com.funbox.ania.Global;
 import com.minigloop.display.VisualObject;
@@ -25,12 +26,13 @@ class ImagePopup extends VisualObject
 		super(canvas);
 		
 		_img = AssetsLoader.getAsset(idImg);
+		
 		_canvas.addChild(_img);
 		
 		_img.x = Global.stage.stageWidth / 2 - _img.width / 2 + x;
 		_img.y = Global.stage.stageHeight;
 		
-		Actuate.tween(_img, 1.0, { y:(y - _img.height / 2) }).delay(delay).ease(Elastic.easeInOut);
+		Actuate.tween(_img, 2, { y:(y - _img.height / 2) }).delay(delay).ease(Elastic.easeInOut);
 	}
 	
 	public function end(delay:Float):Void

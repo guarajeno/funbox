@@ -15,6 +15,7 @@ import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
 import nme.display.Bitmap;
 import nme.display.Sprite;
+import nme.errors.Error;
 import nme.text.TextField;
 
 /**
@@ -51,20 +52,122 @@ class MyGardenScreen extends Screen
 	private var _support:Bitmap;
 	private var _title:Bitmap;
 	private var _text:TextField;
+	
+	private var _loaderScreen:LoaderScreen;
+	private var _isPaused:Bool;
+	private var _isEnd:Bool;
+	
+	private var _descriptions:Array<String>;
 
 	public function new(canvas:Sprite) 
 	{
 		super(canvas);
+		
+		_loaderScreen = new LoaderScreen(canvas, onLoaderScreenLoaded);
+		_isPaused = true;
+	}
+	
+	private function onLoaderScreenLoaded() 
+	{
+		// common
+		_loaderScreen.addAsset("img/common/web_common_button_home_normal.png", "web_common_button_home_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_home_over.png", "web_common_button_home_over");
+		_loaderScreen.addAsset("img/common/web_common_button_close_normal.png", "web_common_button_close_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_close_over.png", "web_common_button_close_over");
+		_loaderScreen.addAsset("img/common/web_common_button_episodes_normal.png", "web_common_button_episodes_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_episodes_over.png", "web_common_button_episodes_over");
+		_loaderScreen.addAsset("img/common/web_common_button_parentsandteachers_normal.png", "web_common_button_parentsandteachers_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_parentsandteachers_over.png", "web_common_button_parentsandteachers_over");
+		_loaderScreen.addAsset("img/common/web_common_button_characters_normal.png", "web_common_button_characters_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_characters_over.png", "web_common_button_characters_over");
+		_loaderScreen.addAsset("img/common/web_common_button_doityourself_normal.png", "web_common_button_doityourself_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_doityourself_over.png", "web_common_button_doityourself_over");
+		_loaderScreen.addAsset("img/common/web_common_button_store_normal.png", "web_common_buttonstore_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_store_over.png", "web_common_button_store_over");
+		_loaderScreen.addAsset("img/common/web_common_button_news_normal.png", "web_common_button_news_normal");
+		_loaderScreen.addAsset("img/common/web_common_button_news_over.png", "web_common_button_news_over");
+		
+		// my garden
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_floor01.png", "web_mygarden_floor01");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_city.png", "web_mygarden_city");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_tree_01.png", "web_mygarden_tree_01");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_tree_02.png", "web_mygarden_tree_02");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_tree_03.png", "web_mygarden_tree_03");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_house.png", "web_mygarden_house");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_buttonback_normal.png", "web_mygarden_buttonback_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_buttonback_over.png", "web_mygarden_buttonback_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_buttonnext_normal.png", "web_mygarden_buttonnext_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_buttonnext_over.png", "web_mygarden_buttonnext_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_textsuport.png", "web_mygarden_textsuport");
+		
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_1_normal.png", "web_mygarden_button_1_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_2_normal.png", "web_mygarden_button_2_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_3_normal.png", "web_mygarden_button_3_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_4_normal.png", "web_mygarden_button_4_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_5_normal.png", "web_mygarden_button_5_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_6_normal.png", "web_mygarden_button_6_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_7_normal.png", "web_mygarden_button_7_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_8_normal.png", "web_mygarden_button_8_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_9_normal.png", "web_mygarden_button_9_normal");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_10_normal.png", "web_mygarden_button_10_normal");
+		
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_1_over.png", "web_mygarden_button_1_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_2_over.png", "web_mygarden_button_2_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_3_over.png", "web_mygarden_button_3_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_4_over.png", "web_mygarden_button_4_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_5_over.png", "web_mygarden_button_5_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_6_over.png", "web_mygarden_button_6_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_7_over.png", "web_mygarden_button_7_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_8_over.png", "web_mygarden_button_8_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_9_over.png", "web_mygarden_button_9_over");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_button_10_over.png", "web_mygarden_button_10_over");
+		
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_1.png", "web_mygarden_characters_1");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_2.png", "web_mygarden_characters_2");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_3.png", "web_mygarden_characters_3");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_4.png", "web_mygarden_characters_4");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_5.png", "web_mygarden_characters_5");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_6.png", "web_mygarden_characters_6");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_7.png", "web_mygarden_characters_7");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_8.png", "web_mygarden_characters_8");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_9.png", "web_mygarden_characters_9");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_10.png", "web_mygarden_characters_10");
+		
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_1_name.png", "web_mygarden_characters_1_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_2_name.png", "web_mygarden_characters_2_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_3_name.png", "web_mygarden_characters_3_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_4_name.png", "web_mygarden_characters_4_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_5_name.png", "web_mygarden_characters_5_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_6_name.png", "web_mygarden_characters_6_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_7_name.png", "web_mygarden_characters_7_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_8_name.png", "web_mygarden_characters_8_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_9_name.png", "web_mygarden_characters_9_name");
+		_loaderScreen.addAsset("img/mygarden/web_mygarden_characters_10_name.png", "web_mygarden_characters_10_name");
+		
+		_loaderScreen.load(init);
+	}
+	
+	private function init() 
+	{
+		_loaderScreen.destroy();
+		
+		_isPaused = false;
+		trace("is paused true");
+		
+		// descriptions
+		_descriptions = [
+			
+		];
 		
 		_elementsCanvas = new Sprite();
 		_charactersCanvas = new Sprite();
 		_buttonsCanvas = new Sprite();
 		_menuCanvas = new Sprite();
 		
-		canvas.addChild(_elementsCanvas);
-		canvas.addChild(_charactersCanvas);
-		canvas.addChild(_buttonsCanvas);
-		canvas.addChild(_menuCanvas);
+		_canvas.addChild(_elementsCanvas);
+		_canvas.addChild(_charactersCanvas);
+		_canvas.addChild(_buttonsCanvas);
+		_canvas.addChild(_menuCanvas);
 		
 		// background
 		_background = AssetsLoader.getAsset("web_common_background");
@@ -166,18 +269,20 @@ class MyGardenScreen extends Screen
 		}
 		
 		_support = AssetsLoader.getAsset("web_mygarden_textsuport");
-		_support.x = 1000;
+		_support.x = 1300;
 		_support.y = -_support.height;
 		_buttonsCanvas.addChild(_support);
 		
 		_menuBar = new MenuBar(_menuCanvas);
 		
 		_index = 0;
-		Actuate.timer(1.5).onComplete(showCharacter, [_index]);
+		Actuate.timer(1.5).onComplete(showCharacter, [0]);
 	}
 	
 	private function showCharacter(index:Int) 
 	{
+		if (_isEnd) return;
+		
 		if (_charactersCanvas.contains(_character))
 		{
 			_charactersCanvas.removeChild(_character);
@@ -197,14 +302,14 @@ class MyGardenScreen extends Screen
 		}
 		
 		_title = AssetsLoader.getAsset("web_mygarden_characters_" + (index + 1) + "_name");
-		_title.x = 1155 - _title.width / 2;
+		_title.x = 1450 - _title.width / 2;
 		_title.y = -_title.height;
 		
 		_buttonsCanvas.addChild(_title);
 		
-		Actuate.tween(_character, 0.5, { scaleY: 0.98 } ).ease(Elastic.easeOut).onUpdate(repositionCharacter);
-		Actuate.tween(_support, 0.5, { y: -120 } ).ease(Elastic.easeOut);
-		Actuate.tween(_title, 0.5, { y: 200 } ).ease(Elastic.easeOut);
+		Actuate.tween(_character, 0.8, { scaleY: 0.98 } ).ease(Elastic.easeOut).onUpdate(repositionCharacter);
+		Actuate.tween(_support, 0.8, { y: -120 } ).ease(Elastic.easeOut);
+		Actuate.tween(_title, 0.8, { y: 200 } ).ease(Elastic.easeOut);
 		
 		_charactersCanvas.addChild(_character);
 	}
@@ -243,8 +348,47 @@ class MyGardenScreen extends Screen
 		showCharacter(_index);
 	}
 	
+	override public function end():Dynamic 
+	{
+		trace("ENDING");
+		
+		_menuBar.destroy();
+		/*_isEnd = true;
+		
+		var i:Int;
+		for (i in 0...10)
+		{
+			_buttons[i].end(0);
+		}
+		
+		_city.end(0);
+		_tree_1.end(0);
+		_tree_2.end(0);
+		_tree_3.end(0);
+		_house.end(0);
+		_floor.end(0);
+		_prev.end(0);
+		_next.end(0);
+		
+		_buttonsCanvas.removeChild(_title);
+		_buttonsCanvas.removeChild(_support);
+		_charactersCanvas.removeChild(_character);*/
+	}
+	
 	override public function update(dt:Int):Dynamic 
 	{
+		if (_isEnd) return;
+		
+		try {
+			_loaderScreen.update(dt);
+		}
+		catch (e:Error)
+		{
+			
+		}
+		
+		if (_isPaused) return;
+		
 		_menuBar.update(dt);
 		_prev.update(dt);
 		_next.update(dt);
@@ -254,7 +398,5 @@ class MyGardenScreen extends Screen
 		{
 			_buttons[i].update(dt);
 		}
-		
-		super.update(dt);
 	}
 }

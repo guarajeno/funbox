@@ -83,7 +83,10 @@ class AssetsLoader
 				var bmd:BitmapData = new BitmapData(Std.int(bm.width), Std.int(bm.height), true, 0x00FFFFFF);
 				bmd.draw(bm);
 				
-				return new Bitmap(bmd);
+				var bm:Bitmap = new Bitmap(bmd);
+				bm.cacheAsBitmap = true;
+				
+				return bm;
 			}
 		}
 		

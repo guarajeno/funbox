@@ -65,7 +65,7 @@ class AtlasSprite extends VisualObject
 		
 		//_offsetX = -_sourceWidth / 2;
 		//_offsetY = -_sourceHeight / 2;
-				
+		
 		_onEndAnimation = onEndAnimation;
 	}
 	

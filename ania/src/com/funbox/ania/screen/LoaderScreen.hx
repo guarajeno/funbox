@@ -13,8 +13,11 @@ import com.funbox.ania.popup.VideoPopup;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
+import com.minigloop.util.DataLoader;
 import nme.display.Bitmap;
 import nme.display.Sprite;
+import nme.text.TextField;
+import nme.text.TextFormat;
 
 /**
  * ...
@@ -29,6 +32,12 @@ class LoaderScreen extends Screen
 	private var _menuSupport:Bitmap;
 	private var _onEndLoad:Dynamic;
 	private var _onEndAnimation:Dynamic;
+	
+	private var _isAssetsLoaded:Bool;
+	private var _isDataLoaded:Bool;
+	private var _callback:Dynamic;
+	
+	private var _text:TextField;
 	
 	public function new(canvas:Sprite, onEndLoad:Dynamic) 
 	{
@@ -48,7 +57,7 @@ class LoaderScreen extends Screen
 		_canvas.addChild(_background);
 		
 		_menuSupport = AssetsLoader.getAsset("web_common_button_suport");
-		_menuSupport.x = 500;//Global.stage.fullScreenWidth / 2 + _menuSupport.width / 2;
+		_menuSupport.x = 500;
 		_menuSupport.scaleX = 0;
 		_canvas.addChild(_menuSupport);
 		
@@ -57,30 +66,66 @@ class LoaderScreen extends Screen
 		_logo.y = Global.stage.fullScreenHeight / 2 - _logo.height / 2;
 		_canvas.addChild(_logo);
 		
+		_text = new TextField();
+		_text.defaultTextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
+		_text.text = "Cargando...";
+		_canvas.addChild(_text);
+		
 		_onEndLoad();
 	}
 	
 	override public function update(dt:Int):Dynamic 
 	{
-		super.update(dt);
+		if (_isAssetsLoaded && _isDataLoaded)
+		{
+			_isAssetsLoaded = false;
+			_isDataLoaded = false;
+			
+			animate();
+		}
 	}
 	
 	override public function destroy():Dynamic 
 	{
-		_canvas.removeChild(_background);
+		//_canvas.removeChild(_background);
 		_canvas.removeChild(_logo);
 		_canvas.removeChild(_menuSupport);
 		
-		_background = null;
-		_logo = null;
+		//_background = null;
+		//_logo = null;
 	}
 	
-	public function animate(onEndAnimation:Dynamic) 
+	public function addAsset(url:String, id:String) 
 	{
-		_onEndAnimation = onEndAnimation;
-		
+		AssetsLoader.addAsset(url, id);
+	}
+	
+	public function addData(url:String, id:String) 
+	{
+		DataLoader.addData(url, id);
+	}
+	
+	public function load(__callback:Dynamic) 
+	{
+		_callback = __callback;
+		AssetsLoader.load(onAssetsLoaded);
+		DataLoader.load(onLoadedLoaded);
+	}
+	
+	private function onLoadedLoaded() 
+	{
+		_isDataLoaded = true;
+	}
+	
+	private function onAssetsLoaded() 
+	{
+		_isAssetsLoaded = true;
+	}
+	
+	public function animate() 
+	{
 		Actuate.tween(_logo, 0.5, { y: 0 } ).ease(Elastic.easeInOut);
-		Actuate.tween(_menuSupport, 0.1, { scaleX: 0.95 } ).delay(0.5).ease(Linear.easeNone).onUpdate(onAnimating).onComplete(_onEndAnimation);
+		Actuate.tween(_menuSupport, 0.1, { scaleX: 0.95 } ).delay(0.5).ease(Linear.easeNone).onUpdate(onAnimating).onComplete(_callback);
 	}
 	
 	private function onAnimating() 

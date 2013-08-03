@@ -48,6 +48,11 @@ class DataLoader
 		_index = 0;
 		_callback = __callback;
 		loadData();
+		
+		if (_urls.length == 0 && _callback != null)
+		{
+			_callback();
+		}
 	}
 	
 	static public function loadData(e:Event = null):Void

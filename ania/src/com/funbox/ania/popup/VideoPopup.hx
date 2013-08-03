@@ -56,7 +56,6 @@ class VideoPopup extends Screen
 	
 	private function onClose_Click() 
 	{
-		trace("cerrandooooo");
 		ScreenManager.closePopup();
 	}
 	
