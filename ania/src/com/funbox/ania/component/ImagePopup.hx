@@ -21,10 +21,10 @@ class ImagePopup extends VisualObject
 	private var _img:Bitmap;
 	private var _callback:Dynamic;
 	
-	public function new(canvas:Sprite, idImg:String, x:Float, y:Float, delay:Float) 
+	public function new(canvas:Sprite, idImg:String, x:Float, y:Float, delay:Float)
 	{
 		super(canvas);
-		
+			11277
 		_img = AssetsLoader.getAsset(idImg);
 		
 		_canvas.addChild(_img);
