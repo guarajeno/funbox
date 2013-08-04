@@ -38,6 +38,7 @@ class LoaderScreen extends Screen
 	private var _callback:Dynamic;
 	
 	private var _text:TextField;
+	private var _loaderCounter:Float = 0;
 	
 	public function new(canvas:Sprite, onEndLoad:Dynamic) 
 	{
@@ -67,8 +68,10 @@ class LoaderScreen extends Screen
 		_canvas.addChild(_logo);
 		
 		_text = new TextField();
-		_text.defaultTextFormat = new TextFormat("Arial", 30, 0xFFFFFF, true);
+		_text.defaultTextFormat = new TextFormat("Arial", 28, 0x000000, true);
 		_text.text = "Cargando...";
+		_text.x = 930;
+		_text.y = 500;
 		_canvas.addChild(_text);
 		
 		_onEndLoad();
@@ -76,6 +79,21 @@ class LoaderScreen extends Screen
 	
 	override public function update(dt:Int):Dynamic 
 	{
+		_loaderCounter += dt / 500;
+		
+		if (_loaderCounter > 4)
+		{
+			_loaderCounter = 0;
+		}
+		
+		_text.text = "Cargando";
+		
+		var i:Int;
+		for (i in 0...(Math.floor(_loaderCounter)))
+		{
+			_text.text += ".";
+		}
+		
 		if (_isAssetsLoaded && _isDataLoaded)
 		{
 			_isAssetsLoaded = false;
@@ -124,7 +142,9 @@ class LoaderScreen extends Screen
 	
 	public function animate() 
 	{
+		_text.visible = false;
 		Actuate.tween(_logo, 0.5, { y: 0 } ).ease(Elastic.easeInOut);
+		//Actuate.tween(_text, 0.5, { y: 0 } ).ease(Elastic.easeInOut);
 		Actuate.tween(_menuSupport, 0.1, { scaleX: 0.95 } ).delay(0.5).ease(Linear.easeNone).onUpdate(onAnimating).onComplete(_callback);
 	}
 	

@@ -42,6 +42,13 @@ class MemoryGame extends VisualObject
 	private var _state:String;
 	
 	private var _time:TextField;
+	private var _minutes:Int;
+	private var _seconds:Float;
+	private var _play:Button;
+	private var _win:Button;
+	private var _lock:Bitmap;
+	private var _isLocked:Bool;
+	private var _uncoveredCards:Float = 0;
 	
 	public function new(canvas:Sprite) 
 	{
@@ -58,11 +65,14 @@ class MemoryGame extends VisualObject
 		_covers = new Array<Button>();
 		_urls = new Array<String>();
 		
+		var numbers:Array<Int> = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5];
+		numbers.sort(randomSort);
+		
 		var i:Int;
 		
 		for (i in 0...12)
 		{
-			var r:Int = Math.floor(Math.random() * 6);
+			var r:Int = numbers[i];
 			var row:Int = Math.floor(i / 3);
 			var col:Int = i % 3;
 			
@@ -80,9 +90,7 @@ class MemoryGame extends VisualObject
 			);
 			
 			cover.index = i;
-			
 			cover.setCollision(15, 15, 140, 140);
-			
 			cover.position.x = 650 + row * 160;
 			cover.position.y = 380 + col * 160;
 			
@@ -91,13 +99,99 @@ class MemoryGame extends VisualObject
 			_urls.push("web_activity_card0" + (r + 1));
 		}
 		
+		_minutes = 2;
+		_seconds = 59;
+		
 		_time = new TextField();
 		_time.x = 1365;
 		_time.y = 410;
-		var format:TextFormat = new TextFormat("Arial", 40, 0xFFFFFF, true);
-		_time.defaultTextFormat = format;
-		_time.text = "3:00";
+		
+		_time.defaultTextFormat = new TextFormat("Arial", 40, 0xFFFFFF, true);
+		_time.text = _minutes + ":" + ((Math.floor(_seconds) < 10) ? "0" + Math.floor(_seconds) : "" + Math.floor(_seconds));
 		_canvas.addChild(_time);
+		
+		// lock
+		_isLocked = true;
+		_lock = AssetsLoader.getAsset("web_activity_support_lock");
+		_lock.alpha = 0.7;
+		_lock.x = 520;
+		_lock.y = 230;
+		_canvas.addChild(_lock);
+		
+		// play button
+		_play = new Button(
+			_canvas,
+			"web_activity_play_normal",
+			"web_activity_play_normal",
+			"web_activity_play_over",
+			onPlayClick
+		);
+		
+		_play.position.x = 990;
+		_play.position.y = -100;
+		_play.setCollision(0, 0, 120, 60);
+		Actuate.tween(_play.position, 0.5, { y: 550 } );
+		
+		_win = new Button(
+			_canvas,
+			"web_activity_youwin",
+			"web_activity_youwin",
+			"web_activity_youwin",
+			onPlayClick
+		);
+		
+		_win.position.x = 800;
+		_win.position.y = -500;
+		_win.setCollision(180, 170, 220, 50);
+	}
+	
+	private function restartGame() 
+	{
+		_uncoveredCards = 0;
+		
+		var numbers:Array<Int> = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5];
+		numbers.sort(randomSort);
+		
+		var i:Int;
+		
+		for (i in 0...12)
+		{
+			var r:Int = numbers[i];
+			
+			var row:Int = Math.floor(i / 3);
+			var col:Int = i % 3;
+			
+			var card:Bitmap = _cards[i];
+			card.x = 650 + row * 160;
+			card.y = 380 + col * 160;
+			
+			var cover:Button = _covers[i];
+			cover.position.x = 650 + row * 160;
+			cover.position.y = 380 + col * 160;
+		}
+	}
+	
+	private function randomSort(x:Int, y:Int):Int
+	{
+		return Math.random() > 0.5 ? 1 : -1;
+	}
+	
+	private function onPlayClick() 
+	{
+		restartGame();
+		
+		_minutes = 2;
+		_seconds = 59;
+		_time.text = _minutes + ":" + ((Math.floor(_seconds) < 10) ? "0" + Math.floor(_seconds) : "" + Math.floor(_seconds));
+		
+		_lock.visible = false;
+		
+		//_play.position.y = -100;
+		Actuate.tween(_play.position, 0.5, { y: -100 } );
+		//_win.position.y = -500;
+		Actuate.tween(_win.position, 0.5, { y: -500 } );
+		
+		_isLocked = false;
 	}
 	
 	function onCoverClick(button:Button) 
@@ -111,11 +205,9 @@ class MemoryGame extends VisualObject
 				trace("none to one");
 				_state = STATE_ONE;
 				_selectedCover_1 = button;
-				//_selectedCover_1.visible = false;
 				_selectedCover_1X = button.position.x;
 				_selectedCover_1Y = button.position.y;
-				_selectedCover_1.position.x = 0;
-				_selectedCover_1.position.y = -100;
+				_selectedCover_1.position.y = -400;
 			}
 			
 			case STATE_ONE:
@@ -125,10 +217,16 @@ class MemoryGame extends VisualObject
 				_selectedCover_2 = button;
 				_selectedCover_2X = button.position.x;
 				_selectedCover_2Y = button.position.y;
-				_selectedCover_2.position.x = 0;
-				_selectedCover_2.position.y = -100;
+				_selectedCover_2.position.y = -400;
 				
-				Actuate.timer(1.2).onComplete(onTimerComplete);
+				if (_urls[_selectedCover_1.index] != _urls[_selectedCover_2.index])
+				{
+					Actuate.timer(0.8).onComplete(onTimerComplete);
+				}
+				else
+				{
+					onTimerComplete();
+				}
 			}
 		}
 	}
@@ -143,8 +241,37 @@ class MemoryGame extends VisualObject
 			_selectedCover_2.position.x = _selectedCover_2X;
 			_selectedCover_2.position.y = _selectedCover_2Y;
 		}
+		else
+		{
+			_uncoveredCards += 2;
+		}
 		
 		_state = STATE_NONE;
+		
+		if (_uncoveredCards == 12)
+		{
+			win();
+		}
+	}
+	
+	private function win() 
+	{
+		_isLocked = true;
+		_lock.visible = true;
+		//_win.position.y = 480;
+		Actuate.tween(_win.position, 0.5, { y: 440 } );
+		
+		trace("win");
+	}
+	
+	private function lose() 
+	{
+		_isLocked = true;
+		_lock.visible = true;
+		//_play.position.y = 550;
+		Actuate.tween(_play.position, 0.5, { y: 550 } );
+		
+		trace("lose");
 	}
 	
 	override public function update(dt:Int):Void 
@@ -153,6 +280,28 @@ class MemoryGame extends VisualObject
 		for (i in 0...(_covers.length))
 		{
 			_covers[i].update(dt);
+		}
+		
+		_play.update(dt);
+		_win.update(dt);
+		
+		if (!_isLocked)
+		{
+			_seconds -= dt / 1000;
+			
+			if (_seconds < 0)
+			{
+				_seconds = 59;
+				_minutes--;
+				
+				if (_minutes < 0)
+				{
+					_minutes = 2;
+					lose();
+				}
+			}
+			
+			_time.text = _minutes + ":" + ((Math.floor(_seconds) < 10) ? "0" + Math.floor(_seconds) : "" + Math.floor(_seconds));
 		}
 	}
 	

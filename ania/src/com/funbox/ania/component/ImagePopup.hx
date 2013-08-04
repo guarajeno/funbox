@@ -24,7 +24,7 @@ class ImagePopup extends VisualObject
 	public function new(canvas:Sprite, idImg:String, x:Float, y:Float, delay:Float)
 	{
 		super(canvas);
-			11277
+		
 		_img = AssetsLoader.getAsset(idImg);
 		
 		_canvas.addChild(_img);

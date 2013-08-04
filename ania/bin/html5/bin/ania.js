@@ -5144,6 +5144,7 @@ com.funbox.ania.component.ImagePopup.prototype = $extend(com.minigloop.display.V
 	,__class__: com.funbox.ania.component.ImagePopup
 });
 com.funbox.ania.component.MemoryGame = function(canvas) {
+	this._uncoveredCards = 0;
 	this.STATE_TWO = "two";
 	this.STATE_ONE = "one";
 	this.STATE_NONE = "none";
@@ -5156,11 +5157,13 @@ com.funbox.ania.component.MemoryGame = function(canvas) {
 	this._cards = new Array();
 	this._covers = new Array();
 	this._urls = new Array();
+	var numbers = [0,0,1,1,2,2,3,3,4,4,5,5];
+	numbers.sort($bind(this,this.randomSort));
 	var i;
 	var _g = 0;
 	while(_g < 12) {
 		var i1 = _g++;
-		var r = Math.floor(Math.random() * 6);
+		var r = numbers[i1];
 		var row = Math.floor(i1 / 3);
 		var col = i1 % 3;
 		var card = com.minigloop.util.AssetsLoader.getAsset("web_activity_card0" + (r + 1));
@@ -5176,13 +5179,29 @@ com.funbox.ania.component.MemoryGame = function(canvas) {
 		this._covers.push(cover);
 		this._urls.push("web_activity_card0" + (r + 1));
 	}
+	this._minutes = 2;
+	this._seconds = 59;
 	this._time = new browser.text.TextField();
 	this._time.set_x(1365);
 	this._time.set_y(410);
-	var format = new browser.text.TextFormat("Arial",40,16777215,true);
-	this._time.set_defaultTextFormat(format);
-	this._time.set_text("3:00");
+	this._time.set_defaultTextFormat(new browser.text.TextFormat("Arial",40,16777215,true));
+	this._time.set_text(this._minutes + ":" + (Math.floor(this._seconds) < 10?"0" + Math.floor(this._seconds):"" + Math.floor(this._seconds)));
 	this._canvas.addChild(this._time);
+	this._isLocked = true;
+	this._lock = com.minigloop.util.AssetsLoader.getAsset("web_activity_support_lock");
+	this._lock.alpha = 0.7;
+	this._lock.set_x(520);
+	this._lock.set_y(230);
+	this._canvas.addChild(this._lock);
+	this._play = new com.minigloop.display.Button(this._canvas,"web_activity_play_normal","web_activity_play_normal","web_activity_play_over",$bind(this,this.onPlayClick));
+	this._play.position.x = 990;
+	this._play.position.y = -100;
+	this._play.setCollision(0,0,120,60);
+	motion.Actuate.tween(this._play.position,0.5,{ y : 550});
+	this._win = new com.minigloop.display.Button(this._canvas,"web_activity_youwin","web_activity_youwin","web_activity_youwin",$bind(this,this.onPlayClick));
+	this._win.position.x = 800;
+	this._win.position.y = -500;
+	this._win.setCollision(180,170,220,50);
 };
 $hxClasses["com.funbox.ania.component.MemoryGame"] = com.funbox.ania.component.MemoryGame;
 com.funbox.ania.component.MemoryGame.__name__ = ["com","funbox","ania","component","MemoryGame"];
@@ -5209,6 +5228,32 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 			var i1 = _g1++;
 			this._covers[i1].update(dt);
 		}
+		this._play.update(dt);
+		this._win.update(dt);
+		if(!this._isLocked) {
+			this._seconds -= dt / 1000;
+			if(this._seconds < 0) {
+				this._seconds = 59;
+				this._minutes--;
+				if(this._minutes < 0) {
+					this._minutes = 2;
+					this.lose();
+				}
+			}
+			this._time.set_text(this._minutes + ":" + (Math.floor(this._seconds) < 10?"0" + Math.floor(this._seconds):"" + Math.floor(this._seconds)));
+		}
+	}
+	,lose: function() {
+		this._isLocked = true;
+		this._lock.set_visible(true);
+		motion.Actuate.tween(this._play.position,0.5,{ y : 550});
+		console.log("lose");
+	}
+	,win: function() {
+		this._isLocked = true;
+		this._lock.set_visible(true);
+		motion.Actuate.tween(this._win.position,0.5,{ y : 440});
+		console.log("win");
 	}
 	,onTimerComplete: function() {
 		if(this._urls[this._selectedCover_1.index] != this._urls[this._selectedCover_2.index]) {
@@ -5216,8 +5261,9 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 			this._selectedCover_1.position.y = this._selectedCover_1Y;
 			this._selectedCover_2.position.x = this._selectedCover_2X;
 			this._selectedCover_2.position.y = this._selectedCover_2Y;
-		}
+		} else this._uncoveredCards += 2;
 		this._state = this.STATE_NONE;
+		if(this._uncoveredCards == 12) this.win();
 	}
 	,onCoverClick: function(button) {
 		if(this._state == this.STATE_TWO) return;
@@ -5228,8 +5274,7 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 			this._selectedCover_1 = button;
 			this._selectedCover_1X = button.position.x;
 			this._selectedCover_1Y = button.position.y;
-			this._selectedCover_1.position.x = 0;
-			this._selectedCover_1.position.y = -100;
+			this._selectedCover_1.position.y = -400;
 			break;
 		case this.STATE_ONE:
 			console.log("one to two");
@@ -5237,10 +5282,41 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 			this._selectedCover_2 = button;
 			this._selectedCover_2X = button.position.x;
 			this._selectedCover_2Y = button.position.y;
-			this._selectedCover_2.position.x = 0;
-			this._selectedCover_2.position.y = -100;
-			motion.Actuate.timer(1.2).onComplete($bind(this,this.onTimerComplete));
+			this._selectedCover_2.position.y = -400;
+			if(this._urls[this._selectedCover_1.index] != this._urls[this._selectedCover_2.index]) motion.Actuate.timer(0.8).onComplete($bind(this,this.onTimerComplete)); else this.onTimerComplete();
 			break;
+		}
+	}
+	,onPlayClick: function() {
+		this.restartGame();
+		this._minutes = 2;
+		this._seconds = 59;
+		this._time.set_text(this._minutes + ":" + (Math.floor(this._seconds) < 10?"0" + Math.floor(this._seconds):"" + Math.floor(this._seconds)));
+		this._lock.set_visible(false);
+		motion.Actuate.tween(this._play.position,0.5,{ y : -100});
+		motion.Actuate.tween(this._win.position,0.5,{ y : -500});
+		this._isLocked = false;
+	}
+	,randomSort: function(x,y) {
+		return Math.random() > 0.5?1:-1;
+	}
+	,restartGame: function() {
+		this._uncoveredCards = 0;
+		var numbers = [0,0,1,1,2,2,3,3,4,4,5,5];
+		numbers.sort($bind(this,this.randomSort));
+		var i;
+		var _g = 0;
+		while(_g < 12) {
+			var i1 = _g++;
+			var r = numbers[i1];
+			var row = Math.floor(i1 / 3);
+			var col = i1 % 3;
+			var card = this._cards[i1];
+			card.set_x(650 + row * 160);
+			card.set_y(380 + col * 160);
+			var cover = this._covers[i1];
+			cover.position.x = 650 + row * 160;
+			cover.position.y = 380 + col * 160;
 		}
 	}
 	,__class__: com.funbox.ania.component.MemoryGame
@@ -5423,6 +5499,10 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 		this._loaderScreen.addAsset("img/activity/web_activity_button_back_over.png","web_activity_button_back_over");
 		this._loaderScreen.addAsset("img/activity/web_activity_tittle_normal.png","web_activity_tittle_normal");
 		this._loaderScreen.addAsset("img/activity/web_activity_tittle_normal.png","web_activity_tittle_over");
+		this._loaderScreen.addAsset("img/activity/web_activity_play_normal.png","web_activity_play_normal");
+		this._loaderScreen.addAsset("img/activity/web_activity_play_over.png","web_activity_play_over");
+		this._loaderScreen.addAsset("img/activity/web_activity_support_lock.png","web_activity_support_lock");
+		this._loaderScreen.addAsset("img/activity/web_activity_youwin.png","web_activity_youwin");
 		this._loaderScreen.addAsset("img/activity/web_activity_support.png","web_activity_support");
 		this._loaderScreen.addAsset("img/activity/web_activity_card01.png","web_activity_card01");
 		this._loaderScreen.addAsset("img/activity/web_activity_card02.png","web_activity_card02");
@@ -5645,6 +5725,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 	,__class__: com.funbox.ania.screen.HomeScreen
 });
 com.funbox.ania.screen.LoaderScreen = function(canvas,onEndLoad) {
+	this._loaderCounter = 0;
 	com.minigloop.ui.Screen.call(this,canvas);
 	this._onEndLoad = onEndLoad;
 	com.minigloop.util.AssetsLoader.addAsset("img/common/web_common_logo.png","web_common_logo");
@@ -5660,6 +5741,7 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		this._menuSupport.set_x(com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._menuSupport.get_width() / 2);
 	}
 	,animate: function() {
+		this._text.set_visible(false);
 		motion.Actuate.tween(this._logo,0.5,{ y : 0}).ease(motion.easing.Elastic.get_easeInOut());
 		motion.Actuate.tween(this._menuSupport,0.1,{ scaleX : 0.95}).delay(0.5).ease(motion.easing.Linear.get_easeNone()).onUpdate($bind(this,this.onAnimating)).onComplete(this._callback);
 	}
@@ -5685,6 +5767,16 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		this._canvas.removeChild(this._menuSupport);
 	}
 	,update: function(dt) {
+		this._loaderCounter += dt / 500;
+		if(this._loaderCounter > 4) this._loaderCounter = 0;
+		this._text.set_text("Cargando");
+		var i;
+		var _g1 = 0, _g = Math.floor(this._loaderCounter);
+		while(_g1 < _g) {
+			var i1 = _g1++;
+			var _g2 = this._text;
+			_g2.set_text(_g2.get_text() + ".");
+		}
 		if(this._isAssetsLoaded && this._isDataLoaded) {
 			this._isAssetsLoaded = false;
 			this._isDataLoaded = false;
@@ -5703,8 +5795,10 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		this._logo.set_y(js.Lib.window.innerHeight / 2 - this._logo.get_height() / 2);
 		this._canvas.addChild(this._logo);
 		this._text = new browser.text.TextField();
-		this._text.set_defaultTextFormat(new browser.text.TextFormat("Arial",30,16777215,true));
+		this._text.set_defaultTextFormat(new browser.text.TextFormat("Arial",28,0,true));
 		this._text.set_text("Cargando...");
+		this._text.set_x(930);
+		this._text.set_y(500);
 		this._canvas.addChild(this._text);
 		this._onEndLoad();
 	}

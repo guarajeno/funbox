@@ -12,6 +12,7 @@ import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
 import com.funbox.ania.screen.LoaderScreen;
 import com.minigloop.display.AtlasSprite;
+import com.minigloop.display.Button;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
@@ -31,8 +32,6 @@ class ActivitiesScreen extends Screen
 	
 	// images
 	private var _background:Bitmap;
-	
-	// popups
 	private var _activities:ButtonPopup;
 	private var _back:ButtonPopup;
 	private var _game:MemoryGame;
@@ -42,7 +41,6 @@ class ActivitiesScreen extends Screen
 	
 	public function new(canvas:Sprite) 
 	{
-		
 		super(canvas);
 		
 		_loaderScreen = new LoaderScreen(canvas, onLoaderScreenLoaded);
@@ -75,6 +73,10 @@ class ActivitiesScreen extends Screen
 		_loaderScreen.addAsset("img/activity/web_activity_button_back_over.png", "web_activity_button_back_over");
 		_loaderScreen.addAsset("img/activity/web_activity_tittle_normal.png", "web_activity_tittle_normal");
 		_loaderScreen.addAsset("img/activity/web_activity_tittle_normal.png", "web_activity_tittle_over");
+		_loaderScreen.addAsset("img/activity/web_activity_play_normal.png", "web_activity_play_normal");
+		_loaderScreen.addAsset("img/activity/web_activity_play_over.png", "web_activity_play_over");
+		_loaderScreen.addAsset("img/activity/web_activity_support_lock.png", "web_activity_support_lock");
+		_loaderScreen.addAsset("img/activity/web_activity_youwin.png", "web_activity_youwin");
 		
 		// game
 		_loaderScreen.addAsset("img/activity/web_activity_support.png", "web_activity_support");
