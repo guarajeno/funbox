@@ -7,6 +7,7 @@ import com.funbox.ania.component.ButtonPopup;
 import com.funbox.ania.component.ImagePopup;
 import com.funbox.ania.component.MenuBar;
 import com.funbox.ania.component.ImagePopup;
+import com.funbox.ania.component.Seed;
 import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
 import com.funbox.ania.screen.LoaderScreen;
@@ -34,21 +35,26 @@ class HomeScreen extends Screen
 	// popups
 	private var _floor:ImagePopup;
 	private var _city:ImagePopup;
-	private var _meshi:ImagePopup;
+	private var _meshi:ButtonPopup;
 	private var _tree_1:ImagePopup;
 	private var _tree_2:ImagePopup;
 	private var _house:ImagePopup;
 	private var _doit:ImagePopup;
-	private var _video:ImagePopup;
-	private var _data:ImagePopup;
+	private var _video:ButtonPopup;
+	private var _data:AtlasSprite;
 	private var _enter:ButtonPopup;
+	private var _cloud:Bitmap;
 	
 	private var _semicoptero:AtlasSprite;
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
 	private var _news:Bitmap;
-	private var _t:Float = 0;
+	private var _tNews:Float = 0;
+	private var _tCloud:Float = 0;
+	private var _tMeshi:Float = 0;
+	private var _isMeshiAnimating:Bool = false;
+	
 	
 	public function new(canvas:Sprite) 
 	{
@@ -71,6 +77,8 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/home/web_home_tadata.png", "web_home_tadata");
 		_loaderScreen.addAsset("img/home/web_home_tadata_enter.png", "web_home_tadata_enter");
 		_loaderScreen.addAsset("img/home/web_home_meshi.png", "web_home_meshi");
+		_loaderScreen.addAsset("img/home/web_home_news_support.png", "web_home_news_support");
+		_loaderScreen.addAsset("img/home/web_home_seed.png", "web_home_seed");
 		
 		// common
 		_loaderScreen.addAsset("img/common/web_common_videosupport.png", "web_common_videosupport");
@@ -91,10 +99,12 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/common/web_common_button_news_normal.png", "web_common_button_news_normal");
 		_loaderScreen.addAsset("img/common/web_common_button_news_over.png", "web_common_button_news_over");
 		_loaderScreen.addAsset("img/common/web_common_tadata.png", "web_common_tadata");
+		_loaderScreen.addAsset("img/common/web_common_cloud_01.png", "web_common_cloud_01");
 		_loaderScreen.addAsset("img/common/animations/web_common_animations_loader.png", "web_common_animations_loader");
-		_loaderScreen.addAsset("img/home/web_home_news_support.png", "web_home_news_support");
+		_loaderScreen.addAsset("img/common/animations/web_common_animations_tadata.png", "web_common_animations_tadata");
 		
 		_loaderScreen.addData("img/common/animations/web_common_animations_loader.json", "web_common_animations_loader");
+		_loaderScreen.addData("img/common/animations/web_common_animations_tadata.json", "web_common_animations_tadata");
 		_loaderScreen.load(init);
 	}
 	
@@ -108,6 +118,11 @@ class HomeScreen extends Screen
 		_background = AssetsLoader.getAsset("web_common_background");
 		_canvas.addChild(_background);
 		
+		_cloud = AssetsLoader.getAsset("web_common_cloud_01");
+		_cloud.x = 800;
+		_cloud.y = 190;
+		_canvas.addChild(_cloud);
+		
 		// popups
 		_city = new ImagePopup(_canvas, "web_home_city", 0, 480, 1);
 		_tree_1 = new ImagePopup(_canvas, "web_home_tree01", -350, 500, 1.5);
@@ -115,8 +130,40 @@ class HomeScreen extends Screen
 		_tree_2 = new ImagePopup(_canvas, "web_home_tree02", 610, 650, 1.5);
 		_house = new ImagePopup(_canvas, "web_home_house", -500, 580, 2);
 		_doit = new ImagePopup(_canvas, "web_home_doityourself", -300, 580, 2.5);
-		_meshi = new ImagePopup(_canvas, "web_home_meshi", 490, 500, 2.2);
-		_video = new ImagePopup(_canvas, "web_home_video", -50, 520, 3);
+		
+		_meshi = new ButtonPopup(
+			_canvas,
+			490,
+			500,
+			"web_home_meshi",
+			"web_home_meshi",
+			"web_home_meshi",
+			2.2,
+			null
+		);
+		
+		_meshi.setCollision(270, 0, 450, 400);
+		
+		_meshi.onMouseOver = function() {
+			_isMeshiAnimating = true;
+		};
+		
+		_meshi.onMouseOut = function() {
+			_isMeshiAnimating = false;
+		};
+		
+		_video = new ButtonPopup(
+			_canvas,
+			-50,
+			520,
+			"web_home_video",
+			"web_home_video",
+			"web_home_video",
+			3,
+			onVideoClick
+		);
+		
+		_video.setCollision(110, 0, 400, 220);
 		
 		_enter = new ButtonPopup(
 			_canvas,
@@ -129,9 +176,23 @@ class HomeScreen extends Screen
 			onEnter_Click
 		);
 		
-		_data = new ImagePopup(_canvas, "web_home_tadata", 330, 680, 2.5);
+		_data = new AtlasSprite(
+			_canvas,
+			"web_common_animations_tadata",
+			"web_common_animations_tadata"
+		);
 		
-		_semicoptero = new AtlasSprite(_canvas, "web_common_animations_loader", "web_common_animations_loader");
+		_data.position.x = 1300;
+		_data.position.y = 1000;
+		
+		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2.5);
+		
+		_semicoptero = new AtlasSprite(
+			_canvas,
+			"web_common_animations_loader",
+			"web_common_animations_loader"
+		);
+		
 		_semicoptero.position.x = 0;
 		_semicoptero.position.y = 150;
 		
@@ -145,6 +206,20 @@ class HomeScreen extends Screen
 		Actuate.tween(_news, 1, { x: 1400 } ).ease(Linear.easeNone).delay(0);
 		
 		_menuBar = new MenuBar(_canvas);
+	}
+	
+	private function onVideoClick() 
+	{
+		trace("on video click");
+		ScreenManager.gotoScreen(Episode01Screen);
+	}
+	
+	private function emitSeeds() 
+	{
+		//var seed:Seed;
+		new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+		new Seed(_canvas, 1590 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+		new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 	}
 	
 	override public function end():Dynamic 
@@ -167,7 +242,6 @@ class HomeScreen extends Screen
 		_video.end(0);
 		
 		_enter.end(0);
-		_data.end(0);
 		
 		_canvas.removeChild(_news);
 		_semicoptero.destroy();
@@ -188,19 +262,50 @@ class HomeScreen extends Screen
 	{
 		_loaderScreen.update(dt);
 		
-		_loaderScreen.update(dt);
-		
 		if (_isPaused) return;
 		
 		_enter.update(dt);
 		_menuBar.update(dt);
 		_semicoptero.update(dt);
+		_meshi.update(dt);
+		_video.update(dt);
+		_data.update(dt);
 		
-		_news.y = 150 + 10 * Math.sin(_t);
+		_news.y = 150 + 10 * Math.sin(_tNews);
+		_cloud.x = 800 + 600 * Math.sin(_tCloud);
 		
-		_t += 0.06;
-		if (_t >= 3.14) _t = 0;
+		_tNews += 0.06;
+		if (_tNews >= 3.14) _tNews = 0;
+		
+		_tCloud += 0.005;
+		if (_tCloud >= 3.14) _tCloud = 0;
 		
 		super.update(dt);
+		
+		if (_isMeshiAnimating)
+		{
+			if (_tMeshi < 3.14)
+			{
+				_meshi.skin.scaleY = 1.1 + 0.02 * (Math.sin(_tMeshi));
+				_meshi.position.y = 775 - _meshi.skin.height;
+			}
+			else
+			{
+				_meshi.skin.scaleY = 1.1;
+			}
+			
+			_tMeshi += 0.13;
+			
+			if (_tMeshi >= 2 * 3.14)
+			{
+				emitSeeds();
+				_tMeshi = 0;
+			}
+		}
+		else
+		{
+			_meshi.skin.scaleY = 1.1;
+			_meshi.position.y = 775 - _meshi.skin.height;
+		}
 	}
 }

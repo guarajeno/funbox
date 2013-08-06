@@ -42,6 +42,8 @@ class MemoryGame extends VisualObject
 	private var _state:String;
 	
 	private var _time:TextField;
+	private var _scoreTF:TextField;
+	private var _score:Int;
 	private var _minutes:Int;
 	private var _seconds:Float;
 	private var _play:Button;
@@ -99,9 +101,10 @@ class MemoryGame extends VisualObject
 			_urls.push("web_activity_card0" + (r + 1));
 		}
 		
-		_minutes = 2;
+		_minutes = 1;
 		_seconds = 59;
 		
+		// time
 		_time = new TextField();
 		_time.x = 1365;
 		_time.y = 410;
@@ -110,10 +113,21 @@ class MemoryGame extends VisualObject
 		_time.text = _minutes + ":" + ((Math.floor(_seconds) < 10) ? "0" + Math.floor(_seconds) : "" + Math.floor(_seconds));
 		_canvas.addChild(_time);
 		
+		// score
+		
+		_score = 0;
+		_scoreTF = new TextField();
+		_scoreTF.x = 1365;
+		_scoreTF.y = 560;
+		
+		_scoreTF.defaultTextFormat = new TextFormat("Arial", 40, 0xFFFFFF, true);
+		_scoreTF.text = Std.string(_score);
+		_canvas.addChild(_scoreTF);
+		
 		// lock
 		_isLocked = true;
 		_lock = AssetsLoader.getAsset("web_activity_support_lock");
-		_lock.alpha = 0.7;
+		_lock.alpha = 0.9;
 		_lock.x = 520;
 		_lock.y = 230;
 		_canvas.addChild(_lock);
@@ -127,9 +141,9 @@ class MemoryGame extends VisualObject
 			onPlayClick
 		);
 		
-		_play.position.x = 990;
+		_play.position.x = 925;
 		_play.position.y = -100;
-		_play.setCollision(0, 0, 120, 60);
+		_play.setCollision(0, 0, 240, 120);
 		Actuate.tween(_play.position, 0.5, { y: 550 } );
 		
 		_win = new Button(
@@ -148,6 +162,8 @@ class MemoryGame extends VisualObject
 	private function restartGame() 
 	{
 		_uncoveredCards = 0;
+		_score = 0;
+		_scoreTF.text = Std.string(_score);
 		
 		var numbers:Array<Int> = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5];
 		numbers.sort(randomSort);
@@ -180,7 +196,7 @@ class MemoryGame extends VisualObject
 	{
 		restartGame();
 		
-		_minutes = 2;
+		_minutes = 1;
 		_seconds = 59;
 		_time.text = _minutes + ":" + ((Math.floor(_seconds) < 10) ? "0" + Math.floor(_seconds) : "" + Math.floor(_seconds));
 		
@@ -243,6 +259,8 @@ class MemoryGame extends VisualObject
 		}
 		else
 		{
+			_score += 50;
+			_scoreTF.text = Std.string(_score);
 			_uncoveredCards += 2;
 		}
 		
@@ -296,7 +314,7 @@ class MemoryGame extends VisualObject
 				
 				if (_minutes < 0)
 				{
-					_minutes = 2;
+					_minutes = 1;
 					lose();
 				}
 			}

@@ -108,7 +108,17 @@ class ActivitiesScreen extends Screen
 		_background.width = 2000;
 		_canvas.addChild(_background);
 		
-		_activities = new ButtonPopup(_canvas, -360, 170, "web_activity_tittle_normal", "web_activity_tittle_normal", "web_activity_tittle_normal", 0, null);
+		_activities = new ButtonPopup(
+			_canvas,
+			-360,
+			170,
+			"web_activity_tittle_normal",
+			"web_activity_tittle_normal",
+			"web_activity_tittle_normal",
+			0,
+			null
+		);
+		
 		_activities.setCollision(0, 45, 240, 40);
 		_back = new ButtonPopup(_canvas, 400, 150, "web_activity_button_back_over", "web_activity_button_back_over", "web_activity_button_back_over", 0, onBackClick);
 		_back.setCollision(0, 35, 110, 40);

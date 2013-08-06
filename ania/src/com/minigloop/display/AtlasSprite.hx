@@ -29,6 +29,7 @@ class AtlasSprite extends VisualObject
 	private var _offsetX:Float = 0;
 	private var _offsetY:Float = 0;
 	private var _onEndAnimation:Dynamic;
+	private var _frameCounter:Int = 0;
 	
 	private var _atlas:Dynamic;
 	
@@ -50,6 +51,7 @@ class AtlasSprite extends VisualObject
 		else
 		{
 			container = AssetsLoader.getAsset(imgId);
+			trace("container: " + imgId + " " + container);
 		}
 		
 		_canvas.addChild(container);
@@ -71,6 +73,14 @@ class AtlasSprite extends VisualObject
 	
 	override public function update(dt:Int):Void
 	{
+		container.x = position.x + _offsetX;
+		container.y = position.y + _offsetY;
+		
+		_frameCounter++;
+		_frameCounter = _frameCounter % 2;
+		
+		if (_frameCounter == 0) return;
+		
 		if (_atlas != null)
 		{
 			var frame = _atlas.frames[_currentIndex];
@@ -86,10 +96,6 @@ class AtlasSprite extends VisualObject
 				if (_onEndAnimation != null) _onEndAnimation();
 			}
 		}
-		
-		container.x = position.x + _offsetX;
-		container.y = position.y + _offsetY;
-		container.y = position.y + _offsetY;
 	}
 	
 	public function destroy() 

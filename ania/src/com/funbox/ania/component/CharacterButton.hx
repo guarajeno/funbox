@@ -18,7 +18,7 @@ class CharacterButton extends ButtonPopup
 		_index = index;
 	}
 	
-	override private function onMouseUp(e:MouseEvent):Void 
+	override private function _onMouseUp(e:MouseEvent):Void 
 	{
 		setState("up");
 		_callback(_index);

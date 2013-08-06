@@ -27,6 +27,8 @@ class Main extends Sprite
 		if (inited) return;
 		inited = true;
 		
+		js.Lib.eval("hideVideos();");
+		
 		new Engine(stage, HomeScreen);
 	}
 

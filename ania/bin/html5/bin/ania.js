@@ -1130,6 +1130,7 @@ Main.prototype = $extend(browser.display.Sprite.prototype,{
 	,init: function() {
 		if(this.inited) return;
 		this.inited = true;
+		eval("hideVideos();");
 		new com.minigloop.Engine(this.get_stage(),com.funbox.ania.screen.HomeScreen);
 	}
 	,resize: function(e) {
@@ -1404,6 +1405,11 @@ haxe.Timer.stamp = function() {
 }
 haxe.Timer.prototype = {
 	run: function() {
+	}
+	,stop: function() {
+		if(this.id == null) return;
+		window.clearInterval(this.id);
+		this.id = null;
 	}
 	,__class__: haxe.Timer
 }
@@ -5053,11 +5059,11 @@ com.minigloop.display.Button = function(canvas,upId,overId,downId,_callback) {
 	this.addState("down",downId,null);
 	this._callback = _callback;
 	this.setState("up");
-	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMouseMove));
-	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseDown));
-	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this.onMouseUp));
-	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this.onMouseOut));
-	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_OVER,$bind(this,this.onMouseOver));
+	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this._onMouseMove));
+	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this._onMouseDown));
+	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this._onMouseUp));
+	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this._onMouseOut));
+	this.collision.addEventListener(browser.events.MouseEvent.MOUSE_OVER,$bind(this,this._onMouseOver));
 	this.collision.set_useHandCursor(true);
 };
 $hxClasses["com.minigloop.display.Button"] = com.minigloop.display.Button;
@@ -5070,24 +5076,27 @@ com.minigloop.display.Button.prototype = $extend(com.minigloop.display.SpriteEnt
 	}
 	,destroy: function() {
 		com.minigloop.display.SpriteEntity.prototype.destroy.call(this);
-		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this.onMouseMove));
-		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this.onMouseDown));
-		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this.onMouseUp));
-		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this.onMouseOut));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_MOVE,$bind(this,this._onMouseMove));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_DOWN,$bind(this,this._onMouseDown));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_UP,$bind(this,this._onMouseUp));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_OUT,$bind(this,this._onMouseOut));
+		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_OVER,$bind(this,this._onMouseOver));
 	}
-	,onMouseOut: function(e) {
+	,_onMouseOut: function(e) {
+		if(this.onMouseOut != null) this.onMouseOut();
 		this.setState("up");
 	}
-	,onMouseUp: function(e) {
+	,_onMouseUp: function(e) {
 		this.setState("up");
 		this._callback(this);
 	}
-	,onMouseOver: function(e) {
+	,_onMouseOver: function(e) {
+		if(this.onMouseOver != null) this.onMouseOver();
 	}
-	,onMouseDown: function(e) {
+	,_onMouseDown: function(e) {
 		this.setState("down");
 	}
-	,onMouseMove: function(e) {
+	,_onMouseMove: function(e) {
 		if(this.state != "down") this.setState("over");
 	}
 	,__class__: com.minigloop.display.Button
@@ -5120,7 +5129,7 @@ $hxClasses["com.funbox.ania.component.CharacterButton"] = com.funbox.ania.compon
 com.funbox.ania.component.CharacterButton.__name__ = ["com","funbox","ania","component","CharacterButton"];
 com.funbox.ania.component.CharacterButton.__super__ = com.funbox.ania.component.ButtonPopup;
 com.funbox.ania.component.CharacterButton.prototype = $extend(com.funbox.ania.component.ButtonPopup.prototype,{
-	onMouseUp: function(e) {
+	_onMouseUp: function(e) {
 		this.setState("up");
 		this._callback(this._index);
 	}
@@ -5179,7 +5188,7 @@ com.funbox.ania.component.MemoryGame = function(canvas) {
 		this._covers.push(cover);
 		this._urls.push("web_activity_card0" + (r + 1));
 	}
-	this._minutes = 2;
+	this._minutes = 1;
 	this._seconds = 59;
 	this._time = new browser.text.TextField();
 	this._time.set_x(1365);
@@ -5187,16 +5196,23 @@ com.funbox.ania.component.MemoryGame = function(canvas) {
 	this._time.set_defaultTextFormat(new browser.text.TextFormat("Arial",40,16777215,true));
 	this._time.set_text(this._minutes + ":" + (Math.floor(this._seconds) < 10?"0" + Math.floor(this._seconds):"" + Math.floor(this._seconds)));
 	this._canvas.addChild(this._time);
+	this._score = 0;
+	this._scoreTF = new browser.text.TextField();
+	this._scoreTF.set_x(1365);
+	this._scoreTF.set_y(560);
+	this._scoreTF.set_defaultTextFormat(new browser.text.TextFormat("Arial",40,16777215,true));
+	this._scoreTF.set_text(Std.string(this._score));
+	this._canvas.addChild(this._scoreTF);
 	this._isLocked = true;
 	this._lock = com.minigloop.util.AssetsLoader.getAsset("web_activity_support_lock");
-	this._lock.alpha = 0.7;
+	this._lock.alpha = 0.9;
 	this._lock.set_x(520);
 	this._lock.set_y(230);
 	this._canvas.addChild(this._lock);
 	this._play = new com.minigloop.display.Button(this._canvas,"web_activity_play_normal","web_activity_play_normal","web_activity_play_over",$bind(this,this.onPlayClick));
-	this._play.position.x = 990;
+	this._play.position.x = 925;
 	this._play.position.y = -100;
-	this._play.setCollision(0,0,120,60);
+	this._play.setCollision(0,0,240,120);
 	motion.Actuate.tween(this._play.position,0.5,{ y : 550});
 	this._win = new com.minigloop.display.Button(this._canvas,"web_activity_youwin","web_activity_youwin","web_activity_youwin",$bind(this,this.onPlayClick));
 	this._win.position.x = 800;
@@ -5236,7 +5252,7 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 				this._seconds = 59;
 				this._minutes--;
 				if(this._minutes < 0) {
-					this._minutes = 2;
+					this._minutes = 1;
 					this.lose();
 				}
 			}
@@ -5261,7 +5277,11 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 			this._selectedCover_1.position.y = this._selectedCover_1Y;
 			this._selectedCover_2.position.x = this._selectedCover_2X;
 			this._selectedCover_2.position.y = this._selectedCover_2Y;
-		} else this._uncoveredCards += 2;
+		} else {
+			this._score += 50;
+			this._scoreTF.set_text(Std.string(this._score));
+			this._uncoveredCards += 2;
+		}
 		this._state = this.STATE_NONE;
 		if(this._uncoveredCards == 12) this.win();
 	}
@@ -5289,7 +5309,7 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 	}
 	,onPlayClick: function() {
 		this.restartGame();
-		this._minutes = 2;
+		this._minutes = 1;
 		this._seconds = 59;
 		this._time.set_text(this._minutes + ":" + (Math.floor(this._seconds) < 10?"0" + Math.floor(this._seconds):"" + Math.floor(this._seconds)));
 		this._lock.set_visible(false);
@@ -5302,6 +5322,8 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 	}
 	,restartGame: function() {
 		this._uncoveredCards = 0;
+		this._score = 0;
+		this._scoreTF.set_text(Std.string(this._score));
 		var numbers = [0,0,1,1,2,2,3,3,4,4,5,5];
 		numbers.sort($bind(this,this.randomSort));
 		var i;
@@ -5403,6 +5425,37 @@ com.funbox.ania.component.MenuBar.prototype = $extend(com.minigloop.display.Visu
 		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.HomeScreen);
 	}
 	,__class__: com.funbox.ania.component.MenuBar
+});
+com.funbox.ania.component.Seed = function(canvas,x,y) {
+	com.minigloop.display.SpriteEntity.call(this,canvas);
+	this.addState("stand","web_home_seed",null);
+	this.setState("stand");
+	this._timer = new haxe.Timer(60);
+	this._timer.run = $bind(this,this.move);
+	this.position.x = x;
+	this.position.y = y;
+	this._isActive = true;
+};
+$hxClasses["com.funbox.ania.component.Seed"] = com.funbox.ania.component.Seed;
+com.funbox.ania.component.Seed.__name__ = ["com","funbox","ania","component","Seed"];
+com.funbox.ania.component.Seed.__super__ = com.minigloop.display.SpriteEntity;
+com.funbox.ania.component.Seed.prototype = $extend(com.minigloop.display.SpriteEntity.prototype,{
+	destroy: function() {
+		com.minigloop.display.SpriteEntity.prototype.destroy.call(this);
+	}
+	,update: function(dt) {
+		if(!this._isActive) return;
+	}
+	,move: function() {
+		this.position.y += 9.;
+		if(this.position.y >= 620) {
+			motion.Actuate.tween(this.skin,0.5,{ alpha : 0}).onComplete($bind(this,this.destroy));
+			this._isActive = false;
+			this._timer.stop();
+		}
+		com.minigloop.display.SpriteEntity.prototype.update.call(this,30);
+	}
+	,__class__: com.funbox.ania.component.Seed
 });
 com.minigloop.ui = {}
 com.minigloop.ui.Screen = function(canvas) {
@@ -5529,6 +5582,7 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		if(this._isPaused) return;
 		this._activities.update(dt);
 		this._support.update(dt);
+		this._data.update(dt);
 		if(this._previous != null) this._previous.update(dt);
 		if(this._menuBar != null) this._menuBar.update(dt);
 	}
@@ -5542,7 +5596,7 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._floor.end(0.3);
 		this._meshi.end(0);
 		this._activities.end(0);
-		this._data.end(0);
+		this._data.destroy();
 		this._previous.destroy();
 		this._support.destroy();
 	}
@@ -5551,6 +5605,7 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 	}
 	,onPrevious_Click: function() {
 		console.log("previous");
+		eval("showVideo01(" + (js.Lib.window.innerWidth / 2 - 560) + ", " + 30 + ")");
 	}
 	,init: function() {
 		this._loaderScreen.destroy();
@@ -5562,12 +5617,15 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._tree_3 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_tree03",820,660,1.5);
 		this._floor = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_floor",0,670,0);
 		this._meshi = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_meshi",190,285,2);
-		this._support = new com.funbox.ania.component.ButtonPopup(this._canvas,450,200,"web_common_play","web_common_play","web_common_play",2,$bind(this,this.onActivitiesClick));
+		this._support = new com.funbox.ania.component.ButtonPopup(this._canvas,450,200,"web_common_play","web_common_play","web_common_play",3,$bind(this,this.onActivitiesClick));
 		this._support.setCollision(0,240,220,220);
 		this._previous = new com.funbox.ania.component.ButtonPopup(this._canvas,-350,500,"web_epidose01_video_previous","web_epidose01_video_previous","web_epidose01_video_previous",2.5,$bind(this,this.onPrevious_Click));
 		this._previous.setCollision(90,20,420,250);
 		this._activities = new com.funbox.ania.component.ButtonPopup(this._canvas,-670,570,"web_epidose01_activities","web_epidose01_activities","web_epidose01_activities",2.5,$bind(this,this.onActivitiesClick));
-		this._data = new com.funbox.ania.component.ImagePopup(this._canvas,"web_common_tadata",550,620,2);
+		this._data = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_tadata","web_common_animations_tadata");
+		this._data.position.x = 1300;
+		this._data.position.y = 1000;
+		motion.Actuate.tween(this._data.position,0.8,{ y : 570}).delay(2);
 		this._menuBar = new com.funbox.ania.component.MenuBar(this._canvas);
 		this._isPaused = false;
 	}
@@ -5622,7 +5680,10 @@ com.funbox.ania.screen.Episode02Screen.prototype = $extend(com.minigloop.ui.Scre
 	,__class__: com.funbox.ania.screen.Episode02Screen
 });
 com.funbox.ania.screen.HomeScreen = function(canvas) {
-	this._t = 0;
+	this._isMeshiAnimating = false;
+	this._tMeshi = 0;
+	this._tCloud = 0;
+	this._tNews = 0;
 	com.minigloop.ui.Screen.call(this,canvas);
 	this._loaderScreen = new com.funbox.ania.screen.LoaderScreen(canvas,$bind(this,this.onLoaderScreenLoaded));
 	this._isPaused = true;
@@ -5633,15 +5694,34 @@ com.funbox.ania.screen.HomeScreen.__super__ = com.minigloop.ui.Screen;
 com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	update: function(dt) {
 		this._loaderScreen.update(dt);
-		this._loaderScreen.update(dt);
 		if(this._isPaused) return;
 		this._enter.update(dt);
 		this._menuBar.update(dt);
 		this._semicoptero.update(dt);
-		this._news.set_y(150 + 10 * Math.sin(this._t));
-		this._t += 0.06;
-		if(this._t >= 3.14) this._t = 0;
+		this._meshi.update(dt);
+		this._video.update(dt);
+		this._data.update(dt);
+		this._news.set_y(150 + 10 * Math.sin(this._tNews));
+		this._cloud.set_x(800 + 600 * Math.sin(this._tCloud));
+		this._tNews += 0.06;
+		if(this._tNews >= 3.14) this._tNews = 0;
+		this._tCloud += 0.005;
+		if(this._tCloud >= 3.14) this._tCloud = 0;
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
+		if(this._isMeshiAnimating) {
+			if(this._tMeshi < 3.14) {
+				this._meshi.skin.set_scaleY(1.1 + 0.02 * Math.sin(this._tMeshi));
+				this._meshi.position.y = 775 - this._meshi.skin.get_height();
+			} else this._meshi.skin.set_scaleY(1.1);
+			this._tMeshi += 0.13;
+			if(this._tMeshi >= 6.28) {
+				this.emitSeeds();
+				this._tMeshi = 0;
+			}
+		} else {
+			this._meshi.skin.set_scaleY(1.1);
+			this._meshi.position.y = 775 - this._meshi.skin.get_height();
+		}
 	}
 	,onEnter_Click: function() {
 	}
@@ -5658,25 +5738,49 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._doit.end(0);
 		this._video.end(0);
 		this._enter.end(0);
-		this._data.end(0);
 		this._canvas.removeChild(this._news);
 		this._semicoptero.destroy();
 	}
+	,emitSeeds: function() {
+		new com.funbox.ania.component.Seed(this._canvas,1400 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+		new com.funbox.ania.component.Seed(this._canvas,1590 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+		new com.funbox.ania.component.Seed(this._canvas,1750 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+	}
+	,onVideoClick: function() {
+		console.log("on video click");
+		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
+	}
 	,init: function() {
+		var _g = this;
 		this._loaderScreen.destroy();
 		this._isPaused = false;
 		this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_background");
 		this._canvas.addChild(this._background);
+		this._cloud = com.minigloop.util.AssetsLoader.getAsset("web_common_cloud_01");
+		this._cloud.set_x(800);
+		this._cloud.set_y(190);
+		this._canvas.addChild(this._cloud);
 		this._city = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_city",0,480,1);
 		this._tree_1 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_tree01",-350,500,1.5);
 		this._floor = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_floor",0,670,0);
 		this._tree_2 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_tree02",610,650,1.5);
 		this._house = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_house",-500,580,2);
 		this._doit = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_doityourself",-300,580,2.5);
-		this._meshi = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_meshi",490,500,2.2);
-		this._video = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_video",-50,520,3);
+		this._meshi = new com.funbox.ania.component.ButtonPopup(this._canvas,490,500,"web_home_meshi","web_home_meshi","web_home_meshi",2.2,null);
+		this._meshi.setCollision(270,0,450,400);
+		this._meshi.onMouseOver = function() {
+			_g._isMeshiAnimating = true;
+		};
+		this._meshi.onMouseOut = function() {
+			_g._isMeshiAnimating = false;
+		};
+		this._video = new com.funbox.ania.component.ButtonPopup(this._canvas,-50,520,"web_home_video","web_home_video","web_home_video",3,$bind(this,this.onVideoClick));
+		this._video.setCollision(110,0,400,220);
 		this._enter = new com.funbox.ania.component.ButtonPopup(this._canvas,240,690,"web_home_tadata_enter","web_home_tadata_enter","web_home_tadata_enter",2.5,$bind(this,this.onEnter_Click));
-		this._data = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_tadata",330,680,2.5);
+		this._data = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_tadata","web_common_animations_tadata");
+		this._data.position.x = 1300;
+		this._data.position.y = 1000;
+		motion.Actuate.tween(this._data.position,0.8,{ y : 570}).delay(2.5);
 		this._semicoptero = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_loader","web_common_animations_loader");
 		this._semicoptero.position.x = 0;
 		this._semicoptero.position.y = 150;
@@ -5699,6 +5803,8 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._loaderScreen.addAsset("img/home/web_home_tadata.png","web_home_tadata");
 		this._loaderScreen.addAsset("img/home/web_home_tadata_enter.png","web_home_tadata_enter");
 		this._loaderScreen.addAsset("img/home/web_home_meshi.png","web_home_meshi");
+		this._loaderScreen.addAsset("img/home/web_home_news_support.png","web_home_news_support");
+		this._loaderScreen.addAsset("img/home/web_home_seed.png","web_home_seed");
 		this._loaderScreen.addAsset("img/common/web_common_videosupport.png","web_common_videosupport");
 		this._loaderScreen.addAsset("img/common/web_common_button_home_normal.png","web_common_button_home_normal");
 		this._loaderScreen.addAsset("img/common/web_common_button_home_over.png","web_common_button_home_over");
@@ -5717,9 +5823,11 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._loaderScreen.addAsset("img/common/web_common_button_news_normal.png","web_common_button_news_normal");
 		this._loaderScreen.addAsset("img/common/web_common_button_news_over.png","web_common_button_news_over");
 		this._loaderScreen.addAsset("img/common/web_common_tadata.png","web_common_tadata");
+		this._loaderScreen.addAsset("img/common/web_common_cloud_01.png","web_common_cloud_01");
 		this._loaderScreen.addAsset("img/common/animations/web_common_animations_loader.png","web_common_animations_loader");
-		this._loaderScreen.addAsset("img/home/web_home_news_support.png","web_home_news_support");
+		this._loaderScreen.addAsset("img/common/animations/web_common_animations_tadata.png","web_common_animations_tadata");
 		this._loaderScreen.addData("img/common/animations/web_common_animations_loader.json","web_common_animations_loader");
+		this._loaderScreen.addData("img/common/animations/web_common_animations_tadata.json","web_common_animations_tadata");
 		this._loaderScreen.load($bind(this,this.init));
 	}
 	,__class__: com.funbox.ania.screen.HomeScreen
@@ -5867,17 +5975,20 @@ com.funbox.ania.screen.MyGardenScreen.prototype = $extend(com.minigloop.ui.Scree
 		this._title = com.minigloop.util.AssetsLoader.getAsset("web_mygarden_characters_" + (index + 1) + "_name");
 		this._title.set_x(1450 - this._title.get_width() / 2);
 		this._title.set_y(-this._title.get_height());
+		this._description.set_text(this._descriptions[index]);
+		this._description.set_y(-this._description.get_height());
 		this._buttonsCanvas.addChild(this._title);
 		motion.Actuate.tween(this._character,0.8,{ scaleY : 0.98}).ease(motion.easing.Elastic.get_easeOut()).onUpdate($bind(this,this.repositionCharacter));
 		motion.Actuate.tween(this._support,0.8,{ y : -120}).ease(motion.easing.Elastic.get_easeOut());
 		motion.Actuate.tween(this._title,0.8,{ y : 200}).ease(motion.easing.Elastic.get_easeOut());
+		motion.Actuate.tween(this._description,0.8,{ y : 285}).ease(motion.easing.Elastic.get_easeOut());
 		this._charactersCanvas.addChild(this._character);
 	}
 	,init: function() {
 		this._loaderScreen.destroy();
 		this._isPaused = false;
 		console.log("is paused true");
-		this._descriptions = [];
+		this._descriptions = ["Es una niña juguetona y aventurera que ama la naturaleza. Representa el amor y nos recuerda la fuerza que llevamos en nuestro corazón para mejorar el mundo.","Hermano mayor de Ania, es un niño genio que ama la tecnología. Representa la inteligencia y nos recuerda que hay que innovar para mejorar el mundo.","Guardián de Meshi, y abuelo de Ania y Kin. Es un shaman amazónico que conoce mucho sobre plantas. Representa la sabiduría y nos recuerda el valor que tienen los adultos mayores y las culturas originarias para mejorar el mundo.","Es el único árbol que produce semillas y flores de todas las plantas del mundo. Ella representa la vida y nos recuerda que somos hermanos con la naturaleza y hay que protegerla.","","Es una mariposa con una alita diferente. Representa la aceptación. Nos recuerda que todos tenemos algo especial para hacer la diferencia.","Es una flor sensible y mejor amiga de Ania. Representa la compasión. Nos recuerda que con valor y determinación podemos lograr nuestros objetivos.","Es un guacamayo amigo de Tawa que vive en las ramas de Meshi. Representa la buena comunicación y nos recuerda que hay que compartir con otros para mejorar el mundo.","Es un pescadito que vive en el estanque del jardín. Representa la inclusión y nos recuerda que hay que ahorrar agua, y cuidar nuestros ríos, lagos y mares.","Es el monstruo de la compostera del jardín. Representa el reciclaje de desechos orgánicos y nos recuerda que todos podemos vivir generando un impacto positivo en nuestro entorno."];
 		this._elementsCanvas = new browser.display.Sprite();
 		this._charactersCanvas = new browser.display.Sprite();
 		this._buttonsCanvas = new browser.display.Sprite();
@@ -5920,6 +6031,15 @@ com.funbox.ania.screen.MyGardenScreen.prototype = $extend(com.minigloop.ui.Scree
 		this._support.set_x(1300);
 		this._support.set_y(-this._support.get_height());
 		this._buttonsCanvas.addChild(this._support);
+		this._description = new browser.text.TextField();
+		this._description.set_width(200);
+		this._description.set_x(1355);
+		this._description.set_y(-this._description.get_height());
+		this._description.set_text("");
+		this._description.multiline = true;
+		this._description.set_wordWrap(true);
+		this._description.set_defaultTextFormat(new browser.text.TextFormat("Arial",13,0,false,false,false,"","",browser.text.TextFormatAlign.CENTER));
+		this._canvas.addChild(this._description);
 		this._menuBar = new com.funbox.ania.component.MenuBar(this._menuCanvas);
 		this._index = 0;
 		motion.Actuate.timer(1.5).onComplete($bind(this,this.showCharacter),[0]);
@@ -6029,8 +6149,23 @@ com.minigloop.Engine.prototype = {
 		this.update(this._dt);
 	}
 	,resize: function(e) {
-		this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference));
-		this._bufferCanvas.set_x(js.Lib.window.innerWidth / 2 - this._bufferCanvas.get_width() / 2);
+		var aux = (js.Lib.window.innerWidth + 0.1) / (js.Lib.window.innerWidth + 0.1);
+		console.log(aux + ", " + 2000 / 820);
+		if(aux < 2000 / 820) {
+			this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerHeight / 820.0));
+			console.log("resize height");
+		} else {
+			this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference));
+			console.log("resize width");
+		}
+		this._bufferCanvas.set_x(js.Lib.window.innerWidth / 2.0 - this._bufferCanvas.get_width() / 2.0);
+		try {
+			eval("resize(" + Std.string(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference) + ", " + Std.string(js.Lib.window.innerWidth / 2.0) + ")");
+		} catch( e1 ) {
+			if( js.Boot.__instanceof(e1,Dynamic) ) {
+				console.log("resize not found");
+			} else throw(e1);
+		}
 	}
 	,init: function() {
 		this._last = this._now = browser.Lib.getTimer();
@@ -6054,6 +6189,7 @@ com.minigloop.Engine.prototype = {
 }
 com.minigloop.display.AtlasSprite = function(canvas,imgId,atlasId,align,onEndAnimation) {
 	if(align == null) align = "center";
+	this._frameCounter = 0;
 	this._offsetY = 0;
 	this._offsetX = 0;
 	com.minigloop.display.VisualObject.call(this,canvas);
@@ -6065,7 +6201,10 @@ com.minigloop.display.AtlasSprite = function(canvas,imgId,atlasId,align,onEndAni
 		this._sourceHeight = this._atlas.frames[0].sourceSize.h;
 		this._containerData = new browser.display.BitmapData(this._sourceWidth,this._sourceWidth,true,0);
 		this.container = new browser.display.Bitmap(this._containerData);
-	} else this.container = com.minigloop.util.AssetsLoader.getAsset(imgId);
+	} else {
+		this.container = com.minigloop.util.AssetsLoader.getAsset(imgId);
+		console.log("container: " + imgId + " " + Std.string(this.container));
+	}
 	this._canvas.addChild(this.container);
 	this._onEndAnimation = onEndAnimation;
 };
@@ -6077,6 +6216,11 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 		this._canvas.removeChild(this.container);
 	}
 	,update: function(dt) {
+		this.container.set_x(this.position.x + this._offsetX);
+		this.container.set_y(this.position.y + this._offsetY);
+		this._frameCounter++;
+		this._frameCounter = this._frameCounter % 2;
+		if(this._frameCounter == 0) return;
 		if(this._atlas != null) {
 			var frame = this._atlas.frames[this._currentIndex];
 			this._containerData.fillRect(new browser.geom.Rectangle(0,0,this._sourceWidth,this._sourceHeight),0);
@@ -6087,9 +6231,6 @@ com.minigloop.display.AtlasSprite.prototype = $extend(com.minigloop.display.Visu
 				if(this._onEndAnimation != null) this._onEndAnimation();
 			}
 		}
-		this.container.set_x(this.position.x + this._offsetX);
-		this.container.set_y(this.position.y + this._offsetY);
-		this.container.set_y(this.position.y + this._offsetY);
 	}
 	,__class__: com.minigloop.display.AtlasSprite
 });

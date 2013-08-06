@@ -12,6 +12,7 @@ import nme.display.BitmapData;
 import nme.display.BlendMode;
 import nme.display.Sprite;
 import nme.display.Stage;
+import nme.errors.Error;
 import nme.events.Event;
 import nme.Lib;
 
@@ -71,12 +72,36 @@ class Engine
 	
 	private function resize(e:Event):Void 
 	{
-		//if (Global.stage.fullScreenWidth / Global.stage.fullScreenHeight > 2000 / 850)
-		//{
-			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenWidth / Global.widthReference;
-		//}
+		var aux:Float = (Global.stage.fullScreenWidth + 0.1) / (Global.stage.fullScreenWidth + 0.1);
+		trace(aux + ", " + 2000 / 820);
 		
-		_bufferCanvas.x = Global.stage.fullScreenWidth / 2 - _bufferCanvas.width / 2;
+		if (aux < 2000 / 820)
+		{
+			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenHeight / 820.0;
+			trace("resize height");
+		}
+		else
+		{
+			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenWidth / Global.widthReference;
+			trace("resize width");
+		}
+		
+		_bufferCanvas.x = Global.stage.fullScreenWidth / 2.0 - _bufferCanvas.width / 2.0;
+		
+		try
+		{
+			js.Lib.eval(
+				"resize(" + 
+				Std.string(Global.stage.fullScreenWidth / Global.widthReference) +
+				", " + 
+				Std.string(Global.stage.fullScreenWidth / 2.0) + 
+				")"
+			);
+		}
+		catch (e:Error)
+		{
+			trace("resize not found");
+		}
 	}
 	
 	public function loop(e:Event)

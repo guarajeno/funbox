@@ -13,6 +13,7 @@ import com.minigloop.display.AtlasSprite;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
+import js.Lib;
 import nme.display.Bitmap;
 import nme.display.Sprite;
 
@@ -38,9 +39,11 @@ class Episode01Screen extends Screen
 	private var _tree_3:ImagePopup;
 	private var _previous:ButtonPopup;
 	private var _activities:ButtonPopup;
-	private var _data:ImagePopup;
+	private var _data:AtlasSprite;
 	private var _support:ButtonPopup;
 	private var _face:AtlasSprite;
+	
+	//private var _previews:Array = [];
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
@@ -125,7 +128,7 @@ class Episode01Screen extends Screen
 			"web_common_play",
 			"web_common_play",
 			"web_common_play",
-			2,
+			3,
 			onActivitiesClick
 		);
 		
@@ -157,7 +160,16 @@ class Episode01Screen extends Screen
 		
 		//_activities.setCollision(0, 0, 100, 80);
 		
-		_data = new ImagePopup(_canvas, "web_common_tadata", 550, 620, 2);
+		_data = new AtlasSprite(
+			_canvas,
+			"web_common_animations_tadata",
+			"web_common_animations_tadata"
+		);
+		
+		_data.position.x = 1300;
+		_data.position.y = 1000;
+		
+		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2);
 		
 		_menuBar = new MenuBar(_canvas);
 		
@@ -167,6 +179,7 @@ class Episode01Screen extends Screen
 	private function onPrevious_Click() 
 	{
 		trace("previous");
+		Lib.eval("showVideo01(" + (Global.stage.fullScreenWidth / 2 - 560) + ", " + 30 + ")");
 	}
 	
 	private function onActivitiesClick() 
@@ -193,7 +206,8 @@ class Episode01Screen extends Screen
 		_floor.end(0.3);
 		_meshi.end(0);
 		_activities.end(0);
-		_data.end(0);
+		
+		_data.destroy();
 		
 		_previous.destroy();
 		_support.destroy();
@@ -207,6 +221,7 @@ class Episode01Screen extends Screen
 		
 		_activities.update(dt);
 		_support.update(dt);
+		_data.update(dt);
 		//_face.update(dt);
 		
 		if (_previous != null) _previous.update(dt);

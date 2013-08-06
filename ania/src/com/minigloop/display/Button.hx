@@ -25,6 +25,9 @@ class Button extends SpriteEntity
 	private var _button:Button;
 	//private var _over:Bool;
 	
+	public var onMouseOver:Dynamic;
+	public var onMouseOut:Dynamic;
+	
 	public function new(canvas:Sprite, upId:String, overId:String, downId:String, _callback:Dynamic) 
 	{
 		super(canvas);
@@ -38,28 +41,31 @@ class Button extends SpriteEntity
 		
 		setState("up");
 		
-		collision.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-		collision.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		collision.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-		collision.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-		collision.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
-		//collision.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+		collision.addEventListener(MouseEvent.MOUSE_MOVE, _onMouseMove);
+		collision.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
+		collision.addEventListener(MouseEvent.MOUSE_UP, _onMouseUp);
+		collision.addEventListener(MouseEvent.MOUSE_OUT, _onMouseOut);
+		collision.addEventListener(MouseEvent.MOUSE_OVER, _onMouseOver);
 		
 		collision.useHandCursor = true;
 	}
 	
-	private function onMouseMove(e:MouseEvent):Void 
+	private function _onMouseMove(e:MouseEvent):Void 
 	{
 		if (state != "down") setState("over");
 	}
 	
-	private function onMouseDown(e:MouseEvent):Void 
+	private function _onMouseDown(e:MouseEvent):Void 
 	{
 		setState("down");
 	}
 	
-	private function onMouseOver(e:MouseEvent):Void 
+	private function _onMouseOver(e:MouseEvent):Void 
 	{
+		if (onMouseOver != null)
+		{
+			onMouseOver();
+		}
 		//if (_over)
 		//{
 			//skin.scaleX = 1;
@@ -67,19 +73,23 @@ class Button extends SpriteEntity
 		//}
 	}
 	
-	private function onMouseUp(e:MouseEvent):Void 
+	private function _onMouseUp(e:MouseEvent):Void 
 	{
 		setState("up");
 		_callback(this);
 	}
 	
-	private function onMouseOut(e:MouseEvent):Void 
+	private function _onMouseOut(e:MouseEvent):Void 
 	{	
 		//if (_over)
 		//{
 			//skin.scaleX = 0.9;
 			//skin.scaleY = 0.9;
 		//}
+		if (onMouseOut != null)
+		{
+			onMouseOut();
+		}
 		
 		setState("up");
 	}
@@ -88,10 +98,11 @@ class Button extends SpriteEntity
 	{
 		super.destroy();
 		
-		_canvas.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-		_canvas.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		_canvas.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-		_canvas.removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+		_canvas.removeEventListener(MouseEvent.MOUSE_MOVE, _onMouseMove);
+		_canvas.removeEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
+		_canvas.removeEventListener(MouseEvent.MOUSE_UP, _onMouseUp);
+		_canvas.removeEventListener(MouseEvent.MOUSE_OUT, _onMouseOut);
+		_canvas.removeEventListener(MouseEvent.MOUSE_OVER, _onMouseOver);
 	}
 	
 	override public function update(dt:Int):Void 
