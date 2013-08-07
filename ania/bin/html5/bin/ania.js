@@ -5735,7 +5735,16 @@ $hxClasses["com.funbox.ania.screen.HomeScreen"] = com.funbox.ania.screen.HomeScr
 com.funbox.ania.screen.HomeScreen.__name__ = ["com","funbox","ania","screen","HomeScreen"];
 com.funbox.ania.screen.HomeScreen.__super__ = com.minigloop.ui.Screen;
 com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.prototype,{
-	update: function(dt) {
+	onMeshiScaleDownEnd: function() {
+		this.emitSeeds();
+	}
+	,onMeshiScaleUpEnd: function() {
+		motion.Actuate.tween(this._meshi.skin,0.6,{ scaleY : 1}).ease(motion.easing.Elastic.get_easeOut()).onComplete($bind(this,this.onMeshiScaleDownEnd)).onUpdate($bind(this,this.onMeshiScaleUpdate));
+	}
+	,onMeshiScaleUpdate: function() {
+		this._meshi.position.y = 725 - this._meshi.skin.get_height();
+	}
+	,update: function(dt) {
 		this._loaderScreen.update(dt);
 		if(this._isPaused) return;
 		this._enter.update(dt);
@@ -5746,27 +5755,25 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._data.update(dt);
 		this._news.set_y(150 + 10 * Math.sin(this._tNews));
 		var _g = this._cloud;
-		_g.set_x(_g.get_x() + 30);
+		_g.set_x(_g.get_x() + 5);
 		if(this._cloud.get_x() >= 2000) this._cloud.set_x(-this._cloud.get_width());
 		this._tNews += 0.06;
 		if(this._tNews >= 3.14) this._tNews = 0;
 		this._tCloud += 0.005;
 		if(this._tCloud >= 3.14) this._tCloud = 0;
-		com.minigloop.ui.Screen.prototype.update.call(this,dt);
 		if(this._isMeshiAnimating && !this._meshi.isAnimated) {
 			if(this._tMeshi < 3.14) {
-				this._meshi.skin.set_scaleY(1.1 + 0.02 * Math.sin(this._tMeshi));
-				this._meshi.position.y = 775 - this._meshi.skin.get_height();
-			} else this._meshi.skin.set_scaleY(1.1);
-			this._tMeshi += 0.13;
-			if(this._tMeshi >= 6.28) {
-				this.emitSeeds();
+			} else {
+			}
+			this._tMeshi += 0.01;
+			if(this._tMeshi >= 1) {
 				this._tMeshi = 0;
+				console.log("lalalala");
+				motion.Actuate.tween(this._meshi.skin,0.6,{ scaleY : 0.95}).ease(motion.easing.Elastic.get_easeIn()).onComplete($bind(this,this.onMeshiScaleUpEnd)).onUpdate($bind(this,this.onMeshiScaleUpdate));
 			}
 		} else {
-			this._meshi.skin.set_scaleY(1.1);
-			this._meshi.position.y = 775 - this._meshi.skin.get_height();
 		}
+		com.minigloop.ui.Screen.prototype.update.call(this,dt);
 	}
 	,onEnter_Click: function() {
 	}
@@ -5787,9 +5794,16 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._semicoptero.destroy();
 	}
 	,emitSeeds: function() {
-		new com.funbox.ania.component.Seed(this._canvas,1400 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
-		new com.funbox.ania.component.Seed(this._canvas,1590 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
-		new com.funbox.ania.component.Seed(this._canvas,1750 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+		var _g = this;
+		motion.Actuate.tween(this._canvas,0,{ }).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+			new com.funbox.ania.component.Seed(_g._canvas,1400 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+		});
+		motion.Actuate.tween(this._canvas,0,{ }).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+			new com.funbox.ania.component.Seed(_g._canvas,1590 + Math.floor(Math.random() * 80) - 40,400 + Math.floor(Math.random() * 40) - 20);
+		});
+		motion.Actuate.tween(this._canvas,0,{ }).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+			new com.funbox.ania.component.Seed(_g._canvas,1750 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+		});
 	}
 	,onVideoClick: function() {
 		console.log("on video click");
@@ -6235,7 +6249,7 @@ com.minigloop.Engine.prototype = {
 	,resize: function(e) {
 		var aux = (js.Lib.window.innerWidth + 0.1) / (js.Lib.window.innerHeight + 0.1);
 		if(aux < 2000 / 820) this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerHeight / com.funbox.ania.Global.heightReference)); else this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference));
-		this._bufferCanvas.set_x(js.Lib.window.innerWidth / 2.0 - this._bufferCanvas.get_width() / 2.0);
+		this._bufferCanvas.set_x(js.Lib.window.innerWidth / 2.0 - 2000 * this._bufferCanvas.get_scaleX() / 2.0);
 		try {
 			eval("resize(" + Std.string(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference) + ", " + Std.string(js.Lib.window.innerWidth / 2.0) + ")");
 		} catch( e1 ) {
@@ -7892,7 +7906,7 @@ motion.actuators.TransformActuator.prototype = $extend(motion.actuators.SimpleAc
 motion.easing.Elastic = function() { }
 $hxClasses["motion.easing.Elastic"] = motion.easing.Elastic;
 motion.easing.Elastic.__name__ = ["motion","easing","Elastic"];
-motion.easing.Elastic.__properties__ = {get_easeOut:"get_easeOut",get_easeInOut:"get_easeInOut"}
+motion.easing.Elastic.__properties__ = {get_easeOut:"get_easeOut",get_easeInOut:"get_easeInOut",get_easeIn:"get_easeIn"}
 motion.easing.Elastic.get_easeIn = function() {
 	return new motion.easing.ElasticEaseIn(0.1,0.4);
 }

@@ -83,7 +83,8 @@ class Engine
 			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenWidth / Global.widthReference;
 		}
 		
-		_bufferCanvas.x = Global.stage.fullScreenWidth / 2.0 - _bufferCanvas.width / 2.0;
+		//trace(_bufferCanvas.width / _bufferCanvas.scaleX);
+		_bufferCanvas.x = Global.stage.fullScreenWidth / 2.0 - (2000 * _bufferCanvas.scaleX) / 2.0;
 		
 		try
 		{

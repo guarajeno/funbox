@@ -1,6 +1,7 @@
 package com.funbox.ania.screen;
 
 import com.eclecticdesignstudio.motion.Actuate;
+import com.eclecticdesignstudio.motion.easing.Elastic;
 import com.eclecticdesignstudio.motion.easing.Linear;
 import com.eclecticdesignstudio.motion.easing.Quad;
 import com.funbox.ania.component.ButtonPopup;
@@ -278,9 +279,17 @@ class HomeScreen extends Screen
 	
 	private function emitSeeds() 
 	{
-		new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
-		new Seed(_canvas, 1590 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
-		new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+		Actuate.tween(_canvas, 0, {}).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+			new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+		});
+		
+		Actuate.tween(_canvas, 0, {}).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+			new Seed(_canvas, 1590 + Math.floor(Math.random() * 80) - 40, 400 + Math.floor(Math.random() * 40) - 20);
+		});
+		
+		Actuate.tween(_canvas, 0, {}).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+			new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+		});
 	}
 	
 	override public function end():Dynamic 
@@ -334,7 +343,7 @@ class HomeScreen extends Screen
 		
 		_news.y = 150 + 10 * Math.sin(_tNews);
 		
-		_cloud.x += 30;
+		_cloud.x += 5;
 		if (_cloud.x >= 2000)
 		{
 			_cloud.x = -_cloud.width;
@@ -346,32 +355,42 @@ class HomeScreen extends Screen
 		_tCloud += 0.005;
 		if (_tCloud >= 3.14) _tCloud = 0;
 		
-		super.update(dt);
 		
 		if (_isMeshiAnimating && !_meshi.isAnimated)
 		{
 			if (_tMeshi < 3.14)
 			{
-				_meshi.skin.scaleY = 1.1 + 0.02 * (Math.sin(_tMeshi));
-				_meshi.position.y = 775 - _meshi.skin.height;
+				
 			}
 			else
 			{
-				_meshi.skin.scaleY = 1.1;
+				
 			}
 			
-			_tMeshi += 0.13;
+			_tMeshi += 0.01;
 			
-			if (_tMeshi >= 2 * 3.14)
+			if (_tMeshi >= 1)
 			{
-				emitSeeds();
 				_tMeshi = 0;
+				Actuate.tween(_meshi.skin, 0.6, { scaleY: 0.95 } ).ease(Elastic.easeIn).onComplete(onMeshiScaleUpEnd).onUpdate(onMeshiScaleUpdate);
 			}
 		}
-		else
-		{
-			_meshi.skin.scaleY = 1.1;
-			_meshi.position.y = 775 - _meshi.skin.height;
-		}
+		
+		super.update(dt);
+	}
+	
+	private function onMeshiScaleUpdate() 
+	{
+		_meshi.position.y = 725 - _meshi.skin.height;
+	}
+	
+	private function onMeshiScaleUpEnd() 
+	{
+		Actuate.tween(_meshi.skin, 0.6, { scaleY: 1 } ).ease(Elastic.easeOut).onComplete(onMeshiScaleDownEnd).onUpdate(onMeshiScaleUpdate);
+	}
+	
+	private function onMeshiScaleDownEnd() 
+	{
+		emitSeeds();
 	}
 }
