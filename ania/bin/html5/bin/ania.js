@@ -5768,10 +5768,8 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 			this._tMeshi += 0.01;
 			if(this._tMeshi >= 1) {
 				this._tMeshi = 0;
-				console.log("lalalala");
 				motion.Actuate.tween(this._meshi.skin,0.6,{ scaleY : 0.95}).ease(motion.easing.Elastic.get_easeIn()).onComplete($bind(this,this.onMeshiScaleUpEnd)).onUpdate($bind(this,this.onMeshiScaleUpdate));
 			}
-		} else {
 		}
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
 	}
