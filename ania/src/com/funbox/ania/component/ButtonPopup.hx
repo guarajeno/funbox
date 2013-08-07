@@ -18,6 +18,8 @@ import nme.events.MouseEvent;
 
 class ButtonPopup extends Button
 {
+	public var isAnimated:Bool = true;
+	
 	public function new(canvas:Sprite, x:Float, y:Float, upId:String, overId:String, downId:String, delay:Float, _callback:Dynamic) 
 	{
 		super(canvas, upId, overId, downId, _callback);
@@ -26,7 +28,12 @@ class ButtonPopup extends Button
 		
 		update(0);
 		
-		Actuate.tween(this.position, 0.8, { y:(y - skin.height / 2) }).delay(delay).ease(Elastic.easeInOut);
+		Actuate.tween(this.position, 0.8, { y:(y - skin.height / 2) }).delay(delay).ease(Elastic.easeInOut).onComplete(onEndPopup);
+	}
+	
+	private function onEndPopup() 
+	{
+		isAnimated = false;
 	}
 	
 	override public function update(dt:Int):Void

@@ -101,7 +101,7 @@ class ActivitiesScreen extends Screen
 		_loaderScreen.destroy();
 		
 		_isPaused = false;
-		Global.widthReference = 1900;
+		Global.heightReference = 1200;
 		
 		// background
 		_background = AssetsLoader.getAsset("web_pages_activity_background");
@@ -142,7 +142,7 @@ class ActivitiesScreen extends Screen
 		_back.end(0);
 		_activities.end(0);
 		
-		Global.widthReference = 1650;
+		Global.heightReference = 820;
 	}
 	
 	override public function update(dt:Int):Dynamic 

@@ -5088,7 +5088,7 @@ com.minigloop.display.Button.prototype = $extend(com.minigloop.display.SpriteEnt
 	}
 	,_onMouseUp: function(e) {
 		this.setState("up");
-		this._callback(this);
+		if(this._callback != null) this._callback(this);
 	}
 	,_onMouseOver: function(e) {
 		if(this.onMouseOver != null) this.onMouseOver();
@@ -5103,11 +5103,12 @@ com.minigloop.display.Button.prototype = $extend(com.minigloop.display.SpriteEnt
 });
 com.funbox.ania.component = {}
 com.funbox.ania.component.ButtonPopup = function(canvas,x,y,upId,overId,downId,delay,_callback) {
+	this.isAnimated = true;
 	com.minigloop.display.Button.call(this,canvas,upId,overId,downId,_callback);
 	this.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this.skin.get_width() / 2 + x;
 	this.position.y = com.funbox.ania.Global.stage.get_stageHeight();
 	this.update(0);
-	motion.Actuate.tween(this.position,0.8,{ y : y - this.skin.get_height() / 2}).delay(delay).ease(motion.easing.Elastic.get_easeInOut());
+	motion.Actuate.tween(this.position,0.8,{ y : y - this.skin.get_height() / 2}).delay(delay).ease(motion.easing.Elastic.get_easeInOut()).onComplete($bind(this,this.onEndPopup));
 };
 $hxClasses["com.funbox.ania.component.ButtonPopup"] = com.funbox.ania.component.ButtonPopup;
 com.funbox.ania.component.ButtonPopup.__name__ = ["com","funbox","ania","component","ButtonPopup"];
@@ -5118,6 +5119,9 @@ com.funbox.ania.component.ButtonPopup.prototype = $extend(com.minigloop.display.
 	}
 	,update: function(dt) {
 		com.minigloop.display.Button.prototype.update.call(this,dt);
+	}
+	,onEndPopup: function() {
+		this.isAnimated = false;
 	}
 	,__class__: com.funbox.ania.component.ButtonPopup
 });
@@ -5511,7 +5515,7 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 		this._game.destroy();
 		this._back.end(0);
 		this._activities.end(0);
-		com.funbox.ania.Global.widthReference = 1650;
+		com.funbox.ania.Global.heightReference = 820;
 	}
 	,onBackClick: function() {
 		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
@@ -5519,7 +5523,7 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 	,init: function() {
 		this._loaderScreen.destroy();
 		this._isPaused = false;
-		com.funbox.ania.Global.widthReference = 1900;
+		com.funbox.ania.Global.heightReference = 1200;
 		this._background = com.minigloop.util.AssetsLoader.getAsset("web_pages_activity_background");
 		this._background.set_width(2000);
 		this._canvas.addChild(this._background);
@@ -5569,6 +5573,7 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 	,__class__: com.funbox.ania.screen.ActivitiesScreen
 });
 com.funbox.ania.screen.Episode01Screen = function(canvas) {
+	this._currentPreviewIndex = 1;
 	com.minigloop.ui.Screen.call(this,canvas);
 	this._loaderScreen = new com.funbox.ania.screen.LoaderScreen(canvas,$bind(this,this.onLoaderScreenLoaded));
 	this._isPaused = true;
@@ -5607,6 +5612,24 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		console.log("previous");
 		eval("showVideo01(" + (js.Lib.window.innerWidth / 2 - 560) + ", " + 30 + ")");
 	}
+	,showPreview: function() {
+		var i;
+		var _g = 0;
+		while(_g < 5) {
+			var i1 = _g++;
+			this._previews[i1].alpha = 0;
+		}
+		this._currentPreview = this._previews[this._currentPreviewIndex];
+		this._currentPreviewIndex++;
+		if(this._currentPreviewIndex > 4) {
+			this._currentPreviewIndex = 0;
+			this._nextPreview = this._previews[0];
+		} else this._nextPreview = this._previews[this._currentPreviewIndex];
+		this._currentPreview.alpha = 1;
+		this._nextPreview.alpha = 0;
+		motion.Actuate.tween(this._currentPreview,1.3,{ alpha : 0}).delay(2);
+		motion.Actuate.tween(this._nextPreview,1.3,{ alpha : 1}).delay(2).onComplete($bind(this,this.showPreview));
+	}
 	,init: function() {
 		this._loaderScreen.destroy();
 		this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_background");
@@ -5621,6 +5644,20 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._support.setCollision(0,240,220,220);
 		this._previous = new com.funbox.ania.component.ButtonPopup(this._canvas,-350,500,"web_epidose01_video_previous","web_epidose01_video_previous","web_epidose01_video_previous",2.5,$bind(this,this.onPrevious_Click));
 		this._previous.setCollision(90,20,420,250);
+		this._previews = new Array();
+		var i;
+		var _g = 1;
+		while(_g < 6) {
+			var i1 = _g++;
+			var p = com.minigloop.util.AssetsLoader.getAsset("web_epidose01_video_previous0" + i1);
+			p.set_x(523);
+			p.set_y(312);
+			p.alpha = 0;
+			this._previews.push(p);
+			this._canvas.addChild(p);
+		}
+		this._currentPreviewIndex = 0;
+		motion.Actuate.timer(4).onComplete($bind(this,this.showPreview));
 		this._activities = new com.funbox.ania.component.ButtonPopup(this._canvas,-670,570,"web_epidose01_activities","web_epidose01_activities","web_epidose01_activities",2.5,$bind(this,this.onActivitiesClick));
 		this._data = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_tadata","web_common_animations_tadata");
 		this._data.position.x = 1300;
@@ -5655,6 +5692,11 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._loaderScreen.addAsset("img/episode01/web_epidose01_tree03.png","web_epidose01_tree03");
 		this._loaderScreen.addAsset("img/episode01/web_epidose01_activities.png","web_epidose01_activities");
 		this._loaderScreen.addAsset("img/episode01/web_epidose01_video_previous.png","web_epidose01_video_previous");
+		this._loaderScreen.addAsset("img/episode01/web_epidose01_video_previous01.png","web_epidose01_video_previous01");
+		this._loaderScreen.addAsset("img/episode01/web_epidose01_video_previous02.png","web_epidose01_video_previous02");
+		this._loaderScreen.addAsset("img/episode01/web_epidose01_video_previous03.png","web_epidose01_video_previous03");
+		this._loaderScreen.addAsset("img/episode01/web_epidose01_video_previous04.png","web_epidose01_video_previous04");
+		this._loaderScreen.addAsset("img/episode01/web_epidose01_video_previous05.png","web_epidose01_video_previous05");
 		this._loaderScreen.addAsset("img/episode01/animations/web_epidose01_meshi_face.png","web_epidose01_meshi_face");
 		this._loaderScreen.addAsset("img/episode01/animations/web_epidose01_bird01.png","web_epidose01_bird01");
 		this._loaderScreen.addAsset("img/episode01/animations/web_epidose01_bird02.png","web_epidose01_bird02");
@@ -5680,6 +5722,7 @@ com.funbox.ania.screen.Episode02Screen.prototype = $extend(com.minigloop.ui.Scre
 	,__class__: com.funbox.ania.screen.Episode02Screen
 });
 com.funbox.ania.screen.HomeScreen = function(canvas) {
+	this._currentPreviewIndex = 1;
 	this._isMeshiAnimating = false;
 	this._tMeshi = 0;
 	this._tCloud = 0;
@@ -5702,13 +5745,15 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._video.update(dt);
 		this._data.update(dt);
 		this._news.set_y(150 + 10 * Math.sin(this._tNews));
-		this._cloud.set_x(800 + 600 * Math.sin(this._tCloud));
+		var _g = this._cloud;
+		_g.set_x(_g.get_x() + 30);
+		if(this._cloud.get_x() >= 2000) this._cloud.set_x(-this._cloud.get_width());
 		this._tNews += 0.06;
 		if(this._tNews >= 3.14) this._tNews = 0;
 		this._tCloud += 0.005;
 		if(this._tCloud >= 3.14) this._tCloud = 0;
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
-		if(this._isMeshiAnimating) {
+		if(this._isMeshiAnimating && !this._meshi.isAnimated) {
 			if(this._tMeshi < 3.14) {
 				this._meshi.skin.set_scaleY(1.1 + 0.02 * Math.sin(this._tMeshi));
 				this._meshi.position.y = 775 - this._meshi.skin.get_height();
@@ -5750,6 +5795,26 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		console.log("on video click");
 		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
 	}
+	,showPreview: function() {
+		var i;
+		var _g = 0;
+		while(_g < 5) {
+			var i1 = _g++;
+			this._previews[i1].alpha = 0;
+		}
+		this._currentPreview = this._previews[this._currentPreviewIndex];
+		this._currentPreviewIndex++;
+		if(this._currentPreviewIndex > 4) {
+			this._currentPreviewIndex = 0;
+			this._nextPreview = this._previews[0];
+		} else this._nextPreview = this._previews[this._currentPreviewIndex];
+		this._currentPreview.alpha = 1;
+		this._nextPreview.alpha = 0;
+		motion.Actuate.tween(this._currentPreview,1.3,{ alpha : 0}).delay(2);
+		motion.Actuate.tween(this._nextPreview,1.3,{ alpha : 1}).delay(2).onComplete($bind(this,this.showPreview));
+	}
+	,onMeshiClick: function() {
+	}
 	,init: function() {
 		var _g = this;
 		this._loaderScreen.destroy();
@@ -5766,7 +5831,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._tree_2 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_tree02",610,650,1.5);
 		this._house = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_house",-500,580,2);
 		this._doit = new com.funbox.ania.component.ImagePopup(this._canvas,"web_home_doityourself",-300,580,2.5);
-		this._meshi = new com.funbox.ania.component.ButtonPopup(this._canvas,490,500,"web_home_meshi","web_home_meshi","web_home_meshi",2.2,null);
+		this._meshi = new com.funbox.ania.component.ButtonPopup(this._canvas,490,500,"web_home_meshi","web_home_meshi","web_home_meshi",2.2,$bind(this,this.onMeshiClick));
 		this._meshi.setCollision(270,0,450,400);
 		this._meshi.onMouseOver = function() {
 			_g._isMeshiAnimating = true;
@@ -5776,6 +5841,20 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		};
 		this._video = new com.funbox.ania.component.ButtonPopup(this._canvas,-50,520,"web_home_video","web_home_video","web_home_video",3,$bind(this,this.onVideoClick));
 		this._video.setCollision(110,0,400,220);
+		this._previews = new Array();
+		var i;
+		var _g1 = 1;
+		while(_g1 < 6) {
+			var i1 = _g1++;
+			var p = com.minigloop.util.AssetsLoader.getAsset("web_home_video0" + i1);
+			p.set_x(864);
+			p.set_y(408);
+			p.alpha = 0;
+			this._previews.push(p);
+			this._canvas.addChild(p);
+		}
+		this._currentPreviewIndex = 0;
+		motion.Actuate.timer(4).onComplete($bind(this,this.showPreview));
 		this._enter = new com.funbox.ania.component.ButtonPopup(this._canvas,240,690,"web_home_tadata_enter","web_home_tadata_enter","web_home_tadata_enter",2.5,$bind(this,this.onEnter_Click));
 		this._data = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_tadata","web_common_animations_tadata");
 		this._data.position.x = 1300;
@@ -5805,6 +5884,11 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._loaderScreen.addAsset("img/home/web_home_meshi.png","web_home_meshi");
 		this._loaderScreen.addAsset("img/home/web_home_news_support.png","web_home_news_support");
 		this._loaderScreen.addAsset("img/home/web_home_seed.png","web_home_seed");
+		this._loaderScreen.addAsset("img/home/web_home_video01.png","web_home_video01");
+		this._loaderScreen.addAsset("img/home/web_home_video02.png","web_home_video02");
+		this._loaderScreen.addAsset("img/home/web_home_video03.png","web_home_video03");
+		this._loaderScreen.addAsset("img/home/web_home_video04.png","web_home_video04");
+		this._loaderScreen.addAsset("img/home/web_home_video05.png","web_home_video05");
 		this._loaderScreen.addAsset("img/common/web_common_videosupport.png","web_common_videosupport");
 		this._loaderScreen.addAsset("img/common/web_common_button_home_normal.png","web_common_button_home_normal");
 		this._loaderScreen.addAsset("img/common/web_common_button_home_over.png","web_common_button_home_over");
@@ -6149,15 +6233,8 @@ com.minigloop.Engine.prototype = {
 		this.update(this._dt);
 	}
 	,resize: function(e) {
-		var aux = (js.Lib.window.innerWidth + 0.1) / (js.Lib.window.innerWidth + 0.1);
-		console.log(aux + ", " + 2000 / 820);
-		if(aux < 2000 / 820) {
-			this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerHeight / 820.0));
-			console.log("resize height");
-		} else {
-			this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference));
-			console.log("resize width");
-		}
+		var aux = (js.Lib.window.innerWidth + 0.1) / (js.Lib.window.innerHeight + 0.1);
+		if(aux < 2000 / 820) this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerHeight / com.funbox.ania.Global.heightReference)); else this._bufferCanvas.set_scaleX(this._bufferCanvas.set_scaleY(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference));
 		this._bufferCanvas.set_x(js.Lib.window.innerWidth / 2.0 - this._bufferCanvas.get_width() / 2.0);
 		try {
 			eval("resize(" + Std.string(js.Lib.window.innerWidth / com.funbox.ania.Global.widthReference) + ", " + Std.string(js.Lib.window.innerWidth / 2.0) + ")");
@@ -8207,7 +8284,8 @@ browser.text.TextField.mDefaultFont = "Bitstream_Vera_Sans";
 browser.text.FontInstance.mSolidFonts = new Hash();
 browser.text.TextFieldType.DYNAMIC = "DYNAMIC";
 browser.text.TextFieldType.INPUT = "INPUT";
-com.funbox.ania.Global.widthReference = 1650;
+com.funbox.ania.Global.widthReference = 1650.0;
+com.funbox.ania.Global.heightReference = 820.0;
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 motion.actuators.SimpleActuator.actuators = new Array();

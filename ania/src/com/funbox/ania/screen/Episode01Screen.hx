@@ -43,7 +43,10 @@ class Episode01Screen extends Screen
 	private var _support:ButtonPopup;
 	private var _face:AtlasSprite;
 	
-	//private var _previews:Array = [];
+	private var _previews:Array<Bitmap>;
+	private var _nextPreview:Bitmap;
+	private var _currentPreview:Bitmap;
+	private var _currentPreviewIndex:Int = 1;
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
@@ -86,6 +89,11 @@ class Episode01Screen extends Screen
 		_loaderScreen.addAsset("img/episode01/web_epidose01_tree03.png", "web_epidose01_tree03");
 		_loaderScreen.addAsset("img/episode01/web_epidose01_activities.png", "web_epidose01_activities");
 		_loaderScreen.addAsset("img/episode01/web_epidose01_video_previous.png", "web_epidose01_video_previous");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_video_previous01.png", "web_epidose01_video_previous01");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_video_previous02.png", "web_epidose01_video_previous02");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_video_previous03.png", "web_epidose01_video_previous03");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_video_previous04.png", "web_epidose01_video_previous04");
+		_loaderScreen.addAsset("img/episode01/web_epidose01_video_previous05.png", "web_epidose01_video_previous05");
 		
 		_loaderScreen.addAsset("img/episode01/animations/web_epidose01_meshi_face.png", "web_epidose01_meshi_face");
 		_loaderScreen.addAsset("img/episode01/animations/web_epidose01_bird01.png", "web_epidose01_bird01");
@@ -147,6 +155,23 @@ class Episode01Screen extends Screen
 		
 		_previous.setCollision(90, 20, 420, 250);
 		
+		_previews = new Array<Bitmap>();
+		
+		var i:Int;
+		for (i in 1...6)
+		{
+			var p:Bitmap = AssetsLoader.getAsset("web_epidose01_video_previous0" + i);
+			p.x = 523;
+			p.y = 312;
+			p.alpha = 0;
+			_previews.push(p);
+			_canvas.addChild(p);
+		}
+		
+		_currentPreviewIndex = 0;
+		
+		Actuate.timer(4).onComplete(showPreview);
+		
 		_activities = new ButtonPopup(
 			_canvas,
 			-670,
@@ -174,6 +199,35 @@ class Episode01Screen extends Screen
 		_menuBar = new MenuBar(_canvas);
 		
 		_isPaused = false;
+	}
+	
+	private function showPreview() 
+	{
+		var i:Int;
+		for (i in 0...5)
+		{
+			_previews[i].alpha = 0;
+		}
+		
+		_currentPreview	= _previews[_currentPreviewIndex];
+		
+		_currentPreviewIndex++;
+		
+		if (_currentPreviewIndex > 4)
+		{
+			_currentPreviewIndex = 0;
+			_nextPreview = _previews[0];
+		}
+		else
+		{
+			_nextPreview = _previews[_currentPreviewIndex];
+		}
+		
+		_currentPreview.alpha = 1;
+		_nextPreview.alpha = 0;
+		
+		Actuate.tween(_currentPreview, 1.3, { alpha: 0 } ).delay(2);
+		Actuate.tween(_nextPreview, 1.3, { alpha: 1 } ).delay(2).onComplete(showPreview);
 	}
 	
 	private function onPrevious_Click() 

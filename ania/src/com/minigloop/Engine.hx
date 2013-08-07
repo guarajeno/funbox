@@ -72,18 +72,15 @@ class Engine
 	
 	private function resize(e:Event):Void 
 	{
-		var aux:Float = (Global.stage.fullScreenWidth + 0.1) / (Global.stage.fullScreenWidth + 0.1);
-		trace(aux + ", " + 2000 / 820);
+		var aux:Float = (Global.stage.fullScreenWidth + 0.1) / (Global.stage.fullScreenHeight + 0.1);
 		
 		if (aux < 2000 / 820)
 		{
-			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenHeight / 820.0;
-			trace("resize height");
+			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenHeight / Global.heightReference;
 		}
 		else
 		{
 			_bufferCanvas.scaleX = _bufferCanvas.scaleY = Global.stage.fullScreenWidth / Global.widthReference;
-			trace("resize width");
 		}
 		
 		_bufferCanvas.x = Global.stage.fullScreenWidth / 2.0 - _bufferCanvas.width / 2.0;

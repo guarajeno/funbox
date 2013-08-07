@@ -76,7 +76,10 @@ class Button extends SpriteEntity
 	private function _onMouseUp(e:MouseEvent):Void 
 	{
 		setState("up");
-		_callback(this);
+		if (_callback != null)
+		{
+			_callback(this);
+		}
 	}
 	
 	private function _onMouseOut(e:MouseEvent):Void 

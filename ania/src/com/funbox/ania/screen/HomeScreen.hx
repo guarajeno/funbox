@@ -55,6 +55,10 @@ class HomeScreen extends Screen
 	private var _tMeshi:Float = 0;
 	private var _isMeshiAnimating:Bool = false;
 	
+	private var _previews:Array<Bitmap>;
+	private var _nextPreview:Bitmap;
+	private var _currentPreview:Bitmap;
+	private var _currentPreviewIndex:Int = 1;
 	
 	public function new(canvas:Sprite) 
 	{
@@ -79,6 +83,11 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/home/web_home_meshi.png", "web_home_meshi");
 		_loaderScreen.addAsset("img/home/web_home_news_support.png", "web_home_news_support");
 		_loaderScreen.addAsset("img/home/web_home_seed.png", "web_home_seed");
+		_loaderScreen.addAsset("img/home/web_home_video01.png", "web_home_video01");
+		_loaderScreen.addAsset("img/home/web_home_video02.png", "web_home_video02");
+		_loaderScreen.addAsset("img/home/web_home_video03.png", "web_home_video03");
+		_loaderScreen.addAsset("img/home/web_home_video04.png", "web_home_video04");
+		_loaderScreen.addAsset("img/home/web_home_video05.png", "web_home_video05");
 		
 		// common
 		_loaderScreen.addAsset("img/common/web_common_videosupport.png", "web_common_videosupport");
@@ -139,7 +148,7 @@ class HomeScreen extends Screen
 			"web_home_meshi",
 			"web_home_meshi",
 			2.2,
-			null
+			onMeshiClick
 		);
 		
 		_meshi.setCollision(270, 0, 450, 400);
@@ -151,6 +160,8 @@ class HomeScreen extends Screen
 		_meshi.onMouseOut = function() {
 			_isMeshiAnimating = false;
 		};
+		
+		//Actuate.tween(_meshi.position, 0.8, { y:500 } ).delay(2.2);
 		
 		_video = new ButtonPopup(
 			_canvas,
@@ -164,6 +175,23 @@ class HomeScreen extends Screen
 		);
 		
 		_video.setCollision(110, 0, 400, 220);
+		
+		_previews = new Array<Bitmap>();
+		
+		var i:Int;
+		for (i in 1...6)
+		{
+			var p:Bitmap = AssetsLoader.getAsset("web_home_video0" + i);
+			p.x = 864;
+			p.y = 408;
+			p.alpha = 0;
+			_previews.push(p);
+			_canvas.addChild(p);
+		}
+		
+		_currentPreviewIndex = 0;
+		
+		Actuate.timer(4).onComplete(showPreview);
 		
 		_enter = new ButtonPopup(
 			_canvas,
@@ -208,6 +236,40 @@ class HomeScreen extends Screen
 		_menuBar = new MenuBar(_canvas);
 	}
 	
+	private function onMeshiClick() 
+	{
+		
+	}
+	
+	private function showPreview() 
+	{
+		var i:Int;
+		for (i in 0...5)
+		{
+			_previews[i].alpha = 0;
+		}
+		
+		_currentPreview	= _previews[_currentPreviewIndex];
+		
+		_currentPreviewIndex++;
+		
+		if (_currentPreviewIndex > 4)
+		{
+			_currentPreviewIndex = 0;
+			_nextPreview = _previews[0];
+		}
+		else
+		{
+			_nextPreview = _previews[_currentPreviewIndex];
+		}
+		
+		_currentPreview.alpha = 1;
+		_nextPreview.alpha = 0;
+		
+		Actuate.tween(_currentPreview, 1.3, { alpha: 0 } ).delay(2);
+		Actuate.tween(_nextPreview, 1.3, { alpha: 1 } ).delay(2).onComplete(showPreview);
+	}
+	
 	private function onVideoClick() 
 	{
 		trace("on video click");
@@ -216,7 +278,6 @@ class HomeScreen extends Screen
 	
 	private function emitSeeds() 
 	{
-		//var seed:Seed;
 		new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 		new Seed(_canvas, 1590 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 		new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
@@ -272,7 +333,12 @@ class HomeScreen extends Screen
 		_data.update(dt);
 		
 		_news.y = 150 + 10 * Math.sin(_tNews);
-		_cloud.x = 800 + 600 * Math.sin(_tCloud);
+		
+		_cloud.x += 30;
+		if (_cloud.x >= 2000)
+		{
+			_cloud.x = -_cloud.width;
+		}
 		
 		_tNews += 0.06;
 		if (_tNews >= 3.14) _tNews = 0;
@@ -282,7 +348,7 @@ class HomeScreen extends Screen
 		
 		super.update(dt);
 		
-		if (_isMeshiAnimating)
+		if (_isMeshiAnimating && !_meshi.isAnimated)
 		{
 			if (_tMeshi < 3.14)
 			{
