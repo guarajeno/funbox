@@ -1,0 +1,11 @@
+<project  default="deploy-all" basedir=".">
+	
+    <target name="deploy-all">	
+	  <copy todir="C:\xampp\projects\ania_kin" verbose="true">
+		<fileset dir="./">
+			 <exclude name="build.xml" />
+		</fileset>
+	  </copy>
+    </target>
+
+</project>
