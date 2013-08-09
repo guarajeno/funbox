@@ -47,6 +47,12 @@ class AtlasSprite extends VisualObject
 			_sourceHeight = _atlas.frames[0].sourceSize.h;
 			_containerData = new BitmapData(_sourceWidth, _sourceWidth, true, 0x000000);
 			container = new Bitmap(_containerData);
+			
+			var frame = _atlas.frames[0];
+			
+			_containerData.fillRect(new Rectangle(0, 0, _sourceWidth, _sourceHeight), 0x00000000);
+			_containerData.copyPixels(_sourceBitmap.bitmapData, new Rectangle(frame.frame.x, frame.frame.y, frame.frame.w, frame.frame.h), new Point(frame.spriteSourceSize.x, frame.spriteSourceSize.y));
+			trace("entro");
 		}
 		else
 		{
@@ -55,18 +61,8 @@ class AtlasSprite extends VisualObject
 		}
 		
 		_canvas.addChild(container);
-		
-		//switch (align)
-		//{
-			//case "center":
-			//{
-				//_offsetX = 0;//-_sourceWidth / 2;
-				//_offsetY = 0;//-_sourceHeight / 2;
-			//}
-		//}
-		
-		//_offsetX = -_sourceWidth / 2;
-		//_offsetY = -_sourceHeight / 2;
+		container.x = position.x + _offsetX;
+		container.y = position.y + _offsetY;
 		
 		_onEndAnimation = onEndAnimation;
 	}
@@ -79,7 +75,7 @@ class AtlasSprite extends VisualObject
 		_frameCounter++;
 		_frameCounter = _frameCounter % 2;
 		
-		if (_frameCounter == 0) return;
+		if (_frameCounter == 1) return;
 		
 		if (_atlas != null)
 		{

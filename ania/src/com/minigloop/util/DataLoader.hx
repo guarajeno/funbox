@@ -4,6 +4,7 @@ import nme.display.Loader;
 import nme.events.ErrorEvent;
 import nme.events.Event;
 import nme.net.URLLoader;
+import nme.net.URLLoaderDataFormat;
 import nme.net.URLRequest;
 import nme.utils.ByteArray;
 /**
@@ -64,7 +65,7 @@ class DataLoader
 			_loader.load(request);
 			_loader.addEventListener(Event.COMPLETE, loadData);
 			_loader.addEventListener(ErrorEvent.ERROR, onError);
-			
+			_loader.dataFormat = URLLoaderDataFormat.TEXT;
 			_loaders.push(_loader);
 			
 			trace("data loaded: [" + _tempUrls[_index] + "]");

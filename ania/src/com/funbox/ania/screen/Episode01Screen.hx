@@ -50,6 +50,10 @@ class Episode01Screen extends Screen
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
+	private var _hotspotPreview:ButtonPopup;
+	private var _hotspotTdata:ButtonPopup;
+	private var _isTdataAnimating:Bool = false;
+	private var _tdataLocker:Int = 0;
 	
 	public function new(canvas:Sprite) 
 	{
@@ -150,10 +154,10 @@ class Episode01Screen extends Screen
 			"web_epidose01_video_previous",
 			"web_epidose01_video_previous",
 			2.5,
-			onPrevious_Click
+			null
 		);
 		
-		_previous.setCollision(90, 20, 420, 250);
+		//_previous.setCollision(90, 20, 420, 250);
 		
 		_previews = new Array<Bitmap>();
 		
@@ -167,6 +171,19 @@ class Episode01Screen extends Screen
 			_previews.push(p);
 			_canvas.addChild(p);
 		}
+		
+		_hotspotPreview = new ButtonPopup(
+			_canvas,
+			-480,
+			300,
+			"transparent",
+			"transparent",
+			"transparent",
+			3,
+			onPrevious_Click
+		);
+		
+		_hotspotPreview.setCollision(0, 0, 420, 320);
 		
 		_currentPreviewIndex = 0;
 		
@@ -196,9 +213,39 @@ class Episode01Screen extends Screen
 		
 		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2);
 		
+		_hotspotTdata = new ButtonPopup(
+			_canvas,
+			360,
+			600,
+			"transparent",
+			"transparent",
+			"transparent",
+			2.5,
+			onTdata_Click
+		);
+		
+		_hotspotTdata.setCollision(0, 0, 100, 210);
+		
+		_hotspotTdata.onMouseOver = function() 
+		{
+			trace("over");
+			_isTdataAnimating = true;
+		};
+		
+		_hotspotTdata.onMouseOut = function() 
+		{
+			trace("out");
+			_isTdataAnimating = false;
+		};
+		
 		_menuBar = new MenuBar(_canvas);
 		
 		_isPaused = false;
+	}
+	
+	private function onTdata_Click() 
+	{
+		
 	}
 	
 	private function showPreview() 
@@ -275,8 +322,22 @@ class Episode01Screen extends Screen
 		
 		_activities.update(dt);
 		_support.update(dt);
-		_data.update(dt);
-		//_face.update(dt);
+		_hotspotPreview.update(dt);
+		_hotspotTdata.update(dt);
+		
+		//trace("entro a update");
+		_tdataLocker++;
+		
+		if (_tdataLocker <= 100)
+		{
+			//trace("update");
+			_data.update(dt);
+		}
+		
+		if (_isTdataAnimating)
+		{
+			_data.update(dt);
+		}
 		
 		if (_previous != null) _previous.update(dt);
 		if (_menuBar != null) _menuBar.update(dt);

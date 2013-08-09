@@ -45,8 +45,9 @@ class HomeScreen extends Screen
 	private var _data:AtlasSprite;
 	private var _enter:ButtonPopup;
 	private var _cloud:Bitmap;
-	
 	private var _semicoptero:AtlasSprite;
+	private var _hotspotPreview:ButtonPopup;
+	private var _hotspotTdata:ButtonPopup;
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
@@ -55,6 +56,8 @@ class HomeScreen extends Screen
 	private var _tCloud:Float = 0;
 	private var _tMeshi:Float = 0;
 	private var _isMeshiAnimating:Bool = false;
+	private var _isTdataAnimating:Bool = false;
+	private var _tdataLocker:Int = 0;
 	
 	private var _previews:Array<Bitmap>;
 	private var _nextPreview:Bitmap;
@@ -89,6 +92,7 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/home/web_home_video03.png", "web_home_video03");
 		_loaderScreen.addAsset("img/home/web_home_video04.png", "web_home_video04");
 		_loaderScreen.addAsset("img/home/web_home_video05.png", "web_home_video05");
+		_loaderScreen.addAsset("img/transparent.png", "transparent");
 		
 		// common
 		_loaderScreen.addAsset("img/common/web_common_videosupport.png", "web_common_videosupport");
@@ -143,7 +147,7 @@ class HomeScreen extends Screen
 		
 		_meshi = new ButtonPopup(
 			_canvas,
-			490,
+			590,
 			500,
 			"web_home_meshi",
 			"web_home_meshi",
@@ -152,7 +156,7 @@ class HomeScreen extends Screen
 			onMeshiClick
 		);
 		
-		_meshi.setCollision(270, 0, 450, 400);
+		_meshi.setCollision(0, 0, 450, 400);
 		
 		_meshi.onMouseOver = function() {
 			_isMeshiAnimating = true;
@@ -172,10 +176,10 @@ class HomeScreen extends Screen
 			"web_home_video",
 			"web_home_video",
 			3,
-			onVideoClick
+			null
 		);
 		
-		_video.setCollision(110, 0, 400, 220);
+		//_video.setCollision(130, 0, 380, 220);
 		
 		_previews = new Array<Bitmap>();
 		
@@ -189,6 +193,19 @@ class HomeScreen extends Screen
 			_previews.push(p);
 			_canvas.addChild(p);
 		}
+		
+		_hotspotPreview = new ButtonPopup(
+			_canvas,
+			-150,
+			390,
+			"transparent",
+			"transparent",
+			"transparent",
+			3,
+			onVideoClick
+		);
+		
+		_hotspotPreview.setCollision(0, 0, 380, 220);
 		
 		_currentPreviewIndex = 0;
 		
@@ -214,6 +231,29 @@ class HomeScreen extends Screen
 		_data.position.x = 1300;
 		_data.position.y = 1000;
 		
+		_hotspotTdata = new ButtonPopup(
+			_canvas,
+			160,
+			600,
+			"transparent",
+			"transparent",
+			"transparent",
+			2.5,
+			onTdata_Click
+		);
+		
+		_hotspotTdata.setCollision(0, 0, 290, 230);
+		
+		_hotspotTdata.onMouseOver = function() 
+		{
+			_isTdataAnimating = true;
+		};
+		
+		_hotspotTdata.onMouseOut = function() 
+		{
+			_isTdataAnimating = false;
+		};
+		
 		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2.5);
 		
 		_semicoptero = new AtlasSprite(
@@ -235,6 +275,11 @@ class HomeScreen extends Screen
 		Actuate.tween(_news, 1, { x: 1400 } ).ease(Linear.easeNone).delay(0);
 		
 		_menuBar = new MenuBar(_canvas);
+	}
+	
+	private function onTdata_Click() 
+	{
+		
 	}
 	
 	private function onMeshiClick() 
@@ -279,15 +324,21 @@ class HomeScreen extends Screen
 	
 	private function emitSeeds() 
 	{
-		Actuate.tween(_canvas, 0, {}).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+		var r1:Float = Math.random();
+		var r2:Float = Math.random();
+		var r3:Float = Math.random();
+		
+		//trace(r1 + ", " + r2 + ", " + r3);
+		
+		Actuate.tween(_canvas, 0.3, {}).onComplete(function() {
 			new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 		});
 		
-		Actuate.tween(_canvas, 0, {}).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+		Actuate.tween(_canvas, 0, {}).onComplete(function() {
 			new Seed(_canvas, 1590 + Math.floor(Math.random() * 80) - 40, 400 + Math.floor(Math.random() * 40) - 20);
 		});
 		
-		Actuate.tween(_canvas, 0, {}).delay(0.5 + 0.5 * Math.random()).onComplete(function() {
+		Actuate.tween(_canvas, 0.5, {}).onComplete(function() {
 			new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 		});
 	}
@@ -339,7 +390,22 @@ class HomeScreen extends Screen
 		_semicoptero.update(dt);
 		_meshi.update(dt);
 		_video.update(dt);
-		_data.update(dt);
+		_hotspotPreview.update(dt);
+		_hotspotTdata.update(dt);
+		
+		//trace("entro a update");
+		_tdataLocker++;
+		
+		if (_tdataLocker <= 100)
+		{
+			//trace("update");
+			_data.update(dt);
+		}
+		
+		if (_isTdataAnimating)
+		{
+			_data.update(dt);
+		}
 		
 		_news.y = 150 + 10 * Math.sin(_tNews);
 		
@@ -358,21 +424,12 @@ class HomeScreen extends Screen
 		
 		if (_isMeshiAnimating && !_meshi.isAnimated)
 		{
-			if (_tMeshi < 3.14)
-			{
-				
-			}
-			else
-			{
-				
-			}
-			
 			_tMeshi += 0.01;
 			
 			if (_tMeshi >= 1)
 			{
 				_tMeshi = 0;
-				Actuate.tween(_meshi.skin, 0.6, { scaleY: 0.95 } ).ease(Elastic.easeIn).onComplete(onMeshiScaleUpEnd).onUpdate(onMeshiScaleUpdate);
+				Actuate.tween(_meshi.skin, 0.05, { scaleY: 0.95 } ).ease(Linear.easeNone).onComplete(onMeshiScaleUpEnd).onUpdate(onMeshiScaleUpdate);
 			}
 		}
 		
@@ -381,12 +438,12 @@ class HomeScreen extends Screen
 	
 	private function onMeshiScaleUpdate() 
 	{
-		_meshi.position.y = 725 - _meshi.skin.height;
+		_meshi.position.y = 720 - _meshi.skin.height;
 	}
 	
 	private function onMeshiScaleUpEnd() 
 	{
-		Actuate.tween(_meshi.skin, 0.6, { scaleY: 1 } ).ease(Elastic.easeOut).onComplete(onMeshiScaleDownEnd).onUpdate(onMeshiScaleUpdate);
+		Actuate.tween(_meshi.skin, 0.3, { scaleY: 0.99 } ).ease(Linear.easeNone).onComplete(onMeshiScaleDownEnd).onUpdate(onMeshiScaleUpdate);
 	}
 	
 	private function onMeshiScaleDownEnd() 

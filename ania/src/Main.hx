@@ -2,7 +2,6 @@ package ;
 
 import com.funbox.ania.screen.ActivitiesScreen;
 import com.funbox.ania.screen.HomeScreen;
-import com.funbox.ania.screen.PreloaderScreen;
 import com.minigloop.Engine;
 import nme.display.Sprite;
 import nme.events.Event;
