@@ -5042,7 +5042,7 @@ com.minigloop.display.SpriteEntity.prototype = $extend(com.minigloop.display.Vis
 	}
 	,setCollision: function(x,y,width,height) {
 		this.collision.get_graphics().clear();
-		this.collision.get_graphics().beginFill(16711680,0.2);
+		this.collision.get_graphics().beginFill(16711680,0.02);
 		this.collision.get_graphics().drawRect(0,0,width,height);
 		this.collision.get_graphics().endFill();
 		this._collisionOffsetX = x;

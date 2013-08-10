@@ -38,7 +38,7 @@ class SpriteEntity extends VisualObject
 	public function setCollision(x:Float, y:Float, width:Float, height:Float):Void
 	{
 		collision.graphics.clear();
-		collision.graphics.beginFill(0xFF0000, 0.2);
+		collision.graphics.beginFill(0xFF0000, 0.02);
 		collision.graphics.drawRect(0, 0, width, height);
 		collision.graphics.endFill();
 		
