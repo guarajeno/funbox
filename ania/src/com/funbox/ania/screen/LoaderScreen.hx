@@ -83,7 +83,7 @@ class LoaderScreen extends Screen
 		
 		_menuSupport = AssetsLoader.getAsset("web_common_button_suport");
 		_menuSupport.x = 500;
-		_menuSupport.scaleX = 0;
+		_menuSupport.y = -400;
 		_canvas.addChild(_menuSupport);
 		
 		_semicop = new AtlasSprite(
@@ -106,6 +106,23 @@ class LoaderScreen extends Screen
 	
 	override public function update(dt:Int):Dynamic 
 	{
+		if (_semicop != null)
+		{
+			_semicop.update(dt);
+		}
+		
+		if (_loadingText != null)
+		{
+			_tLoader += 0.07;
+			
+			if (_tLoader > 3.14)
+			{
+				_tLoader = 0;
+			}
+			
+			_loadingText.alpha = Math.sin(_tLoader);
+		}
+		
 		if (_isPaused) return;
 		
 		if (_isPreAssetsLoaded && _isPreDataLoaded)
@@ -122,11 +139,6 @@ class LoaderScreen extends Screen
 			_isAssetsLoaded = false;
 			_isDataLoaded = false;
 			animate();
-		}
-		
-		if (_semicop != null)
-		{
-			_semicop.update(dt);
 		}
 	}
 	
@@ -175,8 +187,9 @@ class LoaderScreen extends Screen
 	public function animate() 
 	{
 		trace("animate");
-		Actuate.tween(_semicop.position, 0.5, { y: -300 } ).ease(Elastic.easeInOut);
-		Actuate.tween(_menuSupport, 0.1, { scaleX: 0.95 } ).delay(0.5).ease(Linear.easeNone).onUpdate(onAnimating).onComplete(_callback);
+		Actuate.tween(_loadingText, 0.8, { y: -400 } ).ease(Elastic.easeInOut);
+		Actuate.tween(_semicop.position, 0.8, { y: -300 } ).ease(Elastic.easeInOut);
+		Actuate.tween(_menuSupport, 0.5, { y: 0 } ).delay(0.5).ease(Elastic.easeInOut).onUpdate(onAnimating).onComplete(_callback);
 	}
 	
 	private function onAnimating() 

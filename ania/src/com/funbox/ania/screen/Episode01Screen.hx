@@ -10,6 +10,7 @@ import com.funbox.ania.component.ImagePopup;
 import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
 import com.minigloop.display.AtlasSprite;
+import com.minigloop.display.Button;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
@@ -40,7 +41,7 @@ class Episode01Screen extends Screen
 	private var _previous:ButtonPopup;
 	private var _activities:ButtonPopup;
 	private var _data:AtlasSprite;
-	private var _support:ButtonPopup;
+	private var _support:Button;
 	private var _face:AtlasSprite;
 	
 	private var _previews:Array<Bitmap>;
@@ -128,23 +129,18 @@ class Episode01Screen extends Screen
 		_floor = new ImagePopup(_canvas, "web_epidose01_floor", 0, 670, 0);
 		_meshi = new ImagePopup(_canvas, "web_epidose01_meshi", 190, 285, 2);
 		
-		//_face = new AtlasSprite(_canvas, "web_epidose01_meshi_face", "web_epidose01_meshi_face");
-		//_face.position.x = 990;
-		//_face.position.y = 800;
-		//Actuate.tween(_face.position, 2, { y: 300 } ).delay(2).ease(Elastic.easeOut).onUpdate(onFaseUpdate);
-		
-		_support = new ButtonPopup(
+		_support = new Button(
 			_canvas,
-			450,
-			200,
 			"web_common_play",
 			"web_common_play",
 			"web_common_play",
-			3,
 			onActivitiesClick
 		);
 		
+		_support.position.x = 1350;
+		_support.position.y = -500;
 		_support.setCollision(0, 240, 220, 220);
+		Actuate.tween(_support.position, 0.8, { y: 0 } ).ease(Elastic.easeInOut).delay(3);
 		
 		_previous = new ButtonPopup(
 			_canvas,

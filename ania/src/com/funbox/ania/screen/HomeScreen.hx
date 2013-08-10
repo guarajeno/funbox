@@ -330,7 +330,7 @@ class HomeScreen extends Screen
 		
 		//trace(r1 + ", " + r2 + ", " + r3);
 		
-		Actuate.tween(_canvas, 0.3, {}).onComplete(function() {
+		Actuate.tween(_canvas, 0.5, {}).onComplete(function() {
 			new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 		});
 		
@@ -338,7 +338,7 @@ class HomeScreen extends Screen
 			new Seed(_canvas, 1590 + Math.floor(Math.random() * 80) - 40, 400 + Math.floor(Math.random() * 40) - 20);
 		});
 		
-		Actuate.tween(_canvas, 0.5, {}).onComplete(function() {
+		Actuate.tween(_canvas, 0.7, {}).onComplete(function() {
 			new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 		});
 	}
@@ -409,7 +409,7 @@ class HomeScreen extends Screen
 		
 		_news.y = 150 + 10 * Math.sin(_tNews);
 		
-		_cloud.x += 5;
+		_cloud.x += 2;
 		if (_cloud.x >= 2000)
 		{
 			_cloud.x = -_cloud.width;
@@ -429,7 +429,7 @@ class HomeScreen extends Screen
 			if (_tMeshi >= 1)
 			{
 				_tMeshi = 0;
-				Actuate.tween(_meshi.skin, 0.05, { scaleY: 0.95 } ).ease(Linear.easeNone).onComplete(onMeshiScaleUpEnd).onUpdate(onMeshiScaleUpdate);
+				Actuate.tween(_meshi.skin, 0.07, { scaleY: 0.97 } ).ease(Linear.easeNone).onComplete(onMeshiScaleUpEnd).onUpdate(onMeshiScaleUpdate);
 			}
 		}
 		
@@ -443,7 +443,7 @@ class HomeScreen extends Screen
 	
 	private function onMeshiScaleUpEnd() 
 	{
-		Actuate.tween(_meshi.skin, 0.3, { scaleY: 0.99 } ).ease(Linear.easeNone).onComplete(onMeshiScaleDownEnd).onUpdate(onMeshiScaleUpdate);
+		Actuate.tween(_meshi.skin, 0.4, { scaleY: 0.99 } ).ease(Linear.easeNone).onComplete(onMeshiScaleDownEnd).onUpdate(onMeshiScaleUpdate);
 	}
 	
 	private function onMeshiScaleDownEnd() 

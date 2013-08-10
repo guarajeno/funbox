@@ -5042,7 +5042,7 @@ com.minigloop.display.SpriteEntity.prototype = $extend(com.minigloop.display.Vis
 	}
 	,setCollision: function(x,y,width,height) {
 		this.collision.get_graphics().clear();
-		this.collision.get_graphics().beginFill(16711680,0.02);
+		this.collision.get_graphics().beginFill(16711680,0.2);
 		this.collision.get_graphics().drawRect(0,0,width,height);
 		this.collision.get_graphics().endFill();
 		this._collisionOffsetX = x;
@@ -5649,8 +5649,11 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._tree_3 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_tree03",820,660,1.5);
 		this._floor = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_floor",0,670,0);
 		this._meshi = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_meshi",190,285,2);
-		this._support = new com.funbox.ania.component.ButtonPopup(this._canvas,450,200,"web_common_play","web_common_play","web_common_play",3,$bind(this,this.onActivitiesClick));
+		this._support = new com.minigloop.display.Button(this._canvas,"web_common_play","web_common_play","web_common_play",$bind(this,this.onActivitiesClick));
+		this._support.position.x = 1350;
+		this._support.position.y = -500;
 		this._support.setCollision(0,240,220,220);
+		motion.Actuate.tween(this._support.position,0.8,{ y : 0}).ease(motion.easing.Elastic.get_easeInOut()).delay(3);
 		this._previous = new com.funbox.ania.component.ButtonPopup(this._canvas,-350,500,"web_epidose01_video_previous","web_epidose01_video_previous","web_epidose01_video_previous",2.5,null);
 		this._previews = new Array();
 		var i;
@@ -5761,7 +5764,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this.emitSeeds();
 	}
 	,onMeshiScaleUpEnd: function() {
-		motion.Actuate.tween(this._meshi.skin,0.3,{ scaleY : 0.99}).ease(motion.easing.Linear.get_easeNone()).onComplete($bind(this,this.onMeshiScaleDownEnd)).onUpdate($bind(this,this.onMeshiScaleUpdate));
+		motion.Actuate.tween(this._meshi.skin,0.4,{ scaleY : 0.99}).ease(motion.easing.Linear.get_easeNone()).onComplete($bind(this,this.onMeshiScaleDownEnd)).onUpdate($bind(this,this.onMeshiScaleUpdate));
 	}
 	,onMeshiScaleUpdate: function() {
 		this._meshi.position.y = 720 - this._meshi.skin.get_height();
@@ -5781,7 +5784,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		if(this._isTdataAnimating) this._data.update(dt);
 		this._news.set_y(150 + 10 * Math.sin(this._tNews));
 		var _g = this._cloud;
-		_g.set_x(_g.get_x() + 5);
+		_g.set_x(_g.get_x() + 2);
 		if(this._cloud.get_x() >= 2000) this._cloud.set_x(-this._cloud.get_width());
 		this._tNews += 0.06;
 		if(this._tNews >= 3.14) this._tNews = 0;
@@ -5791,7 +5794,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 			this._tMeshi += 0.01;
 			if(this._tMeshi >= 1) {
 				this._tMeshi = 0;
-				motion.Actuate.tween(this._meshi.skin,0.05,{ scaleY : 0.95}).ease(motion.easing.Linear.get_easeNone()).onComplete($bind(this,this.onMeshiScaleUpEnd)).onUpdate($bind(this,this.onMeshiScaleUpdate));
+				motion.Actuate.tween(this._meshi.skin,0.07,{ scaleY : 0.97}).ease(motion.easing.Linear.get_easeNone()).onComplete($bind(this,this.onMeshiScaleUpEnd)).onUpdate($bind(this,this.onMeshiScaleUpdate));
 			}
 		}
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
@@ -5819,13 +5822,13 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		var r1 = Math.random();
 		var r2 = Math.random();
 		var r3 = Math.random();
-		motion.Actuate.tween(this._canvas,0.3,{ }).onComplete(function() {
+		motion.Actuate.tween(this._canvas,0.5,{ }).onComplete(function() {
 			new com.funbox.ania.component.Seed(_g._canvas,1400 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
 		});
 		motion.Actuate.tween(this._canvas,0,{ }).onComplete(function() {
 			new com.funbox.ania.component.Seed(_g._canvas,1590 + Math.floor(Math.random() * 80) - 40,400 + Math.floor(Math.random() * 40) - 20);
 		});
-		motion.Actuate.tween(this._canvas,0.5,{ }).onComplete(function() {
+		motion.Actuate.tween(this._canvas,0.7,{ }).onComplete(function() {
 			new com.funbox.ania.component.Seed(_g._canvas,1750 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
 		});
 	}
@@ -5996,8 +5999,9 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 	}
 	,animate: function() {
 		console.log("animate");
-		motion.Actuate.tween(this._semicop.position,0.5,{ y : -300}).ease(motion.easing.Elastic.get_easeInOut());
-		motion.Actuate.tween(this._menuSupport,0.1,{ scaleX : 0.95}).delay(0.5).ease(motion.easing.Linear.get_easeNone()).onUpdate($bind(this,this.onAnimating)).onComplete(this._callback);
+		motion.Actuate.tween(this._loadingText,0.8,{ y : -400}).ease(motion.easing.Elastic.get_easeInOut());
+		motion.Actuate.tween(this._semicop.position,0.8,{ y : -300}).ease(motion.easing.Elastic.get_easeInOut());
+		motion.Actuate.tween(this._menuSupport,0.5,{ y : 0}).delay(0.5).ease(motion.easing.Elastic.get_easeInOut()).onUpdate($bind(this,this.onAnimating)).onComplete(this._callback);
 	}
 	,onAssetsLoaded: function() {
 		this._isAssetsLoaded = true;
@@ -6025,6 +6029,12 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		this._semicop.destroy();
 	}
 	,update: function(dt) {
+		if(this._semicop != null) this._semicop.update(dt);
+		if(this._loadingText != null) {
+			this._tLoader += 0.07;
+			if(this._tLoader > 3.14) this._tLoader = 0;
+			this._loadingText.alpha = Math.sin(this._tLoader);
+		}
 		if(this._isPaused) return;
 		if(this._isPreAssetsLoaded && this._isPreDataLoaded) {
 			this._isPaused = true;
@@ -6038,7 +6048,6 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 			this._isDataLoaded = false;
 			this.animate();
 		}
-		if(this._semicop != null) this._semicop.update(dt);
 	}
 	,init: function() {
 		console.log("init");
@@ -6046,7 +6055,7 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		this._canvas.addChild(this._background);
 		this._menuSupport = com.minigloop.util.AssetsLoader.getAsset("web_common_button_suport");
 		this._menuSupport.set_x(500);
-		this._menuSupport.set_scaleX(0);
+		this._menuSupport.set_y(-400);
 		this._canvas.addChild(this._menuSupport);
 		this._semicop = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_loader","web_common_animations_loader");
 		this._semicop.position.x = 890;
