@@ -2,6 +2,7 @@ package com.funbox.ania.component;
 
 import com.eclecticdesignstudio.motion.Actuate;
 import com.funbox.ania.Global;
+import com.funbox.ania.Global;
 import com.funbox.ania.screen.Episode01Screen;
 import com.funbox.ania.screen.Episode02Screen;
 import com.funbox.ania.screen.HomeScreen;
@@ -10,6 +11,7 @@ import com.minigloop.display.Button;
 import com.minigloop.display.VisualObject;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
+import js.Lib;
 import nme.display.Bitmap;
 import nme.display.Sprite;
 import nme.text.TextField;
@@ -278,6 +280,9 @@ class MemoryGame extends VisualObject
 		_lock.visible = true;
 		//_win.position.y = 480;
 		Actuate.tween(_win.position, 0.5, { y: 440 } );
+		
+		trace("saveScore(" + Global.userId + ", " + Global.gameId + ", " + _score + ", " + Math.floor(_minutes * 60 + _seconds) + ");");
+		Lib.eval("saveScore(" + Global.userId + ", " + Global.gameId + ", " + _score + ", " + Math.floor(_minutes * 60 + _seconds) + ");");
 		
 		trace("win");
 	}

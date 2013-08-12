@@ -11,12 +11,13 @@
     <movie version="3" />
     <movie minorVersion="0" />
     <movie platform="NME" />
-    <movie background="0" />
+    <movie background="#000000" />
+    <movie preferredSDK="Haxe 2.10;2.10;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
-    <class path="C:\Motion-Twin\haxe/lib\nme/3,5,3/" />
+    <class path="C:\Motion-Twin\Haxe/lib\nme/3,5,3/" />
     <class path="bin/html5/haxe" />
   </classpaths>
   <!-- Build options -->

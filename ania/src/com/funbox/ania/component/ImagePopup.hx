@@ -39,4 +39,9 @@ class ImagePopup extends VisualObject
 	{
 		Actuate.tween(_img, 0.3, { y: (Global.stage.stageHeight + 50) }).delay(delay).ease(Elastic.easeInOut);
 	}
+	
+	public function destroy():Void
+	{
+		_canvas.removeChild(_img);
+	}
 }

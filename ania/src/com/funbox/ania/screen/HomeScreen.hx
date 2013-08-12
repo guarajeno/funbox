@@ -13,12 +13,16 @@ import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
 import com.funbox.ania.screen.LoaderScreen;
 import com.minigloop.display.AtlasSprite;
+import com.minigloop.display.Button;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
 import com.minigloop.util.DataLoader;
 import nme.display.Bitmap;
 import nme.display.Sprite;
+import nme.text.TextField;
+import nme.text.TextFormat;
+import nme.text.TextFormatAlign;
 
 /**
  * ...
@@ -36,14 +40,23 @@ class HomeScreen extends Screen
 	// popups
 	private var _floor:ImagePopup;
 	private var _city:ImagePopup;
-	private var _meshi:ButtonPopup;
+	
+	private var _meshi:Bitmap;
+	private var _meshiHotspot:Button;
+	private var _meshiFace:AtlasSprite;
+	private var _meshiCanvas:Sprite;
+	
 	private var _tree_1:ImagePopup;
 	private var _tree_2:ImagePopup;
 	private var _house:ImagePopup;
 	private var _doit:ImagePopup;
 	private var _video:ButtonPopup;
+	
 	private var _data:AtlasSprite;
 	private var _enter:ButtonPopup;
+	private var _user:Bitmap;
+	private var _name:TextField;
+	
 	private var _cloud:Bitmap;
 	private var _semicoptero:AtlasSprite;
 	private var _hotspotPreview:ButtonPopup;
@@ -92,6 +105,7 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/home/web_home_video03.png", "web_home_video03");
 		_loaderScreen.addAsset("img/home/web_home_video04.png", "web_home_video04");
 		_loaderScreen.addAsset("img/home/web_home_video05.png", "web_home_video05");
+		_loaderScreen.addAsset("img/home/web_home_tadata_user.png", "web_home_tadata_user");
 		_loaderScreen.addAsset("img/transparent.png", "transparent");
 		
 		// common
@@ -114,11 +128,15 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/common/web_common_button_news_over.png", "web_common_button_news_over");
 		_loaderScreen.addAsset("img/common/web_common_tadata.png", "web_common_tadata");
 		_loaderScreen.addAsset("img/common/web_common_cloud_01.png", "web_common_cloud_01");
+		
 		_loaderScreen.addAsset("img/common/animations/web_common_animations_loader.png", "web_common_animations_loader");
 		_loaderScreen.addAsset("img/common/animations/web_common_animations_tadata.png", "web_common_animations_tadata");
+		_loaderScreen.addAsset("img/episode01/animations/web_epidose01_meshi_face.png", "web_epidose01_meshi_face");
 		
 		_loaderScreen.addData("img/common/animations/web_common_animations_loader.json", "web_common_animations_loader");
 		_loaderScreen.addData("img/common/animations/web_common_animations_tadata.json", "web_common_animations_tadata");
+		_loaderScreen.addData("img/episode01/animations/web_epidose01_meshi_face.json", "web_epidose01_meshi_face");
+		
 		_loaderScreen.load(init);
 	}
 	
@@ -145,28 +163,55 @@ class HomeScreen extends Screen
 		_house = new ImagePopup(_canvas, "web_home_house", -500, 580, 2);
 		_doit = new ImagePopup(_canvas, "web_home_doityourself", -300, 580, 2.5);
 		
-		_meshi = new ButtonPopup(
+		// meshi power trio
+		_meshi = AssetsLoader.getAsset("web_home_meshi");
+		_meshi.x = 1340;
+		_meshi.y = 1000;
+		_canvas.addChild(_meshi);
+		
+		trace(_meshi);
+		
+		Actuate.tween(_meshi, 0.8, { y: 300 } ).ease(Elastic.easeInOut).delay(2.2);
+		
+		_meshiFace = new AtlasSprite(
 			_canvas,
-			590,
-			500,
-			"web_home_meshi",
-			"web_home_meshi",
-			"web_home_meshi",
+			"web_epidose01_meshi_face",
+			"web_epidose01_meshi_face"
+		);
+		
+		_meshiFace.position.x = 1545;
+		_meshiFace.position.y = 600;
+		_meshiFace.container.scaleX = 0.5;
+		_meshiFace.container.scaleY = 0.5;
+		_meshiFace.container.visible = false;
+		
+		Actuate.timer(3.5).onComplete(function() {
+			_meshiFace.container.visible = true;
+		});
+		
+		//Actuate.tween(_meshiFace.position, 0.8, { x: 600 } ).ease(Elastic.easeInOut).delay(2.2);
+		
+		_meshiHotspot = new ButtonPopup(
+			_canvas,
+			390,
+			350,
+			"transparent",
+			"transparent",
+			"transparent",
 			2.2,
 			onMeshiClick
 		);
 		
-		_meshi.setCollision(0, 0, 450, 400);
+		_meshiHotspot.setCollision(0, 0, 450, 400);
 		
-		_meshi.onMouseOver = function() {
-			_isMeshiAnimating = true;
-		};
+		//_meshiHotspot.onMouseOver = function() {
+			//_isMeshiAnimating = true;
+		//};
+		//
+		//_meshiHotspot.onMouseOut = function() {
+			//_isMeshiAnimating = false;
+		//};
 		
-		_meshi.onMouseOut = function() {
-			_isMeshiAnimating = false;
-		};
-		
-		//Actuate.tween(_meshi.position, 0.8, { y:500 } ).delay(2.2);
 		
 		_video = new ButtonPopup(
 			_canvas,
@@ -211,16 +256,31 @@ class HomeScreen extends Screen
 		
 		Actuate.timer(4).onComplete(showPreview);
 		
-		_enter = new ButtonPopup(
-			_canvas,
-			240,
-			690,
-			"web_home_tadata_enter",
-			"web_home_tadata_enter",
-			"web_home_tadata_enter",
-			2.5,
-			onEnter_Click
-		);
+		//_enter = new ButtonPopup(
+			//_canvas,
+			//240,
+			//690,
+			//"web_home_tadata_enter",
+			//"web_home_tadata_enter",
+			//"web_home_tadata_enter",
+			//2.5,
+			//onEnter_Click
+		//);
+		
+		_user = AssetsLoader.getAsset("web_home_tadata_user");
+		_user.x = 1120;
+		_user.y = 1200;
+		_canvas.addChild(_user);
+		
+		_name = new TextField();
+		_name.defaultTextFormat = new TextFormat("Arial", 13, 0x000000, true, false, false, null, null, TextFormatAlign.LEFT);
+		_name.text = Global.userName + " " + Global.userLastname;
+		_name.x = 1220;
+		_name.y = 1220;
+		_canvas.addChild(_name);
+		
+		Actuate.tween(_user, 0.8, { y: 670 } ).ease(Elastic.easeInOut).delay(2.5);
+		Actuate.tween(_name, 0.8, { y: 705 } ).ease(Elastic.easeInOut).delay(2.5);
 		
 		_data = new AtlasSprite(
 			_canvas,
@@ -230,6 +290,8 @@ class HomeScreen extends Screen
 		
 		_data.position.x = 1300;
 		_data.position.y = 1000;
+		
+		//Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2);
 		
 		_hotspotTdata = new ButtonPopup(
 			_canvas,
@@ -328,8 +390,6 @@ class HomeScreen extends Screen
 		var r2:Float = Math.random();
 		var r3:Float = Math.random();
 		
-		//trace(r1 + ", " + r2 + ", " + r3);
-		
 		Actuate.tween(_canvas, 0.5, {}).onComplete(function() {
 			new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
 		});
@@ -357,15 +417,26 @@ class HomeScreen extends Screen
 		_floor.end(1);
 		_tree_1.end(0.5);
 		_tree_2.end(0.5);
-		_meshi.end(0.5);
-		_house.end(0);
-		_doit.end(0);
-		_video.end(0);
-		
-		_enter.end(0);
 		
 		_canvas.removeChild(_news);
+		_canvas.removeChild(_meshi);
+		_canvas.removeChild(_user);
+		_canvas.removeChild(_name);
+		
 		_semicoptero.destroy();
+		_meshiFace.destroy();
+		_meshiHotspot.destroy();
+		_data.destroy();
+		_video.destroy();
+		//_enter.destroy();
+		_house.destroy();
+		_doit.destroy();
+		
+		var i:Int;
+		for (i in 0...3)
+		{
+			_canvas.removeChild(_previews[i]);
+		}
 	}
 	
 	private function onEnter_Click() 
@@ -379,16 +450,19 @@ class HomeScreen extends Screen
 		ScreenManager.showPopup(VideoPopup);
 	}
 	
+	//private function show
+	
 	override public function update(dt:Int):Dynamic 
 	{
 		_loaderScreen.update(dt);
 		
 		if (_isPaused) return;
 		
-		_enter.update(dt);
+		//_enter.update(dt);
 		_menuBar.update(dt);
 		_semicoptero.update(dt);
-		_meshi.update(dt);
+		_meshiFace.update(dt);
+		_meshiHotspot.update(dt);
 		_video.update(dt);
 		_hotspotPreview.update(dt);
 		_hotspotTdata.update(dt);
@@ -422,32 +496,38 @@ class HomeScreen extends Screen
 		if (_tCloud >= 3.14) _tCloud = 0;
 		
 		
-		if (_isMeshiAnimating && !_meshi.isAnimated)
+		_tMeshi += 0.01;
+		if (_tMeshi >= 1)
 		{
-			_tMeshi += 0.01;
-			
-			if (_tMeshi >= 1)
-			{
-				_tMeshi = 0;
-				Actuate.tween(_meshi.skin, 0.07, { scaleY: 0.97 } ).ease(Linear.easeNone).onComplete(onMeshiScaleUpEnd).onUpdate(onMeshiScaleUpdate);
-			}
+			_tMeshi = 0;
+			emitSeeds();
 		}
+		//if (_isMeshiAnimating)
+		//{
+			//_tMeshi += 0.01;
+			//
+			//if (_tMeshi >= 1)
+			//{
+				//_tMeshi = 0;
+				//Actuate.tween(_meshi, 0.07, { scaleY: 0.97 } ).ease(Linear.easeNone).onComplete(onMeshiScaleUpEnd).onUpdate(onMeshiScaleUpdate);
+			//}
+		//}
 		
 		super.update(dt);
 	}
 	
-	private function onMeshiScaleUpdate() 
-	{
-		_meshi.position.y = 720 - _meshi.skin.height;
-	}
-	
-	private function onMeshiScaleUpEnd() 
-	{
-		Actuate.tween(_meshi.skin, 0.4, { scaleY: 0.99 } ).ease(Linear.easeNone).onComplete(onMeshiScaleDownEnd).onUpdate(onMeshiScaleUpdate);
-	}
-	
-	private function onMeshiScaleDownEnd() 
-	{
-		emitSeeds();
-	}
+	//private function onMeshiScaleUpdate() 
+	//{
+		//_meshi.y = 720 - _meshi.height;
+	//}
+	//
+	//private function onMeshiScaleUpEnd() 
+	//{
+		//Actuate.tween(_meshi, 0.4, { scaleY: 0.99 } ).ease(Linear.easeNone).onComplete(onMeshiScaleDownEnd).onUpdate(onMeshiScaleUpdate);
+	//}
+	//
+	//private function onMeshiScaleDownEnd() 
+	//{
+		//emitSeeds();
+	//}
 }

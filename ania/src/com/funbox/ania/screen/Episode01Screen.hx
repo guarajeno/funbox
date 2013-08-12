@@ -7,6 +7,7 @@ import com.funbox.ania.component.ButtonPopup;
 import com.funbox.ania.component.ImagePopup;
 import com.funbox.ania.component.MenuBar;
 import com.funbox.ania.component.ImagePopup;
+import com.funbox.ania.component.Seed;
 import com.funbox.ania.Global;
 import com.funbox.ania.popup.VideoPopup;
 import com.minigloop.display.AtlasSprite;
@@ -55,6 +56,7 @@ class Episode01Screen extends Screen
 	private var _hotspotTdata:ButtonPopup;
 	private var _isTdataAnimating:Bool = false;
 	private var _tdataLocker:Int = 0;
+	private var _tMeshi:Float = 0;
 	
 	public function new(canvas:Sprite) 
 	{
@@ -207,7 +209,7 @@ class Episode01Screen extends Screen
 		_data.position.x = 1300;
 		_data.position.y = 1000;
 		
-		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2);
+		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2.5);
 		
 		_hotspotTdata = new ButtonPopup(
 			_canvas,
@@ -283,7 +285,7 @@ class Episode01Screen extends Screen
 	{
 		ScreenManager.gotoScreen(ActivitiesScreen);
 	}
-	//
+	
 	//private function onFaseUpdate() 
 	//{
 		//trace("entro");
@@ -301,13 +303,39 @@ class Episode01Screen extends Screen
 		_tree_2.end(0.5);
 		_tree_3.end(0.5);
 		_floor.end(0.3);
-		_meshi.end(0);
-		_activities.end(0);
 		
+		_activities.destroy();
 		_data.destroy();
-		
+		_meshi.destroy();
 		_previous.destroy();
 		_support.destroy();
+		
+		var i:Int;
+		for (i in 0...5)
+		{
+			_canvas.removeChild(_previews[i]);
+		}
+	}
+	
+	private function emitSeeds() 
+	{
+		var r1:Float = Math.random();
+		var r2:Float = Math.random();
+		var r3:Float = Math.random();
+		
+		//trace(r1 + ", " + r2 + ", " + r3);
+		
+		Actuate.tween(_canvas, 0.5, {}).onComplete(function() {
+			new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+		});
+		
+		Actuate.tween(_canvas, 0, {}).onComplete(function() {
+			new Seed(_canvas, 1590 + Math.floor(Math.random() * 80) - 40, 400 + Math.floor(Math.random() * 40) - 20);
+		});
+		
+		Actuate.tween(_canvas, 0.7, {}).onComplete(function() {
+			new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+		});
 	}
 	
 	override public function update(dt:Int):Dynamic 
@@ -333,6 +361,13 @@ class Episode01Screen extends Screen
 		if (_isTdataAnimating)
 		{
 			_data.update(dt);
+		}
+		
+		_tMeshi += 0.01;
+		if (_tMeshi >= 1)
+		{
+			_tMeshi = 0;
+			emitSeeds();
 		}
 		
 		if (_previous != null) _previous.update(dt);

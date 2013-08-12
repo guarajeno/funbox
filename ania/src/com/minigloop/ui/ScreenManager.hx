@@ -33,7 +33,7 @@ class ScreenManager
 		
 		_screenClass = screenClass;
 		
-		//Actuate.timer(1.5).onComplete(createScreen);
+		//Actuate.timer(1).onComplete(createScreen);
 		createScreen();
 	}
 	

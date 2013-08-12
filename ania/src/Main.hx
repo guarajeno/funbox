@@ -2,6 +2,9 @@ package ;
 
 import com.funbox.ania.screen.ActivitiesScreen;
 import com.funbox.ania.screen.HomeScreen;
+import com.funbox.ania.UserManager;
+import com.funbox.ania.UserManager;
+import com.funbox.ania.UserManager;
 import com.minigloop.Engine;
 import nme.display.Sprite;
 import nme.events.Event;
@@ -27,6 +30,7 @@ class Main extends Sprite
 		inited = true;
 		
 		js.Lib.eval("hideVideos();");
+		UserManager.sendScore(10);
 		
 		new Engine(stage, HomeScreen);
 	}

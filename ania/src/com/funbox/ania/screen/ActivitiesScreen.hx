@@ -101,7 +101,7 @@ class ActivitiesScreen extends Screen
 		_loaderScreen.destroy();
 		
 		_isPaused = false;
-		Global.heightReference = 1000;
+		Global.heightReference = 820;//950
 		
 		// background
 		_background = AssetsLoader.getAsset("web_pages_activity_background");
