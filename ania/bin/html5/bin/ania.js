@@ -5118,10 +5118,7 @@ $hxClasses["com.funbox.ania.component.ButtonPopup"] = com.funbox.ania.component.
 com.funbox.ania.component.ButtonPopup.__name__ = ["com","funbox","ania","component","ButtonPopup"];
 com.funbox.ania.component.ButtonPopup.__super__ = com.minigloop.display.Button;
 com.funbox.ania.component.ButtonPopup.prototype = $extend(com.minigloop.display.Button.prototype,{
-	end: function(delay) {
-		motion.Actuate.tween(this.position,0.3,{ y : com.funbox.ania.Global.stage.get_stageWidth() + 50}).delay(delay).ease(motion.easing.Elastic.get_easeInOut());
-	}
-	,update: function(dt) {
+	update: function(dt) {
 		com.minigloop.display.Button.prototype.update.call(this,dt);
 	}
 	,onEndPopup: function() {
@@ -5326,7 +5323,7 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 		this._seconds = 59;
 		this._time.set_text(this._minutes + ":" + (Math.floor(this._seconds) < 10?"0" + Math.floor(this._seconds):"" + Math.floor(this._seconds)));
 		this._lock.set_visible(false);
-		motion.Actuate.tween(this._play.position,0.5,{ y : -100});
+		motion.Actuate.tween(this._play.position,0.5,{ y : -500});
 		motion.Actuate.tween(this._win.position,0.5,{ y : -500});
 		this._isLocked = false;
 	}
@@ -5358,35 +5355,37 @@ com.funbox.ania.component.MemoryGame.prototype = $extend(com.minigloop.display.V
 });
 com.funbox.ania.component.MenuBar = function(canvas) {
 	com.minigloop.display.VisualObject.call(this,canvas);
+	this.mainCanvas = new browser.display.Sprite();
+	this._canvas.addChild(this.mainCanvas);
 	this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_button_suport");
 	this._background.set_x(com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._background.get_width() / 2);
 	this._background.set_y(0);
-	this._canvas.addChild(this._background);
-	this._btnLogo = new com.minigloop.display.Button(canvas,"web_common_logo","web_common_logo","web_common_logo",$bind(this,this.onLogo_Click));
+	this.mainCanvas.addChild(this._background);
+	this._btnLogo = new com.minigloop.display.Button(this.mainCanvas,"web_common_logo","web_common_logo","web_common_logo",$bind(this,this.onLogo_Click));
 	this._btnLogo.setCollision(0,0,200,200);
 	this._btnLogo.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnLogo.collision.get_width() / 2;
 	this._btnLogo.position.y = 0;
-	this._btnHome = new com.minigloop.display.Button(canvas,"web_common_button_home_normal","web_common_button_home_over","web_common_button_home_normal",$bind(this,this.onHome_Click));
+	this._btnHome = new com.minigloop.display.Button(this.mainCanvas,"web_common_button_home_normal","web_common_button_home_over","web_common_button_home_normal",$bind(this,this.onHome_Click));
 	this._btnHome.setCollision(0,0,90,40);
 	this._btnHome.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnHome.collision.get_width() / 2 - 430;
 	this._btnHome.position.y = 80;
-	this._btnEpisodes = new com.minigloop.display.Button(canvas,"web_common_button_episodes_normal","web_common_button_episodes_over","web_common_button_episodes_normal",$bind(this,this.onEpisodes_Click));
+	this._btnEpisodes = new com.minigloop.display.Button(this.mainCanvas,"web_common_button_episodes_normal","web_common_button_episodes_over","web_common_button_episodes_normal",$bind(this,this.onEpisodes_Click));
 	this._btnEpisodes.setCollision(0,0,90,40);
 	this._btnEpisodes.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 - 320;
 	this._btnEpisodes.position.y = 80;
-	this._btnMyWorld = new com.minigloop.display.Button(canvas,"web_common_button_characters_normal","web_common_button_characters_over","web_common_button_characters_normal",$bind(this,this.onMyWorld_Click));
+	this._btnMyWorld = new com.minigloop.display.Button(this.mainCanvas,"web_common_button_characters_normal","web_common_button_characters_over","web_common_button_characters_normal",$bind(this,this.onMyWorld_Click));
 	this._btnMyWorld.setCollision(0,0,110,40);
 	this._btnMyWorld.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnMyWorld.collision.get_width() / 2 + 160;
 	this._btnMyWorld.position.y = 75;
-	this._btnTeachers = new com.minigloop.display.Button(canvas,"web_common_button_parentsandteachers_normal","web_common_button_parentsandteachers_over","web_common_button_parentsandteachers_normal",$bind(this,this.onTeachers_Click));
+	this._btnTeachers = new com.minigloop.display.Button(this.mainCanvas,"web_common_button_parentsandteachers_normal","web_common_button_parentsandteachers_over","web_common_button_parentsandteachers_normal",$bind(this,this.onTeachers_Click));
 	this._btnTeachers.setCollision(0,0,170,40);
 	this._btnTeachers.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnTeachers.collision.get_width() / 2 + 400;
 	this._btnTeachers.position.y = 75;
-	this._btnMyGarden = new com.minigloop.display.Button(canvas,"web_common_button_doityourself_normal","web_common_button_doityourself_over","web_common_button_doityourself_normal",$bind(this,this.onMyGarden_Click));
+	this._btnMyGarden = new com.minigloop.display.Button(this.mainCanvas,"web_common_button_doityourself_normal","web_common_button_doityourself_over","web_common_button_doityourself_normal",$bind(this,this.onMyGarden_Click));
 	this._btnMyGarden.setCollision(0,0,140,40);
 	this._btnMyGarden.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnMyGarden.collision.get_width() / 2 - 190;
 	this._btnMyGarden.position.y = 80;
-	this._btnMyProjects = new com.minigloop.display.Button(canvas,"web_common_button_news_normal","web_common_button_news_over","web_common_button_news_normal",$bind(this,this.onMyProyects_Click));
+	this._btnMyProjects = new com.minigloop.display.Button(this.mainCanvas,"web_common_button_news_normal","web_common_button_news_over","web_common_button_news_normal",$bind(this,this.onMyProyects_Click));
 	this._btnMyProjects.setCollision(0,0,60,40);
 	this._btnMyProjects.position.x = com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._btnEpisodes.collision.get_width() / 2 + 280;
 	this._btnMyProjects.position.y = 75;
@@ -5396,7 +5395,7 @@ com.funbox.ania.component.MenuBar.__name__ = ["com","funbox","ania","component",
 com.funbox.ania.component.MenuBar.__super__ = com.minigloop.display.VisualObject;
 com.funbox.ania.component.MenuBar.prototype = $extend(com.minigloop.display.VisualObject.prototype,{
 	destroy: function() {
-		this._canvas.removeChild(this._background);
+		this.mainCanvas.removeChild(this._background);
 		this._btnHome.destroy();
 		this._btnLogo.destroy();
 		this._btnEpisodes.destroy();
@@ -5460,7 +5459,7 @@ com.funbox.ania.component.Seed.prototype = $extend(com.minigloop.display.SpriteE
 		if(!this._isActive) return;
 	}
 	,move: function() {
-		this.position.y += 9.;
+		this.position.y += 6.;
 		if(this.position.y >= 620) {
 			motion.Actuate.tween(this.skin,0.5,{ alpha : 0}).onComplete($bind(this,this.destroy));
 			this._isActive = false;
@@ -5486,6 +5485,33 @@ com.minigloop.ui.Screen.prototype = {
 	,__class__: com.minigloop.ui.Screen
 }
 com.funbox.ania.popup = {}
+com.funbox.ania.popup.LoginPopup = function(canvas) {
+	com.minigloop.ui.Screen.call(this,canvas);
+	this._background = com.minigloop.util.AssetsLoader.getAsset("web_home_login_support");
+	this._background.set_x(100);
+	this._background.set_y(100);
+	this._canvas.addChild(this._background);
+	this._login = new com.minigloop.display.Button(canvas,"web_home_register_register_normal","web_home_register_register_normal","web_home_register_register_normal",$bind(this,this.onLogin_Click));
+	this._login.setCollision(0,0,195,65);
+	this._login.position.x = 1150;
+	this._login.position.y = 0;
+};
+$hxClasses["com.funbox.ania.popup.LoginPopup"] = com.funbox.ania.popup.LoginPopup;
+com.funbox.ania.popup.LoginPopup.__name__ = ["com","funbox","ania","popup","LoginPopup"];
+com.funbox.ania.popup.LoginPopup.__super__ = com.minigloop.ui.Screen;
+com.funbox.ania.popup.LoginPopup.prototype = $extend(com.minigloop.ui.Screen.prototype,{
+	destroy: function() {
+		this._canvas.removeChild(this._background);
+		this._login.destroy();
+	}
+	,update: function(dt) {
+		this._login.update(dt);
+	}
+	,onLogin_Click: function() {
+		com.minigloop.ui.ScreenManager.closePopup();
+	}
+	,__class__: com.funbox.ania.popup.LoginPopup
+});
 com.funbox.ania.popup.VideoPopup = function() { }
 $hxClasses["com.funbox.ania.popup.VideoPopup"] = com.funbox.ania.popup.VideoPopup;
 com.funbox.ania.popup.VideoPopup.__name__ = ["com","funbox","ania","popup","VideoPopup"];
@@ -5522,8 +5548,8 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 		console.log("ENDING");
 		this._menuBar.destroy();
 		this._game.destroy();
-		this._back.end(0);
-		this._activities.end(0);
+		this._back.destroy();
+		this._activities.destroy();
 		com.funbox.ania.Global.heightReference = 820;
 	}
 	,onBackClick: function() {
@@ -5532,16 +5558,20 @@ com.funbox.ania.screen.ActivitiesScreen.prototype = $extend(com.minigloop.ui.Scr
 	,init: function() {
 		this._loaderScreen.destroy();
 		this._isPaused = false;
-		com.funbox.ania.Global.heightReference = 820;
+		com.funbox.ania.Global.heightReference = 950;
 		this._background = com.minigloop.util.AssetsLoader.getAsset("web_pages_activity_background");
-		this._background.set_width(2000);
+		this._background.set_width(2400);
+		this._background.set_x(-200);
 		this._canvas.addChild(this._background);
-		this._activities = new com.funbox.ania.component.ButtonPopup(this._canvas,-360,170,"web_activity_tittle_normal","web_activity_tittle_normal","web_activity_tittle_normal",0,null);
+		this._activities = new com.funbox.ania.component.ButtonPopup(this._canvas,-360,180,"web_activity_tittle_normal","web_activity_tittle_normal","web_activity_tittle_normal",0,null);
 		this._activities.setCollision(0,45,240,40);
-		this._back = new com.funbox.ania.component.ButtonPopup(this._canvas,400,150,"web_activity_button_back_over","web_activity_button_back_over","web_activity_button_back_over",0,$bind(this,this.onBackClick));
+		this._back = new com.funbox.ania.component.ButtonPopup(this._canvas,400,160,"web_activity_button_back_over","web_activity_button_back_over","web_activity_button_back_over",0,$bind(this,this.onBackClick));
 		this._back.setCollision(0,35,110,40);
 		this._game = new com.funbox.ania.component.MemoryGame(this._canvas);
 		this._menuBar = new com.funbox.ania.component.MenuBar(this._canvas);
+		this._menuBar.mainCanvas.set_scaleX(1000 / 820);
+		this._menuBar.mainCanvas.set_scaleY(1000 / 820);
+		this._menuBar.mainCanvas.set_x(-200);
 	}
 	,onLoaderScreenLoaded: function() {
 		this._loaderScreen.addAsset("img/common/web_common_button_home_normal.png","web_common_button_home_normal");
@@ -5604,7 +5634,7 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._tdataLocker++;
 		if(this._tdataLocker <= 100) this._data.update(dt);
 		if(this._isTdataAnimating) this._data.update(dt);
-		this._tMeshi += 0.01;
+		this._tMeshi += 0.008;
 		if(this._tMeshi >= 1) {
 			this._tMeshi = 0;
 			this.emitSeeds();
@@ -5614,17 +5644,14 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 	}
 	,emitSeeds: function() {
 		var _g = this;
-		var r1 = Math.random();
-		var r2 = Math.random();
-		var r3 = Math.random();
 		motion.Actuate.tween(this._canvas,0.5,{ }).onComplete(function() {
-			new com.funbox.ania.component.Seed(_g._canvas,1400 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+			new com.funbox.ania.component.Seed(_g._canvasSeeds,740 + Math.floor(Math.random() * 90) - 45,300 + Math.floor(Math.random() * 90) - 45);
 		});
 		motion.Actuate.tween(this._canvas,0,{ }).onComplete(function() {
-			new com.funbox.ania.component.Seed(_g._canvas,1590 + Math.floor(Math.random() * 80) - 40,400 + Math.floor(Math.random() * 40) - 20);
+			new com.funbox.ania.component.Seed(_g._canvasSeeds,1200 + Math.floor(Math.random() * 90) - 45,120 + Math.floor(Math.random() * 90) - 45);
 		});
 		motion.Actuate.tween(this._canvas,0.7,{ }).onComplete(function() {
-			new com.funbox.ania.component.Seed(_g._canvas,1750 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
+			new com.funbox.ania.component.Seed(_g._canvasSeeds,1660 + Math.floor(Math.random() * 90) - 45,300 + Math.floor(Math.random() * 90) - 45);
 		});
 	}
 	,end: function() {
@@ -5685,6 +5712,8 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._tree_3 = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_tree03",820,660,1.5);
 		this._floor = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_floor",0,670,0);
 		this._meshi = new com.funbox.ania.component.ImagePopup(this._canvas,"web_epidose01_meshi",190,285,2);
+		this._canvasSeeds = new browser.display.Sprite();
+		this._canvas.addChild(this._canvasSeeds);
 		this._support = new com.minigloop.display.Button(this._canvas,"web_common_play","web_common_play","web_common_play",$bind(this,this.onActivitiesClick));
 		this._support.position.x = 1350;
 		this._support.position.y = -500;
@@ -5817,10 +5846,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._tCloud += 0.005;
 		if(this._tCloud >= 3.14) this._tCloud = 0;
 		this._tMeshi += 0.01;
-		if(this._tMeshi >= 1) {
-			this._tMeshi = 0;
-			this.emitSeeds();
-		}
+		if(this._tMeshi >= 1) this._tMeshi = 0;
 		com.minigloop.ui.Screen.prototype.update.call(this,dt);
 	}
 	,end: function() {
@@ -5849,21 +5875,6 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 			this._canvas.removeChild(this._previews[i1]);
 		}
 	}
-	,emitSeeds: function() {
-		var _g = this;
-		var r1 = Math.random();
-		var r2 = Math.random();
-		var r3 = Math.random();
-		motion.Actuate.tween(this._canvas,0.5,{ }).onComplete(function() {
-			new com.funbox.ania.component.Seed(_g._canvas,1400 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
-		});
-		motion.Actuate.tween(this._canvas,0,{ }).onComplete(function() {
-			new com.funbox.ania.component.Seed(_g._canvas,1590 + Math.floor(Math.random() * 80) - 40,400 + Math.floor(Math.random() * 40) - 20);
-		});
-		motion.Actuate.tween(this._canvas,0.7,{ }).onComplete(function() {
-			new com.funbox.ania.component.Seed(_g._canvas,1750 + Math.floor(Math.random() * 60) - 30,400 + Math.floor(Math.random() * 40) - 20);
-		});
-	}
 	,onVideoClick: function() {
 		console.log("on video click");
 		com.minigloop.ui.ScreenManager.gotoScreen(com.funbox.ania.screen.Episode01Screen);
@@ -5889,6 +5900,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 	,onMeshiClick: function() {
 	}
 	,onTdata_Click: function() {
+		com.minigloop.ui.ScreenManager.showPopup(com.funbox.ania.popup.LoginPopup);
 	}
 	,init: function() {
 		var _g = this;
@@ -5947,7 +5959,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._name = new browser.text.TextField();
 		this._name.set_defaultTextFormat(new browser.text.TextFormat("Arial",13,0,true,false,false,null,null,browser.text.TextFormatAlign.LEFT));
 		this._name.set_text(com.funbox.ania.Global.userName + " " + com.funbox.ania.Global.userLastname);
-		this._name.set_x(1220);
+		this._name.set_x(1210);
 		this._name.set_y(1220);
 		this._canvas.addChild(this._name);
 		motion.Actuate.tween(this._user,0.8,{ y : 670}).ease(motion.easing.Elastic.get_easeInOut()).delay(2.5);
@@ -6014,6 +6026,9 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._loaderScreen.addAsset("img/common/web_common_button_news_over.png","web_common_button_news_over");
 		this._loaderScreen.addAsset("img/common/web_common_tadata.png","web_common_tadata");
 		this._loaderScreen.addAsset("img/common/web_common_cloud_01.png","web_common_cloud_01");
+		this._loaderScreen.addAsset("img/home/web_home_login_support.png","web_home_login_support");
+		this._loaderScreen.addAsset("img/home/web_home_register_register_normal.png","web_home_register_register_normal");
+		this._loaderScreen.addAsset("img/home/web_home_register_register_over.png","web_home_register_register_over");
 		this._loaderScreen.addAsset("img/common/animations/web_common_animations_loader.png","web_common_animations_loader");
 		this._loaderScreen.addAsset("img/common/animations/web_common_animations_tadata.png","web_common_animations_tadata");
 		this._loaderScreen.addAsset("img/episode01/animations/web_epidose01_meshi_face.png","web_epidose01_meshi_face");
@@ -6466,6 +6481,16 @@ com.minigloop.ui.ScreenManager.gotoScreen = function(screenClass) {
 com.minigloop.ui.ScreenManager.createScreen = function() {
 	if(com.minigloop.ui.ScreenManager._currentScreen != null) com.minigloop.ui.ScreenManager._currentScreen.destroy();
 	com.minigloop.ui.ScreenManager._currentScreen = Type.createInstance(com.minigloop.ui.ScreenManager._screenClass,[com.minigloop.ui.ScreenManager._canvas]);
+}
+com.minigloop.ui.ScreenManager.showPopup = function(popupClass) {
+	com.minigloop.ui.ScreenManager.closePopup();
+	com.minigloop.ui.ScreenManager._currentPopup = Type.createInstance(popupClass,[com.minigloop.ui.ScreenManager._canvas]);
+}
+com.minigloop.ui.ScreenManager.closePopup = function() {
+	if(com.minigloop.ui.ScreenManager._currentPopup != null) {
+		com.minigloop.ui.ScreenManager._currentPopup.destroy();
+		com.minigloop.ui.ScreenManager._currentPopup = null;
+	}
 }
 com.minigloop.ui.ScreenManager.update = function(dt) {
 	if(com.minigloop.ui.ScreenManager._currentScreen != null) com.minigloop.ui.ScreenManager._currentScreen.update(dt);

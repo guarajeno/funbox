@@ -10,6 +10,7 @@ import com.funbox.ania.component.MenuBar;
 import com.funbox.ania.component.ImagePopup;
 import com.funbox.ania.component.Seed;
 import com.funbox.ania.Global;
+import com.funbox.ania.popup.LoginPopup;
 import com.funbox.ania.popup.VideoPopup;
 import com.funbox.ania.screen.LoaderScreen;
 import com.minigloop.display.AtlasSprite;
@@ -128,6 +129,9 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/common/web_common_button_news_over.png", "web_common_button_news_over");
 		_loaderScreen.addAsset("img/common/web_common_tadata.png", "web_common_tadata");
 		_loaderScreen.addAsset("img/common/web_common_cloud_01.png", "web_common_cloud_01");
+		_loaderScreen.addAsset("img/home/web_home_login_support.png", "web_home_login_support");
+		_loaderScreen.addAsset("img/home/web_home_register_register_normal.png", "web_home_register_register_normal");
+		_loaderScreen.addAsset("img/home/web_home_register_register_over.png", "web_home_register_register_over");
 		
 		_loaderScreen.addAsset("img/common/animations/web_common_animations_loader.png", "web_common_animations_loader");
 		_loaderScreen.addAsset("img/common/animations/web_common_animations_tadata.png", "web_common_animations_tadata");
@@ -275,7 +279,7 @@ class HomeScreen extends Screen
 		_name = new TextField();
 		_name.defaultTextFormat = new TextFormat("Arial", 13, 0x000000, true, false, false, null, null, TextFormatAlign.LEFT);
 		_name.text = Global.userName + " " + Global.userLastname;
-		_name.x = 1220;
+		_name.x = 1210;
 		_name.y = 1220;
 		_canvas.addChild(_name);
 		
@@ -341,7 +345,7 @@ class HomeScreen extends Screen
 	
 	private function onTdata_Click() 
 	{
-		
+		ScreenManager.showPopup(LoginPopup);
 	}
 	
 	private function onMeshiClick() 
@@ -500,7 +504,7 @@ class HomeScreen extends Screen
 		if (_tMeshi >= 1)
 		{
 			_tMeshi = 0;
-			emitSeeds();
+			//emitSeeds();
 		}
 		//if (_isMeshiAnimating)
 		//{

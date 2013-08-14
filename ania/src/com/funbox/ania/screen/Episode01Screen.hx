@@ -52,6 +52,7 @@ class Episode01Screen extends Screen
 	
 	private var _loaderScreen:LoaderScreen;
 	private var _isPaused:Bool;
+	private var _canvasSeeds:Sprite;
 	private var _hotspotPreview:ButtonPopup;
 	private var _hotspotTdata:ButtonPopup;
 	private var _isTdataAnimating:Bool = false;
@@ -130,6 +131,9 @@ class Episode01Screen extends Screen
 		_tree_3 = new ImagePopup(_canvas, "web_epidose01_tree03", 820, 660, 1.5);
 		_floor = new ImagePopup(_canvas, "web_epidose01_floor", 0, 670, 0);
 		_meshi = new ImagePopup(_canvas, "web_epidose01_meshi", 190, 285, 2);
+		
+		_canvasSeeds = new Sprite();
+		_canvas.addChild(_canvasSeeds);
 		
 		_support = new Button(
 			_canvas,
@@ -319,22 +323,16 @@ class Episode01Screen extends Screen
 	
 	private function emitSeeds() 
 	{
-		var r1:Float = Math.random();
-		var r2:Float = Math.random();
-		var r3:Float = Math.random();
-		
-		//trace(r1 + ", " + r2 + ", " + r3);
-		
 		Actuate.tween(_canvas, 0.5, {}).onComplete(function() {
-			new Seed(_canvas, 1400 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+			new Seed(_canvasSeeds, 740 + Math.floor(Math.random() * 90) - 45, 300 + Math.floor(Math.random() * 90) - 45);
 		});
 		
 		Actuate.tween(_canvas, 0, {}).onComplete(function() {
-			new Seed(_canvas, 1590 + Math.floor(Math.random() * 80) - 40, 400 + Math.floor(Math.random() * 40) - 20);
+			new Seed(_canvasSeeds, 1200 + Math.floor(Math.random() * 90) - 45, 120 + Math.floor(Math.random() * 90) - 45);
 		});
 		
 		Actuate.tween(_canvas, 0.7, {}).onComplete(function() {
-			new Seed(_canvas, 1750 + Math.floor(Math.random() * 60) - 30, 400 + Math.floor(Math.random() * 40) - 20);
+			new Seed(_canvasSeeds, 1660 + Math.floor(Math.random() * 90) - 45, 300 + Math.floor(Math.random() * 90) - 45);
 		});
 	}
 	
@@ -363,7 +361,7 @@ class Episode01Screen extends Screen
 			_data.update(dt);
 		}
 		
-		_tMeshi += 0.01;
+		_tMeshi += 0.008;
 		if (_tMeshi >= 1)
 		{
 			_tMeshi = 0;

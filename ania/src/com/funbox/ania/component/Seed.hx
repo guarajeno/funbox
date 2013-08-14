@@ -40,7 +40,7 @@ class Seed extends SpriteEntity
 	
 	private function move() 
 	{	
-		position.y += 0.3 * 30;
+		position.y += 0.2 * 30;
 		
 		if (position.y >= 620)
 		{

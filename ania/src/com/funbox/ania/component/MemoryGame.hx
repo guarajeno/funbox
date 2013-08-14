@@ -205,7 +205,7 @@ class MemoryGame extends VisualObject
 		_lock.visible = false;
 		
 		//_play.position.y = -100;
-		Actuate.tween(_play.position, 0.5, { y: -100 } );
+		Actuate.tween(_play.position, 0.5, { y: -500 } );
 		//_win.position.y = -500;
 		Actuate.tween(_win.position, 0.5, { y: -500 } );
 		

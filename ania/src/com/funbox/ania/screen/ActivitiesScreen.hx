@@ -101,17 +101,18 @@ class ActivitiesScreen extends Screen
 		_loaderScreen.destroy();
 		
 		_isPaused = false;
-		Global.heightReference = 820;//950
+		Global.heightReference = 950;
 		
 		// background
 		_background = AssetsLoader.getAsset("web_pages_activity_background");
-		_background.width = 2000;
+		_background.width = 2400;
+		_background.x = -200;
 		_canvas.addChild(_background);
 		
 		_activities = new ButtonPopup(
 			_canvas,
 			-360,
-			170,
+			180,
 			"web_activity_tittle_normal",
 			"web_activity_tittle_normal",
 			"web_activity_tittle_normal",
@@ -120,12 +121,15 @@ class ActivitiesScreen extends Screen
 		);
 		
 		_activities.setCollision(0, 45, 240, 40);
-		_back = new ButtonPopup(_canvas, 400, 150, "web_activity_button_back_over", "web_activity_button_back_over", "web_activity_button_back_over", 0, onBackClick);
+		_back = new ButtonPopup(_canvas, 400, 160, "web_activity_button_back_over", "web_activity_button_back_over", "web_activity_button_back_over", 0, onBackClick);
 		_back.setCollision(0, 35, 110, 40);
 		
 		_game = new MemoryGame(_canvas);
 		
 		_menuBar = new MenuBar(_canvas);
+		_menuBar.mainCanvas.scaleX = 1000 / 820;
+		_menuBar.mainCanvas.scaleY = 1000 / 820;
+		_menuBar.mainCanvas.x = -200;
 	}
 	
 	private function onBackClick() 
@@ -139,8 +143,8 @@ class ActivitiesScreen extends Screen
 		
 		_menuBar.destroy();
 		_game.destroy();
-		_back.end(0);
-		_activities.end(0);
+		_back.destroy();
+		_activities.destroy();
 		
 		Global.heightReference = 820;
 	}
