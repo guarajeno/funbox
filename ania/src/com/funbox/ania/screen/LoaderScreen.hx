@@ -77,7 +77,7 @@ class LoaderScreen extends Screen
 	
 	private function init() 
 	{
-		trace("init");
+		//trace("init");
 		_background = AssetsLoader.getAsset("web_common_background");
 		_canvas.addChild(_background);
 		
@@ -155,19 +155,19 @@ class LoaderScreen extends Screen
 	
 	public function addAsset(url:String, id:String) 
 	{
-		trace("add asset");
+		//trace("add asset");
 		AssetsLoader.addAsset(url, id);
 	}
 	
 	public function addData(url:String, id:String) 
 	{
-		trace("add data");
+		//trace("add data");
 		DataLoader.addData(url, id);
 	}
 	
 	public function load(__callback:Dynamic) 
 	{
-		trace("load");
+		//trace("load");
 		_isPaused = false;
 		_callback = __callback;
 		AssetsLoader.load(onAssetsLoaded);
@@ -186,7 +186,7 @@ class LoaderScreen extends Screen
 	
 	public function animate() 
 	{
-		trace("animate");
+		//trace("animate");
 		Actuate.tween(_loadingText, 0.8, { y: -400 } ).ease(Elastic.easeInOut);
 		Actuate.tween(_semicop.position, 0.8, { y: -300 } ).ease(Elastic.easeInOut);
 		Actuate.tween(_menuSupport, 0.5, { y: 0 } ).delay(0.5).ease(Elastic.easeInOut).onUpdate(onAnimating).onComplete(_callback);

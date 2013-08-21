@@ -199,7 +199,7 @@ class MyGardenScreen extends Screen
 			-350,
 			580,
 			"web_mygarden_buttonback_normal",
-			"web_mygarden_buttonback_normal",
+			"web_mygarden_buttonback_over",
 			"web_mygarden_buttonback_over",
 			1.1,
 			onPrev_Click
@@ -212,7 +212,7 @@ class MyGardenScreen extends Screen
 			300,
 			580,
 			"web_mygarden_buttonnext_normal",
-			"web_mygarden_buttonnext_normal",
+			"web_mygarden_buttonnext_over",
 			"web_mygarden_buttonnext_over",
 			1.1,
 			onNext_Click

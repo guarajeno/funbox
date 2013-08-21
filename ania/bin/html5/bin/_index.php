@@ -2,7 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<LINK href="style.css" rel="stylesheet" type="text/css">
 <title>amfPHP JSON Pizza Example</title>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/json2.js"></script>
@@ -14,7 +13,7 @@
 function registerUser($nickname , $password , $name , $lastname , $date_birthday)
 {
     var data = JSON.stringify({"serviceName":"UserService", "methodName":"registerUser","parameters":[$nickname, $password , $name , $lastname , $date_birthday]});
-    $.post("amfphp-2.1.1/Amfphp/?contentType=application/json", data, onSuccess)
+    $.post("amfphp-2.1.1/Amfphp/?contentType=application/json", data, onSuccessRegisterUser)
 	.fail(function() 
 		{
 			console.log("error" , "Error de comunication");

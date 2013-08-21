@@ -31,6 +31,8 @@ class Main extends Sprite
 		
 		js.Lib.eval("hideVideos();");
 		UserManager.sendScore(10);
+		UserManager.onLoginOk(null);
+		//UserManager.showUser('usuario hola');
 		
 		new Engine(stage, HomeScreen);
 	}

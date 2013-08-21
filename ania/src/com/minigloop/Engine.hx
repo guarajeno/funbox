@@ -62,8 +62,8 @@ class Engine
 		ScreenManager.gotoScreen(_gameClass);
 		
 		#if js
-		js.Lib.document.getElementsByTagName("body")[0].style.overflowX = "hidden";
-		js.Lib.document.getElementsByTagName("body")[0].style.overflowY = "hidden";
+		//js.Lib.document.getElementsByTagName("body")[0].style.overflowX = "hidden";
+		//js.Lib.document.getElementsByTagName("body")[0].style.overflowY = "hidden";
 		#end
 		
 		_stage.addEventListener(Event.ENTER_FRAME, loop);

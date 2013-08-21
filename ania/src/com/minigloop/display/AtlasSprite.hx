@@ -52,12 +52,12 @@ class AtlasSprite extends VisualObject
 			
 			_containerData.fillRect(new Rectangle(0, 0, _sourceWidth, _sourceHeight), 0x00000000);
 			_containerData.copyPixels(_sourceBitmap.bitmapData, new Rectangle(frame.frame.x, frame.frame.y, frame.frame.w, frame.frame.h), new Point(frame.spriteSourceSize.x, frame.spriteSourceSize.y));
-			trace("entro");
+			//trace("entro");
 		}
 		else
 		{
 			container = AssetsLoader.getAsset(imgId);
-			trace("container: " + imgId + " " + container);
+			//trace("container: " + imgId + " " + container);
 		}
 		
 		_canvas.addChild(container);

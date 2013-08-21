@@ -1132,6 +1132,7 @@ Main.prototype = $extend(browser.display.Sprite.prototype,{
 		this.inited = true;
 		eval("hideVideos();");
 		com.funbox.ania.UserManager.sendScore(10);
+		com.funbox.ania.UserManager.onLoginOk(null);
 		new com.minigloop.Engine(this.get_stage(),com.funbox.ania.screen.HomeScreen);
 	}
 	,resize: function(e) {
@@ -1186,7 +1187,7 @@ NMEPreloader.prototype = $extend(browser.display.Sprite.prototype,{
 		if(width > 0) return width; else return nme.Lib.get_current().get_stage().get_stageWidth();
 	}
 	,getHeight: function() {
-		var height = 820;
+		var height = 1500;
 		if(height > 0) return height; else return nme.Lib.get_current().get_stage().get_stageHeight();
 	}
 	,getBackgroundColor: function() {
@@ -4757,7 +4758,7 @@ browser.text.TextField.prototype = $extend(browser.display.InteractiveObject.pro
 		}
 	}
 	,__class__: browser.text.TextField
-	,__properties__: $extend(browser.display.InteractiveObject.prototype.__properties__,{set_autoSize:"set_autoSize",set_background:"set_background",set_backgroundColor:"set_backgroundColor",set_border:"set_border",set_borderColor:"set_borderColor",set_defaultTextFormat:"set_defaultTextFormat",get_defaultTextFormat:"get_defaultTextFormat",set_text:"set_text",get_text:"get_text",set_type:"set_type",get_type:"get_type",set_wordWrap:"set_wordWrap"})
+	,__properties__: $extend(browser.display.InteractiveObject.prototype.__properties__,{set_autoSize:"set_autoSize",set_background:"set_background",set_backgroundColor:"set_backgroundColor",set_border:"set_border",set_borderColor:"set_borderColor",set_defaultTextFormat:"set_defaultTextFormat",get_defaultTextFormat:"get_defaultTextFormat",set_text:"set_text",get_text:"get_text",get_textHeight:"get_textHeight",set_type:"set_type",get_type:"get_type",set_wordWrap:"set_wordWrap"})
 });
 browser.text.FontInstanceMode = $hxClasses["browser.text.FontInstanceMode"] = { __ename__ : true, __constructs__ : ["fimSolid"] }
 browser.text.FontInstanceMode.fimSolid = ["fimSolid",0];
@@ -4994,6 +4995,15 @@ com.funbox.ania.UserManager.__name__ = ["com","funbox","ania","UserManager"];
 com.funbox.ania.UserManager.sendScore = function(score) {
 	console.log("SCORE RECIEVED: " + score);
 }
+com.funbox.ania.UserManager.onLoginOk = function(data) {
+	if(data == null) {
+		console.log("ON LOGIN OK NULL");
+		return;
+	}
+	com.funbox.ania.Global.isUserLoged = true;
+	console.log("USER RECIEVED: " + Std.string(data));
+	if(com.minigloop.ui.ScreenManager.get_currentScreen() != null) (js.Boot.__cast(com.minigloop.ui.ScreenManager.get_currentScreen() , com.funbox.ania.screen.HomeScreen)).logged(data);
+}
 com.minigloop = {}
 com.minigloop.display = {}
 com.minigloop.display.VisualObject = function(canvas) {
@@ -5011,6 +5021,8 @@ com.minigloop.display.SpriteEntity = function(canvas) {
 	com.minigloop.display.VisualObject.call(this,canvas);
 	this.skin = new browser.display.MovieClip();
 	this._canvas.addChild(this.skin);
+	this._mask = new browser.display.Sprite();
+	this._canvas.addChild(this._mask);
 	this.collision = new browser.display.MovieClip();
 	this._canvas.addChild(this.collision);
 	this._animations = new Hash();
@@ -5023,12 +5035,17 @@ com.minigloop.display.SpriteEntity.prototype = $extend(com.minigloop.display.Vis
 		if(this.skin.nmeChildren.length > 0) this.skin.removeChildAt(0);
 		if(this._canvas.contains(this.skin)) this._canvas.removeChild(this.skin);
 		if(this._canvas.contains(this.collision)) this._canvas.removeChild(this.collision);
+		if(this._canvas.contains(this._mask)) this._canvas.removeChild(this._mask);
 	}
 	,update: function(dt) {
 		this.skin.set_x(this.position.x);
 		this.skin.set_y(this.position.y);
 		this.collision.set_x(this.position.x + this._collisionOffsetX);
 		this.collision.set_y(this.position.y + this._collisionOffsetY);
+		if(this._mask != null) {
+			this._mask.set_x(this.collision.get_x());
+			this._mask.set_y(this.collision.get_y());
+		}
 		if(this._animation != null) this._animation.update(dt);
 	}
 	,onEndAnimation: function() {
@@ -5087,7 +5104,7 @@ com.minigloop.display.Button.prototype = $extend(com.minigloop.display.SpriteEnt
 		this._canvas.removeEventListener(browser.events.MouseEvent.MOUSE_OVER,$bind(this,this._onMouseOver));
 	}
 	,_onMouseOut: function(e) {
-		if(this.onMouseOut != null) this.onMouseOut();
+		this.skin.set_filters(this.onMouseOut != null?this.onMouseOut():null);
 		this.setState("up");
 	}
 	,_onMouseUp: function(e) {
@@ -5485,30 +5502,20 @@ com.minigloop.ui.Screen.prototype = {
 	,__class__: com.minigloop.ui.Screen
 }
 com.funbox.ania.popup = {}
-com.funbox.ania.popup.LoginPopup = function(canvas) {
-	com.minigloop.ui.Screen.call(this,canvas);
-	this._background = com.minigloop.util.AssetsLoader.getAsset("web_home_login_support");
-	this._background.set_x(100);
-	this._background.set_y(100);
-	this._canvas.addChild(this._background);
-	this._login = new com.minigloop.display.Button(canvas,"web_home_register_register_normal","web_home_register_register_normal","web_home_register_register_normal",$bind(this,this.onLogin_Click));
-	this._login.setCollision(0,0,195,65);
-	this._login.position.x = 1150;
-	this._login.position.y = 0;
-};
+com.funbox.ania.popup.LoginPopup = function() { }
 $hxClasses["com.funbox.ania.popup.LoginPopup"] = com.funbox.ania.popup.LoginPopup;
 com.funbox.ania.popup.LoginPopup.__name__ = ["com","funbox","ania","popup","LoginPopup"];
 com.funbox.ania.popup.LoginPopup.__super__ = com.minigloop.ui.Screen;
 com.funbox.ania.popup.LoginPopup.prototype = $extend(com.minigloop.ui.Screen.prototype,{
 	destroy: function() {
 		this._canvas.removeChild(this._background);
+		this._canvas.removeChild(this._user);
+		this._close.destroy();
+		this._register.destroy();
 		this._login.destroy();
 	}
 	,update: function(dt) {
 		this._login.update(dt);
-	}
-	,onLogin_Click: function() {
-		com.minigloop.ui.ScreenManager.closePopup();
 	}
 	,__class__: com.funbox.ania.popup.LoginPopup
 });
@@ -5632,7 +5639,7 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._hotspotPreview.update(dt);
 		this._hotspotTdata.update(dt);
 		this._tdataLocker++;
-		if(this._tdataLocker <= 100) this._data.update(dt);
+		if(this._tdataLocker <= 200) this._data.update(dt);
 		if(this._isTdataAnimating) this._data.update(dt);
 		this._tMeshi += 0.008;
 		if(this._tMeshi >= 1) {
@@ -5700,6 +5707,7 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		motion.Actuate.tween(this._nextPreview,1.3,{ alpha : 1}).delay(2).onComplete($bind(this,this.showPreview));
 	}
 	,onTdata_Click: function() {
+		eval("showLoginPopup()");
 	}
 	,init: function() {
 		var _g = this;
@@ -5740,17 +5748,15 @@ com.funbox.ania.screen.Episode01Screen.prototype = $extend(com.minigloop.ui.Scre
 		this._data = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_tadata","web_common_animations_tadata");
 		this._data.position.x = 1300;
 		this._data.position.y = 1000;
-		motion.Actuate.tween(this._data.position,0.8,{ y : 570}).delay(2.5);
 		this._hotspotTdata = new com.funbox.ania.component.ButtonPopup(this._canvas,360,600,"transparent","transparent","transparent",2.5,$bind(this,this.onTdata_Click));
-		this._hotspotTdata.setCollision(0,0,100,210);
+		this._hotspotTdata.setCollision(0,0,150,230);
 		this._hotspotTdata.onMouseOver = function() {
-			console.log("over");
 			_g._isTdataAnimating = true;
 		};
 		this._hotspotTdata.onMouseOut = function() {
-			console.log("out");
 			_g._isTdataAnimating = false;
 		};
+		motion.Actuate.tween(this._data.position,0.8,{ y : 570}).delay(2.5);
 		this._menuBar = new com.funbox.ania.component.MenuBar(this._canvas);
 		this._isPaused = false;
 	}
@@ -5827,6 +5833,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 	update: function(dt) {
 		this._loaderScreen.update(dt);
 		if(this._isPaused) return;
+		this._user.update(dt);
 		this._menuBar.update(dt);
 		this._semicoptero.update(dt);
 		this._meshiFace.update(dt);
@@ -5859,13 +5866,13 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._tree_2.end(0.5);
 		this._canvas.removeChild(this._news);
 		this._canvas.removeChild(this._meshi);
-		this._canvas.removeChild(this._user);
 		this._canvas.removeChild(this._name);
 		this._semicoptero.destroy();
 		this._meshiFace.destroy();
 		this._meshiHotspot.destroy();
 		this._data.destroy();
 		this._video.destroy();
+		this._user.destroy();
 		this._house.destroy();
 		this._doit.destroy();
 		var i;
@@ -5897,10 +5904,24 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		motion.Actuate.tween(this._currentPreview,1.3,{ alpha : 0}).delay(2);
 		motion.Actuate.tween(this._nextPreview,1.3,{ alpha : 1}).delay(2).onComplete($bind(this,this.showPreview));
 	}
+	,logged: function(data) {
+		com.funbox.ania.Global.isUserLoged = true;
+		com.funbox.ania.Global.userId = data.id;
+		com.funbox.ania.Global.userName = data.name;
+		com.funbox.ania.Global.userLastname = data.lastname;
+		com.funbox.ania.Global.userScore = data.score;
+		this._hotspotTdata.position.y = -1000;
+		console.log("moviendo hotspot");
+		this._user.setState("loged");
+		this._name.set_visible(true);
+		this._name.set_text(data.name);
+		this._name.alpha = 0;
+		motion.Actuate.tween(this._name,0.3,{ alpha : 1}).ease(motion.easing.Linear.get_easeNone());
+	}
 	,onMeshiClick: function() {
 	}
 	,onTdata_Click: function() {
-		com.minigloop.ui.ScreenManager.showPopup(com.funbox.ania.popup.LoginPopup);
+		eval("showLoginPopup()");
 	}
 	,init: function() {
 		var _g = this;
@@ -5952,18 +5973,22 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._hotspotPreview.setCollision(0,0,380,220);
 		this._currentPreviewIndex = 0;
 		motion.Actuate.timer(4).onComplete($bind(this,this.showPreview));
-		this._user = com.minigloop.util.AssetsLoader.getAsset("web_home_tadata_user");
-		this._user.set_x(1120);
-		this._user.set_y(1200);
-		this._canvas.addChild(this._user);
+		this._user = new com.minigloop.display.SpriteEntity(this._canvas);
+		this._user.addState("loged","web_home_tadata_user",null);
+		this._user.addState("nologed","web_home_tadata_enter",null);
+		this._user.setState("loged");
+		this._user.setState("nologed");
+		this._user.position.x = 1150;
+		this._user.position.y = com.funbox.ania.Global.stage.get_stageHeight();
 		this._name = new browser.text.TextField();
 		this._name.set_defaultTextFormat(new browser.text.TextFormat("Arial",13,0,true,false,false,null,null,browser.text.TextFormatAlign.LEFT));
 		this._name.set_text(com.funbox.ania.Global.userName + " " + com.funbox.ania.Global.userLastname);
-		this._name.set_x(1210);
-		this._name.set_y(1220);
+		this._name.set_x(1233);
+		this._name.set_y(1200);
+		this._name.set_visible(false);
 		this._canvas.addChild(this._name);
-		motion.Actuate.tween(this._user,0.8,{ y : 670}).ease(motion.easing.Elastic.get_easeInOut()).delay(2.5);
-		motion.Actuate.tween(this._name,0.8,{ y : 705}).ease(motion.easing.Elastic.get_easeInOut()).delay(2.5);
+		motion.Actuate.tween(this._user.position,0.8,{ y : 660}).ease(motion.easing.Elastic.get_easeInOut()).delay(2.5);
+		motion.Actuate.tween(this._name,0.8,{ y : 695}).ease(motion.easing.Elastic.get_easeInOut()).delay(2.5);
 		this._data = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_tadata","web_common_animations_tadata");
 		this._data.position.x = 1300;
 		this._data.position.y = 1000;
@@ -5979,7 +6004,7 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._semicoptero = new com.minigloop.display.AtlasSprite(this._canvas,"web_common_animations_loader","web_common_animations_loader");
 		this._semicoptero.position.x = 0;
 		this._semicoptero.position.y = 150;
-		motion.Actuate.tween(this._semicoptero.position,1,{ x : 180}).ease(motion.easing.Linear.get_easeNone()).delay(0);
+		motion.Actuate.tween(this._semicoptero.position,1,{ x : 410}).ease(motion.easing.Linear.get_easeNone()).delay(0);
 		this._news = com.minigloop.util.AssetsLoader.getAsset("web_home_news_support");
 		this._news.set_x(1700);
 		this._news.set_y(180);
@@ -6029,6 +6054,9 @@ com.funbox.ania.screen.HomeScreen.prototype = $extend(com.minigloop.ui.Screen.pr
 		this._loaderScreen.addAsset("img/home/web_home_login_support.png","web_home_login_support");
 		this._loaderScreen.addAsset("img/home/web_home_register_register_normal.png","web_home_register_register_normal");
 		this._loaderScreen.addAsset("img/home/web_home_register_register_over.png","web_home_register_register_over");
+		this._loaderScreen.addAsset("img/home/web_home_login_close02_normal.png","web_home_login_close02_normal");
+		this._loaderScreen.addAsset("img/home/web_home_register_support.png","web_home_register_support");
+		this._loaderScreen.addAsset("img/home/web_home_register_register_normal.png","web_home_register_register_normal");
 		this._loaderScreen.addAsset("img/common/animations/web_common_animations_loader.png","web_common_animations_loader");
 		this._loaderScreen.addAsset("img/common/animations/web_common_animations_tadata.png","web_common_animations_tadata");
 		this._loaderScreen.addAsset("img/episode01/animations/web_epidose01_meshi_face.png","web_epidose01_meshi_face");
@@ -6068,7 +6096,6 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		this._menuSupport.set_x(com.funbox.ania.Global.stage.get_stageWidth() / 2 - this._menuSupport.get_width() / 2);
 	}
 	,animate: function() {
-		console.log("animate");
 		motion.Actuate.tween(this._loadingText,0.8,{ y : -400}).ease(motion.easing.Elastic.get_easeInOut());
 		motion.Actuate.tween(this._semicop.position,0.8,{ y : -300}).ease(motion.easing.Elastic.get_easeInOut());
 		motion.Actuate.tween(this._menuSupport,0.5,{ y : 0}).delay(0.5).ease(motion.easing.Elastic.get_easeInOut()).onUpdate($bind(this,this.onAnimating)).onComplete(this._callback);
@@ -6080,18 +6107,15 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		this._isDataLoaded = true;
 	}
 	,load: function(__callback) {
-		console.log("load");
 		this._isPaused = false;
 		this._callback = __callback;
 		com.minigloop.util.AssetsLoader.load($bind(this,this.onAssetsLoaded));
 		com.minigloop.util.DataLoader.load($bind(this,this.onLoadedLoaded));
 	}
 	,addData: function(url,id) {
-		console.log("add data");
 		com.minigloop.util.DataLoader.addData(url,id);
 	}
 	,addAsset: function(url,id) {
-		console.log("add asset");
 		com.minigloop.util.AssetsLoader.addAsset(url,id);
 	}
 	,destroy: function() {
@@ -6120,7 +6144,6 @@ com.funbox.ania.screen.LoaderScreen.prototype = $extend(com.minigloop.ui.Screen.
 		}
 	}
 	,init: function() {
-		console.log("init");
 		this._background = com.minigloop.util.AssetsLoader.getAsset("web_common_background");
 		this._canvas.addChild(this._background);
 		this._menuSupport = com.minigloop.util.AssetsLoader.getAsset("web_common_button_suport");
@@ -6231,9 +6254,9 @@ com.funbox.ania.screen.MyGardenScreen.prototype = $extend(com.minigloop.ui.Scree
 		this._tree_3 = new com.funbox.ania.component.ImagePopup(this._elementsCanvas,"web_mygarden_tree_03",-50,290,0.7);
 		this._house = new com.funbox.ania.component.ImagePopup(this._elementsCanvas,"web_mygarden_house",-700,570,0.9);
 		this._floor = new com.funbox.ania.component.ImagePopup(this._elementsCanvas,"web_mygarden_floor01",0,670,0);
-		this._prev = new com.funbox.ania.component.ButtonPopup(this._buttonsCanvas,-350,580,"web_mygarden_buttonback_normal","web_mygarden_buttonback_normal","web_mygarden_buttonback_over",1.1,$bind(this,this.onPrev_Click));
+		this._prev = new com.funbox.ania.component.ButtonPopup(this._buttonsCanvas,-350,580,"web_mygarden_buttonback_normal","web_mygarden_buttonback_over","web_mygarden_buttonback_over",1.1,$bind(this,this.onPrev_Click));
 		this._prev.setCollision(110,20,120,100);
-		this._next = new com.funbox.ania.component.ButtonPopup(this._buttonsCanvas,300,580,"web_mygarden_buttonnext_normal","web_mygarden_buttonnext_normal","web_mygarden_buttonnext_over",1.1,$bind(this,this.onNext_Click));
+		this._next = new com.funbox.ania.component.ButtonPopup(this._buttonsCanvas,300,580,"web_mygarden_buttonnext_normal","web_mygarden_buttonnext_over","web_mygarden_buttonnext_over",1.1,$bind(this,this.onNext_Click));
 		this._next.setCollision(20,20,120,100);
 		this._buttons = [];
 		var button;
@@ -6385,8 +6408,6 @@ com.minigloop.Engine.prototype = {
 		com.minigloop.input.Mouse.init(this._stage);
 		com.minigloop.ui.ScreenManager.init(this._bufferCanvas);
 		com.minigloop.ui.ScreenManager.gotoScreen(this._gameClass);
-		js.Lib.document.getElementsByTagName("body")[0].style.overflowX = "hidden";
-		js.Lib.document.getElementsByTagName("body")[0].style.overflowY = "hidden";
 		this._stage.addEventListener(browser.events.Event.ENTER_FRAME,$bind(this,this.loop));
 		this._stage.addEventListener(browser.events.Event.RESIZE,$bind(this,this.resize));
 	}
@@ -6409,11 +6430,7 @@ com.minigloop.display.AtlasSprite = function(canvas,imgId,atlasId,align,onEndAni
 		var frame = this._atlas.frames[0];
 		this._containerData.fillRect(new browser.geom.Rectangle(0,0,this._sourceWidth,this._sourceHeight),0);
 		this._containerData.copyPixels(this._sourceBitmap.bitmapData,new browser.geom.Rectangle(frame.frame.x,frame.frame.y,frame.frame.w,frame.frame.h),new browser.geom.Point(frame.spriteSourceSize.x,frame.spriteSourceSize.y));
-		console.log("entro");
-	} else {
-		this.container = com.minigloop.util.AssetsLoader.getAsset(imgId);
-		console.log("container: " + imgId + " " + Std.string(this.container));
-	}
+	} else this.container = com.minigloop.util.AssetsLoader.getAsset(imgId);
 	this._canvas.addChild(this.container);
 	this.container.set_x(this.position.x + this._offsetX);
 	this.container.set_y(this.position.y + this._offsetY);
@@ -6469,6 +6486,7 @@ com.minigloop.ui.ScreenManager = function() {
 };
 $hxClasses["com.minigloop.ui.ScreenManager"] = com.minigloop.ui.ScreenManager;
 com.minigloop.ui.ScreenManager.__name__ = ["com","minigloop","ui","ScreenManager"];
+com.minigloop.ui.ScreenManager.__properties__ = {get_currentScreen:"get_currentScreen"}
 com.minigloop.ui.ScreenManager.init = function(canvas) {
 	com.minigloop.ui.ScreenManager._canvas = canvas;
 	com.minigloop.ui.ScreenManager._currentScreen = null;
@@ -6476,24 +6494,19 @@ com.minigloop.ui.ScreenManager.init = function(canvas) {
 com.minigloop.ui.ScreenManager.gotoScreen = function(screenClass) {
 	if(com.minigloop.ui.ScreenManager._currentScreen != null) com.minigloop.ui.ScreenManager._currentScreen.end();
 	com.minigloop.ui.ScreenManager._screenClass = screenClass;
+	eval("hideLoginPopup();");
+	eval("hideRegisterPopup();");
 	com.minigloop.ui.ScreenManager.createScreen();
 }
 com.minigloop.ui.ScreenManager.createScreen = function() {
 	if(com.minigloop.ui.ScreenManager._currentScreen != null) com.minigloop.ui.ScreenManager._currentScreen.destroy();
 	com.minigloop.ui.ScreenManager._currentScreen = Type.createInstance(com.minigloop.ui.ScreenManager._screenClass,[com.minigloop.ui.ScreenManager._canvas]);
 }
-com.minigloop.ui.ScreenManager.showPopup = function(popupClass) {
-	com.minigloop.ui.ScreenManager.closePopup();
-	com.minigloop.ui.ScreenManager._currentPopup = Type.createInstance(popupClass,[com.minigloop.ui.ScreenManager._canvas]);
-}
-com.minigloop.ui.ScreenManager.closePopup = function() {
-	if(com.minigloop.ui.ScreenManager._currentPopup != null) {
-		com.minigloop.ui.ScreenManager._currentPopup.destroy();
-		com.minigloop.ui.ScreenManager._currentPopup = null;
-	}
-}
 com.minigloop.ui.ScreenManager.update = function(dt) {
 	if(com.minigloop.ui.ScreenManager._currentScreen != null) com.minigloop.ui.ScreenManager._currentScreen.update(dt);
+}
+com.minigloop.ui.ScreenManager.get_currentScreen = function() {
+	return com.minigloop.ui.ScreenManager._currentScreen;
 }
 com.minigloop.ui.ScreenManager.prototype = {
 	__class__: com.minigloop.ui.ScreenManager
@@ -7221,6 +7234,219 @@ js.Boot.__cast = function(o,t) {
 js.Lib = function() { }
 $hxClasses["js.Lib"] = js.Lib;
 js.Lib.__name__ = ["js","Lib"];
+var minimalcomps = {}
+minimalcomps.Component = function(parent,xpos,ypos) {
+	if(ypos == null) ypos = 0;
+	if(xpos == null) xpos = 0;
+	this._comp = new browser.display.Sprite();
+	this._width = 0;
+	this._height = 0;
+	this.move(xpos,ypos);
+	if(parent != null) parent.addChild(this._comp);
+	this.parent = parent;
+	this.init();
+};
+$hxClasses["minimalcomps.Component"] = minimalcomps.Component;
+minimalcomps.Component.__name__ = ["minimalcomps","Component"];
+minimalcomps.Component.__interfaces__ = [browser.events.IEventDispatcher];
+minimalcomps.Component.prototype = {
+	getGraphics: function() {
+		return this._comp.get_graphics();
+	}
+	,setVisible: function(visible) {
+		return this._comp.set_visible(visible);
+	}
+	,getVisible: function() {
+		return this._comp.get_visible();
+	}
+	,getNumChildren: function() {
+		return this._comp.nmeChildren.length;
+	}
+	,getStage: function() {
+		return this._comp.get_stage();
+	}
+	,getFilters: function() {
+		return this._comp.get_filters();
+	}
+	,setUseHandCursor: function(b) {
+		return this._comp.set_useHandCursor(b);
+	}
+	,getUseHandCursor: function() {
+		return this._comp.useHandCursor;
+	}
+	,setButtonMode: function(b) {
+		return this._comp.buttonMode = b;
+	}
+	,getButtonMode: function() {
+		return this._comp.buttonMode;
+	}
+	,getMouseChildren: function() {
+		return this._comp.mouseChildren;
+	}
+	,getMouseEnabled: function() {
+		return this._comp.mouseEnabled;
+	}
+	,getMouseY: function() {
+		return this._comp.get_mouseY();
+	}
+	,getMouseX: function() {
+		return this._comp.get_mouseX();
+	}
+	,setY: function(value) {
+		return this.y = this._comp.set_y(Math.round(value));
+	}
+	,setX: function(value) {
+		return this.x = this._comp.set_x(Math.round(value));
+	}
+	,getHeight: function() {
+		return this._height;
+	}
+	,setHeight: function(h) {
+		this._height = h;
+		this.invalidate();
+		this.dispatchEvent(new browser.events.Event(browser.events.Event.RESIZE));
+		return h;
+	}
+	,getWidth: function() {
+		return this._width;
+	}
+	,setWidth: function(w) {
+		this._width = w;
+		this.invalidate();
+		this.dispatchEvent(new browser.events.Event(browser.events.Event.RESIZE));
+		return w;
+	}
+	,onInvalidate: function(event) {
+		this.removeEventListener(browser.events.Event.ENTER_FRAME,$bind(this,this.onInvalidate));
+		this.draw();
+	}
+	,draw: function() {
+		this.dispatchEvent(new browser.events.Event(minimalcomps.Component.DRAW));
+	}
+	,setSize: function(w,h) {
+		this._width = w;
+		this._height = h;
+		this.invalidate();
+	}
+	,move: function(xpos,ypos) {
+		this.setX(Math.round(xpos));
+		this.setY(Math.round(ypos));
+	}
+	,invalidate: function() {
+		this.addEventListener(browser.events.Event.ENTER_FRAME,$bind(this,this.onInvalidate));
+	}
+	,getShadow: function(dist,knockout) {
+		if(knockout == null) knockout = false;
+		return new browser.filters.DropShadowFilter(dist,45,0,1,dist,dist,.3,1,knockout);
+	}
+	,willTrigger: function(type) {
+		return this._comp.willTrigger(type);
+	}
+	,removeEventListener: function(type,listener,useCapture) {
+		if(useCapture == null) useCapture = false;
+		this._comp.removeEventListener(type,listener,useCapture);
+	}
+	,hasEventListener: function(type) {
+		return this._comp.hasEventListener(type);
+	}
+	,dispatchEvent: function(event) {
+		return this._comp.dispatchEvent(event);
+	}
+	,addEventListener: function(type,listener,useCapture,priority,useWeakReference) {
+		if(useWeakReference == null) useWeakReference = false;
+		if(priority == null) priority = 0;
+		if(useCapture == null) useCapture = false;
+		this._comp.addEventListener(type,listener,useCapture,priority,useWeakReference);
+	}
+	,addChild: function(child) {
+		if(js.Boot.__instanceof(child,minimalcomps.Component)) child = child._comp;
+		return this._comp.addChild(child);
+	}
+	,addChildren: function() {
+	}
+	,init: function() {
+		this.addChildren();
+		this.invalidate();
+	}
+	,__class__: minimalcomps.Component
+	,__properties__: {set_x:"setX",set_y:"setY"}
+}
+minimalcomps.InputText = function() { }
+$hxClasses["minimalcomps.InputText"] = minimalcomps.InputText;
+minimalcomps.InputText.__name__ = ["minimalcomps","InputText"];
+minimalcomps.InputText.__super__ = minimalcomps.Component;
+minimalcomps.InputText.prototype = $extend(minimalcomps.Component.prototype,{
+	getPassword: function() {
+		return this._password;
+	}
+	,setPassword: function(b) {
+		this._password = b;
+		this.invalidate();
+		return b;
+	}
+	,getMaxChars: function() {
+		return this._tf.maxChars;
+	}
+	,setMaxChars: function(max) {
+		this._tf.maxChars = max;
+		return max;
+	}
+	,getRestrict: function() {
+		return this._tf.restrict;
+	}
+	,setRestrict: function(str) {
+		this._tf.restrict = str;
+		return str;
+	}
+	,getText: function() {
+		return this._text;
+	}
+	,setText: function(t) {
+		this._text = t;
+		this.invalidate();
+		return t;
+	}
+	,onChange: function(event) {
+		this._text = this._tf.get_text();
+	}
+	,draw: function() {
+		minimalcomps.Component.prototype.draw.call(this);
+		this._back.get_graphics().clear();
+		this._back.get_graphics().beginFill(13421772);
+		this._back.get_graphics().drawRect(0,0,this._width,this._height);
+		this._back.get_graphics().endFill();
+		this._tf.displayAsPassword = this._password;
+		this._tf.set_text(this._text);
+		this._tf.set_width(this._width - 4);
+		if(this._tf.get_text() == "") {
+			this._tf.set_text("X");
+			this._tf.set_height(Math.min(this._tf.get_textHeight() + 4,this._height));
+			this._tf.set_text("");
+		} else this._tf.set_height(Math.min(this._tf.get_textHeight() + 4,this._height));
+		this._tf.set_x(2);
+		this._tf.set_y(Math.round(this._height / 2 - this._tf.get_height() / 2));
+	}
+	,addChildren: function() {
+		this._back = new browser.display.Sprite();
+		this._back.set_filters([this.getShadow(2,true)]);
+		this.addChild(this._back);
+		this._tf = new browser.text.TextField();
+		this._tf.embedFonts = true;
+		this._tf.selectable = true;
+		this._tf.set_type(browser.text.TextFieldType.INPUT);
+		this._tf.set_defaultTextFormat(new browser.text.TextFormat("PFRondaSeven",8,3355443));
+		this.addChild(this._tf);
+		this._tf.addEventListener(browser.events.Event.CHANGE,$bind(this,this.onChange));
+	}
+	,init: function() {
+		minimalcomps.Component.prototype.init.call(this);
+		this.setSize(100,16);
+	}
+	,__class__: minimalcomps.InputText
+});
+minimalcomps.Style = function() { }
+$hxClasses["minimalcomps.Style"] = minimalcomps.Style;
+minimalcomps.Style.__name__ = ["minimalcomps","Style"];
 var motion = {}
 motion.actuators = {}
 motion.actuators.IGenericActuator = function() { }
@@ -8389,6 +8615,7 @@ browser.Lib.starttime = haxe.Timer.stamp();
 browser.events.Event.ACTIVATE = "activate";
 browser.events.Event.ADDED = "added";
 browser.events.Event.ADDED_TO_STAGE = "addedToStage";
+browser.events.Event.CHANGE = "change";
 browser.events.Event.COMPLETE = "complete";
 browser.events.Event.ENTER_FRAME = "enterFrame";
 browser.events.Event.OPEN = "open";
@@ -8431,12 +8658,15 @@ browser.text.TextFieldType.DYNAMIC = "DYNAMIC";
 browser.text.TextFieldType.INPUT = "INPUT";
 com.funbox.ania.Global.widthReference = 1650.0;
 com.funbox.ania.Global.heightReference = 820.0;
-com.funbox.ania.Global.userName = "Usuario";
-com.funbox.ania.Global.userLastname = "Prueba";
-com.funbox.ania.Global.userId = 1;
+com.funbox.ania.Global.isUserLoged = false;
+com.funbox.ania.Global.userName = "";
+com.funbox.ania.Global.userLastname = "";
+com.funbox.ania.Global.userId = 3;
 com.funbox.ania.Global.gameId = 1;
+com.funbox.ania.Global.userScore = 0;
 haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
+minimalcomps.Component.DRAW = "draw";
 motion.actuators.SimpleActuator.actuators = new Array();
 motion.actuators.SimpleActuator.actuatorsLength = 0;
 motion.actuators.SimpleActuator.addedEvent = false;

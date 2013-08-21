@@ -213,7 +213,7 @@ class Episode01Screen extends Screen
 		_data.position.x = 1300;
 		_data.position.y = 1000;
 		
-		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2.5);
+		//Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2.5);
 		
 		_hotspotTdata = new ButtonPopup(
 			_canvas,
@@ -226,19 +226,19 @@ class Episode01Screen extends Screen
 			onTdata_Click
 		);
 		
-		_hotspotTdata.setCollision(0, 0, 100, 210);
+		_hotspotTdata.setCollision(0, 0, 150, 230);
 		
 		_hotspotTdata.onMouseOver = function() 
 		{
-			trace("over");
 			_isTdataAnimating = true;
 		};
 		
 		_hotspotTdata.onMouseOut = function() 
 		{
-			trace("out");
 			_isTdataAnimating = false;
 		};
+		
+		Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2.5);
 		
 		_menuBar = new MenuBar(_canvas);
 		
@@ -247,7 +247,7 @@ class Episode01Screen extends Screen
 	
 	private function onTdata_Click() 
 	{
-		
+		Lib.eval("showLoginPopup()");
 	}
 	
 	private function showPreview() 
@@ -350,7 +350,7 @@ class Episode01Screen extends Screen
 		//trace("entro a update");
 		_tdataLocker++;
 		
-		if (_tdataLocker <= 100)
+		if (_tdataLocker <= 200)
 		{
 			//trace("update");
 			_data.update(dt);

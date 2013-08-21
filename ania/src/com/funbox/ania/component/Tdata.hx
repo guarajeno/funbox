@@ -8,7 +8,7 @@ import com.minigloop.display.VisualObject;
 
 class Tdata extends VisualObject
 {
-
+	
 	public function new() 
 	{
 		

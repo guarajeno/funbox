@@ -23,7 +23,6 @@ class Button extends SpriteEntity
 	
 	private var _callback:Dynamic;
 	private var _button:Button;
-	//private var _over:Bool;
 	
 	public var onMouseOver:Dynamic;
 	public var onMouseOut:Dynamic;
@@ -46,6 +45,7 @@ class Button extends SpriteEntity
 		collision.addEventListener(MouseEvent.MOUSE_UP, _onMouseUp);
 		collision.addEventListener(MouseEvent.MOUSE_OUT, _onMouseOut);
 		collision.addEventListener(MouseEvent.MOUSE_OVER, _onMouseOver);
+		
 		
 		collision.useHandCursor = true;
 	}
@@ -89,6 +89,8 @@ class Button extends SpriteEntity
 			//skin.scaleX = 0.9;
 			//skin.scaleY = 0.9;
 		//}
+		
+		this.skin.filters = 
 		if (onMouseOut != null)
 		{
 			onMouseOut();

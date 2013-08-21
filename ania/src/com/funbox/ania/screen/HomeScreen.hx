@@ -15,10 +15,12 @@ import com.funbox.ania.popup.VideoPopup;
 import com.funbox.ania.screen.LoaderScreen;
 import com.minigloop.display.AtlasSprite;
 import com.minigloop.display.Button;
+import com.minigloop.display.SpriteEntity;
 import com.minigloop.ui.Screen;
 import com.minigloop.ui.ScreenManager;
 import com.minigloop.util.AssetsLoader;
 import com.minigloop.util.DataLoader;
+import js.Lib;
 import nme.display.Bitmap;
 import nme.display.Sprite;
 import nme.text.TextField;
@@ -54,8 +56,8 @@ class HomeScreen extends Screen
 	private var _video:ButtonPopup;
 	
 	private var _data:AtlasSprite;
-	private var _enter:ButtonPopup;
-	private var _user:Bitmap;
+	//private var _enter:ButtonPopup;
+	private var _user:SpriteEntity;
 	private var _name:TextField;
 	
 	private var _cloud:Bitmap;
@@ -132,6 +134,9 @@ class HomeScreen extends Screen
 		_loaderScreen.addAsset("img/home/web_home_login_support.png", "web_home_login_support");
 		_loaderScreen.addAsset("img/home/web_home_register_register_normal.png", "web_home_register_register_normal");
 		_loaderScreen.addAsset("img/home/web_home_register_register_over.png", "web_home_register_register_over");
+		_loaderScreen.addAsset("img/home/web_home_login_close02_normal.png", "web_home_login_close02_normal");
+		_loaderScreen.addAsset("img/home/web_home_register_support.png", "web_home_register_support");
+		_loaderScreen.addAsset("img/home/web_home_register_register_normal.png", "web_home_register_register_normal");
 		
 		_loaderScreen.addAsset("img/common/animations/web_common_animations_loader.png", "web_common_animations_loader");
 		_loaderScreen.addAsset("img/common/animations/web_common_animations_tadata.png", "web_common_animations_tadata");
@@ -260,31 +265,25 @@ class HomeScreen extends Screen
 		
 		Actuate.timer(4).onComplete(showPreview);
 		
-		//_enter = new ButtonPopup(
-			//_canvas,
-			//240,
-			//690,
-			//"web_home_tadata_enter",
-			//"web_home_tadata_enter",
-			//"web_home_tadata_enter",
-			//2.5,
-			//onEnter_Click
-		//);
+		_user = new SpriteEntity(_canvas);
+		_user.addState("loged", "web_home_tadata_user", null);// , AssetsLoader.getAsset("web_home_tadata_user");
+		_user.addState("nologed", "web_home_tadata_enter", null);
+		_user.setState("loged");
+		_user.setState("nologed");
 		
-		_user = AssetsLoader.getAsset("web_home_tadata_user");
-		_user.x = 1120;
-		_user.y = 1200;
-		_canvas.addChild(_user);
+		_user.position.x = 1150;
+		_user.position.y = Global.stage.stageHeight;
 		
 		_name = new TextField();
 		_name.defaultTextFormat = new TextFormat("Arial", 13, 0x000000, true, false, false, null, null, TextFormatAlign.LEFT);
 		_name.text = Global.userName + " " + Global.userLastname;
-		_name.x = 1210;
-		_name.y = 1220;
+		_name.x = 1233;
+		_name.y = 1200;
+		_name.visible = false;
 		_canvas.addChild(_name);
 		
-		Actuate.tween(_user, 0.8, { y: 670 } ).ease(Elastic.easeInOut).delay(2.5);
-		Actuate.tween(_name, 0.8, { y: 705 } ).ease(Elastic.easeInOut).delay(2.5);
+		Actuate.tween(_user.position, 0.8, { y: 660 } ).ease(Elastic.easeInOut).delay(2.5);
+		Actuate.tween(_name, 0.8, { y: 695 } ).ease(Elastic.easeInOut).delay(2.5);
 		
 		_data = new AtlasSprite(
 			_canvas,
@@ -294,8 +293,6 @@ class HomeScreen extends Screen
 		
 		_data.position.x = 1300;
 		_data.position.y = 1000;
-		
-		//Actuate.tween(_data.position, 0.8, { y: 570 } ).delay(2);
 		
 		_hotspotTdata = new ButtonPopup(
 			_canvas,
@@ -331,7 +328,7 @@ class HomeScreen extends Screen
 		_semicoptero.position.x = 0;
 		_semicoptero.position.y = 150;
 		
-		Actuate.tween(_semicoptero.position, 1, { x: 180 } ).ease(Linear.easeNone).delay(0);
+		Actuate.tween(_semicoptero.position, 1, { x: 410 } ).ease(Linear.easeNone).delay(0);
 		
 		_news = AssetsLoader.getAsset("web_home_news_support");
 		_news.x = 1700;
@@ -345,12 +342,41 @@ class HomeScreen extends Screen
 	
 	private function onTdata_Click() 
 	{
-		ScreenManager.showPopup(LoginPopup);
+		Lib.eval("showLoginPopup()");
+		//ScreenManager.showPopup(LoginPopup);
 	}
 	
 	private function onMeshiClick() 
 	{
 		
+	}
+	
+	//public function login():Void
+	//{
+		//Lib.eval("getUser('funbox' , '123');");
+		//Global.isUserLoged = true;
+		//_user.setState("loged");
+		//_name.visible = true;
+	//}
+	
+	public function logged(data):Void
+	{
+		Global.isUserLoged = true;
+		Global.userId = data.id;
+		Global.userName = data.name;
+		Global.userLastname = data.lastname;
+		Global.userScore = data.score;
+		//Global. = data.date_birthday;
+		
+		_hotspotTdata.position.y = -1000;
+		trace("moviendo hotspot");
+		
+		_user.setState("loged");
+		_name.visible = true;
+		_name.text = data.name;
+		_name.alpha = 0;
+		
+		Actuate.tween(_name, 0.3, { alpha: 1 } ).ease(Linear.easeNone);
 	}
 	
 	private function showPreview() 
@@ -424,15 +450,15 @@ class HomeScreen extends Screen
 		
 		_canvas.removeChild(_news);
 		_canvas.removeChild(_meshi);
-		_canvas.removeChild(_user);
 		_canvas.removeChild(_name);
+		//_canvas.removeChild(_user);
 		
 		_semicoptero.destroy();
 		_meshiFace.destroy();
 		_meshiHotspot.destroy();
 		_data.destroy();
 		_video.destroy();
-		//_enter.destroy();
+		_user.destroy();
 		_house.destroy();
 		_doit.destroy();
 		
@@ -463,6 +489,7 @@ class HomeScreen extends Screen
 		if (_isPaused) return;
 		
 		//_enter.update(dt);
+		_user.update(dt);
 		_menuBar.update(dt);
 		_semicoptero.update(dt);
 		_meshiFace.update(dt);

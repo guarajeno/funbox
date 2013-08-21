@@ -1,5 +1,6 @@
 package com.minigloop.ui;
 import com.eclecticdesignstudio.motion.Actuate;
+import js.Lib;
 import nme.display.Sprite;
 
 /**
@@ -33,6 +34,8 @@ class ScreenManager
 		
 		_screenClass = screenClass;
 		
+		Lib.eval("hideLoginPopup();");
+		Lib.eval("hideRegisterPopup();");
 		//Actuate.timer(1).onComplete(createScreen);
 		createScreen();
 	}
@@ -69,4 +72,11 @@ class ScreenManager
 			_currentScreen.update(dt);
 		}
 	}
+	
+	static private function get_currentScreen():Screen 
+	{
+		return _currentScreen;
+	}
+	
+	static public var currentScreen(get_currentScreen, null):Screen;
 }

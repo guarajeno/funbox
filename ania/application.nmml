@@ -9,7 +9,7 @@
 	<app main="Main" file="ania" path="bin" />
 	
 	<window background="#000000" fps="60" />
-	<window width="2000" height="820" unless="mobile" />
+	<window width="2000" height="1500" unless="mobile" />
 	<window orientation="landscape" vsync="false" antialiasing="0" if="cpp" />
 	
 	<!-- classpath, haxe libs -->
